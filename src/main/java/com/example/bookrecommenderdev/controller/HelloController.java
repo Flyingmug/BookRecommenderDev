@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev;
+package com.example.bookrecommenderdev.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

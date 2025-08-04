@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev.model;
+package com.example.bookrecommenderdev.client.model;
 
 /**
  * Classe utilizzata per definire le caratteristiche delle valutazioni,

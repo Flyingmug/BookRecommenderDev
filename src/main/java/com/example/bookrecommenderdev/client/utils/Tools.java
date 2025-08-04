@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev.utils;
+package com.example.bookrecommenderdev.client.utils;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -3,8 +3,13 @@ module com.example.bookrecommenderdev {
     requires javafx.fxml;
 
 
-    opens com.example.bookrecommenderdev to javafx.fxml;
-    exports com.example.bookrecommenderdev;
-  exports com.example.bookrecommenderdev.controller;
-  opens com.example.bookrecommenderdev.controller to javafx.fxml;
+    opens com.example.bookrecommenderdev.client to javafx.fxml;
+    exports com.example.bookrecommenderdev.client;
+  exports com.example.bookrecommenderdev.client.controller;
+  opens com.example.bookrecommenderdev.client.controller to javafx.fxml;
+
+  opens com.example.bookrecommenderdev.server to javafx.fxml;
+  exports com.example.bookrecommenderdev.server;
+  exports com.example.bookrecommenderdev.server.controller;
+  opens com.example.bookrecommenderdev.server.controller to javafx.fxml;
 }

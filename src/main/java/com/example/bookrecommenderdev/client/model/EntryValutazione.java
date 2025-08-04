@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev.model;
+package com.example.bookrecommenderdev.client.model;
 
 public class EntryValutazione {
 

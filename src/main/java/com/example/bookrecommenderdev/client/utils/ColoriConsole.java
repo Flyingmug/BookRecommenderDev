@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev.utils;
+package com.example.bookrecommenderdev.client.utils;
 
 /**
  * Classe utilizzata per avere a disposizione un elenco di colori

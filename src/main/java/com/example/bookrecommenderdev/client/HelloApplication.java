@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev;
+package com.example.bookrecommenderdev.client;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

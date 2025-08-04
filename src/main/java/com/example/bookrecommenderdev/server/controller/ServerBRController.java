@@ -1,9 +1,9 @@
-package com.example.bookrecommenderdev.client.controller;
+package com.example.bookrecommenderdev.server.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class ServerBRController {
     @FXML
     private Label welcomeText;
     @FXML

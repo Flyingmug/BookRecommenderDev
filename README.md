@@ -14,10 +14,10 @@ Developed by Flyingmug and Moscatettole
 
 <h3>Branches</h3>
 
-| Branch | Description |
-| ----------- | ----------- |
-| *master* | most recent stable release |
-| *development* | current unstable version |
+| Branch             | Description                         |
+|--------------------|-------------------------------------|
+| *master*           | most recent stable release          |
+| *development*      | current unstable version            |
 | *feature branches* | in-progress changes being developed |
 
 add something else that might be useful

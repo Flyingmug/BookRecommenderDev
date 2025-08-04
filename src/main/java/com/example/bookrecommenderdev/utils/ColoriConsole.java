@@ -1,7 +1,7 @@
-package com.example.bookrecommenderdev.client.utils;
+package com.example.bookrecommenderdev.utils;
 
 /**
- * Classe utilizzata per avere a disposizione un elenco di colori
+ * Classe contenente codici di formattazione dei colori della console
  * @author Selimi Sebian
  * @author Moscatelli Alexander
  */

@@ -14,6 +14,7 @@ Developed by Flyingmug and Moscatettole
 
 <h3>Branches</h3>
 
+| Branch | Description |
 | ----------- | ----------- |
 | master | most recent stable release |
 | development | current unstable version |

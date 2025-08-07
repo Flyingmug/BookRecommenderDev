@@ -6,6 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
   // campi
+  GestoreRaccolta raccolta;
 
   public ServerImplementation() throws RemoteException {
     super();
@@ -13,5 +14,8 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   }
 
   // metodi
-
+  public void cercaLibro(String titolo) throws RemoteException {
+    // NOTE: NOT VOID
+    raccolta.cercaLibro(titolo);
+  }
 }

@@ -13,4 +13,6 @@ module com.example.bookrecommenderdev {
   exports com.example.bookrecommenderdev.server;
   exports com.example.bookrecommenderdev.server.controller;
   opens com.example.bookrecommenderdev.server.controller to javafx.fxml;
+
+  exports com.example.bookrecommenderdev.model;
 }

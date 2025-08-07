@@ -6,14 +6,16 @@ Developed by Flyingmug and Moscatettole
 
 - JavaFX: https://fxdocs.github.io/docs/html5/#_layout
 - Reference design patterns: https://refactoring.guru/design-patterns/java
-- Postgres 17.5 (current): https://www.postgresql.org/docs/current
+- PostgreSQL 17.5 (current): https://www.postgresql.org/docs/current
+- PostgreSQL jdbc driver : https://jdbc.postgresql.org/documentation/setup
 
 <h3>Tools used</h3>
 
 - Scene builder (FXML visual representation)
 - Maven (module manager)
-- Postgres (local database)
+- PostgreSQL (local database)
 - pgAdmin 4 (postgres database GUI)
+- PostgreSQL jdbc driver
 
 <h3>Branches</h3>
 

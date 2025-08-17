@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev.client.model;
+package com.example.bookrecommenderdev.model;
 
 import java.util.LinkedList;
 import java.util.List;

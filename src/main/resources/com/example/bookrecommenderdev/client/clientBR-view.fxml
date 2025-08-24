@@ -3,13 +3,61 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="376.0" prefWidth="622.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.example.bookrecommenderdev.client.controller.ClientBRController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-  </padding>
-
-  <Label fx:id="welcomeText" />
-  <Label fx:id="welcomeText2" text="a" />
-  <Button onAction="#onHelloButtonClick" text="Hello!" />
-</VBox>
+<BorderPane prefHeight="632.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="145.0" prefWidth="759.0" style="-fx-background-color: #d5d5d5; -fx-padding: 0 40 0 40; -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);" BorderPane.alignment="CENTER">
+         <StackPane alignment="CENTER_LEFT" minWidth="500.0" prefWidth="600.0">
+            <TextField prefHeight="60.0" prefWidth="358.0" promptText="Cerca..." style="-fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 0 50 0 20;">
+               <font>
+                  <Font name="Constantia" size="18.0" />
+               </font></TextField>
+            <HBox alignment="CENTER_RIGHT" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0">
+               <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" text="Src" textAlignment="CENTER" HBox.hgrow="NEVER" />
+               <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" text="Filt" textAlignment="CENTER" HBox.hgrow="NEVER" />
+            </HBox>
+         </StackPane>
+         <Region prefHeight="200.0" prefWidth="200.0" />
+         <HBox alignment="CENTER" prefHeight="145.0" prefWidth="257.0" style="-fx-spacing: 20;">
+            <Button mnemonicParsing="false" prefHeight="48.0" style="-fx-background-color: transparent; -fx-border-color: #6f1e70; -fx-padding: 0 15 0 15;" text="Librerie">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button layoutX="87.0" layoutY="59.0" mnemonicParsing="false" prefHeight="48.0" style="-fx-background-color: transparent; -fx-border-color: #6f1e70; -fx-padding: 0 15 0 15;" text="Login">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </HBox></HBox>
+   </top>
+   <center>
+      <Pane prefHeight="488.0" prefWidth="961.0" BorderPane.alignment="CENTER">
+         <VBox layoutX="96.0" layoutY="58.0" prefHeight="372.0" prefWidth="808.0">
+            <children>
+               <Label prefHeight="25.0" prefWidth="90.0" text="Risultati">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin>
+                  <padding>
+                     <Insets left="5.0" right="5.0" />
+                  </padding>
+                  <font>
+                     <Font name="Constantia" size="18.0" />
+                  </font>
+               </Label>
+               <VBox prefHeight="377.0" prefWidth="804.0" style="-fx-border-width: 10 0 10 0; -fx-border-width: 10 0 10 0; -fx-padding: 20; -fx-border-color: #66a7dc;">
+                  <children>
+                        <TableView fx:id="bookResults" prefHeight="422.0" prefWidth="486.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" style="-fx-background-color: #81b9e7;" text="Titolo" />
+                            <TableColumn prefWidth="75.0" style="-fx-background-color: #81b9e7;" text="Autore" />
+                          </columns>
+                        </TableView>
+                  </children>
+               </VBox>
+            </children>
+         </VBox>
+      </Pane>
+   </center>
+</BorderPane>

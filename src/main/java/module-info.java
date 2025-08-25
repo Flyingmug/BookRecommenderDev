@@ -2,6 +2,7 @@ module com.example.bookrecommenderdev {
     requires javafx.controls;
     requires javafx.fxml;
   requires java.rmi;
+  requires java.sql;
 
 
   opens com.example.bookrecommenderdev.client to javafx.fxml;

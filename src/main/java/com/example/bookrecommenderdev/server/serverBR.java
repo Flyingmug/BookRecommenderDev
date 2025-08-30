@@ -28,20 +28,6 @@ public class serverBR extends Application {
 
 
 
-    // test area
-
-    // creazione del server e rebind alla registry
-//    try {
-//      ServerImplementation server = new ServerImplementation();
-//      Registry reg = LocateRegistry.createRegistry(1099);
-//      reg.rebind("BRServer", server);
-//      System.out.println("Server running");
-//    } catch (RemoteException e) {
-//
-//    }
-
-
-
   }
 
   public static void main(String[] args) {
@@ -50,20 +36,6 @@ public class serverBR extends Application {
 
     // avvio applicazione
     launch();
-
-    // connessione database locale
-    String url = "jdbc:postgresql://localhost:5432/bookrecommenderdev";
-    String user = "postgres";
-    String password = "11111111";
-
-    try (Connection conn = DriverManager.getConnection(url, user, password)) {
-      if (conn != null) {
-        System.out.println("Connected to PostgreSQL successfully!");
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } 
-
 
   }
 }

@@ -3,6 +3,7 @@ module com.example.bookrecommenderdev {
     requires javafx.fxml;
   requires java.rmi;
   requires java.sql;
+  requires com.zaxxer.hikari;
 
 
   opens com.example.bookrecommenderdev.client to javafx.fxml;

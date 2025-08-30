@@ -10,6 +10,7 @@ Developed by Flyingmug and Moscatettole
 - PostgreSQL jdbc driver : https://jdbc.postgresql.org/documentation/setup
 - ikonli JavaFX icons: https://kordamp.org/ikonli
 - MateriaDesign icons cheatsheet: https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
+- 
 
 - <h3>Tools used</h3>
 
@@ -18,6 +19,7 @@ Developed by Flyingmug and Moscatettole
 - PostgreSQL (local database)
 - pgAdmin 4 (postgres database GUI)
 - PostgreSQL jdbc driver
+- HikariCP database connection pooling
 
 <h3>Branches</h3>
 

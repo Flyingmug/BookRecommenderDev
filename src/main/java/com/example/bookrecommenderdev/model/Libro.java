@@ -11,7 +11,7 @@ import java.util.UUID;
  * @author Moscatelli Alexander*/
 public class Libro {
 
-  String idLibro;
+  long idLibro;
   int annoPubblicazione;
   String titolo;
   String autori;
@@ -24,7 +24,7 @@ public class Libro {
    * @param titolo String
    * @param annoPubblicazione int
    */
-  public Libro(String idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
+  public Libro(long idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
     this.idLibro = idLibro;
     this.titolo = titolo;
     this.autori = autori;
@@ -33,10 +33,15 @@ public class Libro {
     this.categorie = categorie;
   }
 
+  public Libro(int idLibro, String titolo) {
+    this.idLibro = idLibro;
+    this.titolo = titolo;
+  }
+
   /**
    * @return id libro
    */
-  public String getIdLibro() { return idLibro; }
+  public long getIdLibro() { return idLibro; }
   /**
    * @return titolo libro
    */
@@ -59,14 +64,6 @@ public class Libro {
   public String getCategorie() { return categorie; }
 
   /**
-   * Imposta un nuovo id al libro, eventualmente sovrascrivendo quello presente
-   */
-  public void setNewId() {
-    UUID uuid = UUID.randomUUID();
-    this.idLibro = uuid.toString();
-  }
-
-  /**
    * Reperisce la stringa titolo+autore+annoPubblicazione
    * @return String*/
   public String toShortHandFullString() {
@@ -79,7 +76,7 @@ public class Libro {
    */
   @Override
   public boolean equals(Object obj) {
-    return obj.getClass() == Libro.class && this.idLibro.equals(((Libro) obj).getIdLibro());
+    return obj.getClass() == Libro.class && this.idLibro == ((Libro) obj).getIdLibro();
   }
 }
 

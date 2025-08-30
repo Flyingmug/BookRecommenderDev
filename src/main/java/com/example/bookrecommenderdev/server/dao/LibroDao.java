@@ -2,10 +2,20 @@ package com.example.bookrecommenderdev.server.dao;
 
 import com.example.bookrecommenderdev.model.Libro;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class LibroDao implements DAO<Libro> {
+
+  private final int PAGE_SIZE = 50;
+  private final DataSource datasource;
+
+  public LibroDao(DataSource ds) {
+    this.datasource = ds;
+  }
 
   @Override
   public Optional<Libro> get(long id) {
@@ -17,6 +27,36 @@ public class LibroDao implements DAO<Libro> {
 
 
     return Optional.empty();
+  }
+
+  public List<Libro> getPage(int pageNumber, String title) {
+
+    List<Libro> libri = new ArrayList<>();
+    String q = "SELECT idLibro, titolo FROM Libri" +
+        " WHERE '%' || LOWER(titolo) || '%' LIKE ?" +
+        " OFFSET ? LIMIT ?";
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setString(1, title.toLowerCase());
+      ps.setInt(2, pageNumber * PAGE_SIZE);
+      ps.setInt(3, PAGE_SIZE);
+
+      ResultSet rs = ps.executeQuery();
+
+      while (rs.next()) {
+        libri.add(new Libro(
+            rs.getInt("idLibro"),
+            rs.getString("titolo")
+        ));
+      }
+
+    } catch (SQLException e) {
+      // throw error?
+    }
+
+    return libri;
   }
 
   @Override

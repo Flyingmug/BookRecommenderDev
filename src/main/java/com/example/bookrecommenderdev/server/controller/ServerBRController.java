@@ -7,10 +7,15 @@ public class ServerBRController {
     @FXML
     private Label welcomeText;
     @FXML
-    private Label welcomeText2;
+    private Label statusText;
 
     @FXML
     protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+        welcomeText.setText("Welcome to BR-Manager!");
+    }
+
+    @FXML
+    public void serverStatusDisplay() {
+        statusText.setText("Server running.");
     }
 }

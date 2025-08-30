@@ -35,7 +35,92 @@ public class ClientBRController {
 
     @FXML
     protected void onSearchAction() {
+
+        //
+
+
+        // cambiamenti UI
         welcomeText.setVisible(false);
         resultDisplayVBox.setVisible(true);
+    }
+
+    @FXML
+    protected void onLibraryListAction() {
+
+    }
+
+    @FXML
+    protected void onRegisterAction() {
+
+    }
+
+    @FXML
+    protected void onLoginAction() {
+
+    }
+
+    @FXML
+    protected void onLibraryOpenAction() {
+
+    }
+
+    @FXML
+    protected void onLogoutAction() {
+
+    }
+
+    @FXML
+    protected void onLibraryDeleteAction() {
+
+    }
+
+    @FXML
+    protected void onLibraryCreateAction() {
+
+    }
+
+    @FXML
+    protected void onLibraryInsertAction() {
+
+    }
+
+    @FXML
+    protected void onSearchCriteriaDisplayAction() {
+
+    }
+
+    @FXML
+    protected void onCriteriaSelectionAction() {
+
+    }
+
+    @FXML
+    protected void onNextResultsAction() {
+
+    }
+
+    @FXML
+    protected void onPreviousResultsAction() {
+
+    }
+
+    @FXML
+    protected void onCreateUserAction() {
+
+    }
+
+    @FXML
+    protected void onDeleteUserAction() {
+
+    }
+
+    @FXML
+    protected void onProfileSettingsAction() {
+
+    }
+
+    @FXML
+    protected void onAction() {
+
     }
 }

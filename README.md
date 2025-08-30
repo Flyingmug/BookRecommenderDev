@@ -8,8 +8,10 @@ Developed by Flyingmug and Moscatettole
 - Reference design patterns: https://refactoring.guru/design-patterns/java
 - PostgreSQL 17.5 (current): https://www.postgresql.org/docs/current
 - PostgreSQL jdbc driver : https://jdbc.postgresql.org/documentation/setup
+- ikonli JavaFX icons: https://kordamp.org/ikonli
+- MateriaDesign icons cheatsheet: https://kordamp.org/ikonli/cheat-sheet-materialdesign2.html
 
-<h3>Tools used</h3>
+- <h3>Tools used</h3>
 
 - Scene builder (FXML visual representation)
 - Maven (module manager)

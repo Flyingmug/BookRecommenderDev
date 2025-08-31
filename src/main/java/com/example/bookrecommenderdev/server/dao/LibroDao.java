@@ -48,7 +48,7 @@ public class LibroDao implements DAO<Libro> {
 
       while (rs.next()) {
         libri.add(new Libro(
-            rs.getInt("idLibro"),
+            rs.getInt("id_libro"),
             rs.getString("titolo")
         ));
       }

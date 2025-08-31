@@ -107,7 +107,9 @@ public class ClientBRController {
         try {
             List<Libro> res = bookRecommender.searchTitolo(input);
             System.out.println(res.size());
-            System.out.println(res.getFirst().getTitolo());
+            if (res.size() > 0) {
+                System.out.println("Primo titolo: " + res.getFirst().getTitolo());
+            }
 
         } catch(RemoteException e) {
             System.out.println("Error while fetching data");

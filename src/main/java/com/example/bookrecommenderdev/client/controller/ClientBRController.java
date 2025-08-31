@@ -1,9 +1,11 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.server.ServerImplementation;
+import com.example.bookrecommenderdev.model.Libro;
+import com.example.bookrecommenderdev.server.ServerInterface;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
@@ -13,6 +15,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 
 public class ClientBRController {
     @FXML
@@ -20,7 +23,7 @@ public class ClientBRController {
     @FXML
     private StackPane centerStackContainer;
     @FXML
-    private VBox resultDisplayVBox;
+    private ScrollPane resultPage;
     @FXML
     private VBox homePage;
     @FXML
@@ -34,7 +37,7 @@ public class ClientBRController {
     @FXML
     private Region mainPageSpacer;
 
-    private ServerImplementation bookRecommender;
+    private ServerInterface bookRecommender;
 
     @FXML
     public void initialize() {
@@ -59,7 +62,7 @@ public class ClientBRController {
     private void initRegistry() {
         try {
             Registry reg = LocateRegistry.getRegistry("localhost", 1099);
-            bookRecommender = (ServerImplementation) reg.lookup("serverBR");
+            bookRecommender = (ServerInterface) reg.lookup("serverBR");
         } catch(RemoteException e) {
             e.printStackTrace();
             // error display on main page
@@ -71,7 +74,7 @@ public class ClientBRController {
 
     @FXML
     protected void onHomepage() {
-        resultDisplayVBox.setVisible(false);
+        resultPage.setVisible(false);
         homePage.setVisible(true);
         resetHomepage();
     }
@@ -99,6 +102,17 @@ public class ClientBRController {
 
         topSearchbar();
         homePage.setVisible(false);
+        resultPage.setVisible(true);
+
+        try {
+            List<Libro> res = bookRecommender.searchTitolo(input);
+            System.out.println(res.size());
+            System.out.println(res.getFirst().getTitolo());
+
+        } catch(RemoteException e) {
+            System.out.println("Error while fetching data");
+            e.printStackTrace();
+        }
 
         openResultsPage();
 

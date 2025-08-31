@@ -34,7 +34,7 @@
    <center>
       <StackPane fx:id="centerStackContainer" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 
-         <VBox fx:id="homePage" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+         <VBox fx:id="homePage" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="369.0" text="BookRecommender" textAlignment="CENTER">
                   <font>
                      <Font name="Constantia" size="32.0" />
@@ -67,8 +67,8 @@
                </StackPane>
                <Region fx:id="mainPageSpacer" prefHeight="60.0" prefWidth="1000.0" />
          </VBox>
-         <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-            <VBox fx:id="resultDisplayVBox" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+         <ScrollPane fx:id="resultPage" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" visible="false">
+            <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                <Label prefHeight="25.0" prefWidth="90.0" text="Risultati" textAlignment="CENTER">
                   <VBox.margin>
                      <Insets bottom="10.0" />

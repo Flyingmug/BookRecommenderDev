@@ -31,17 +31,18 @@ public class LibroDao implements DAO<Libro> {
 
   public List<Libro> getPage(int pageNumber, String title) {
 
+    System.out.println("Chiave ricevuta: " + title);
+
     List<Libro> libri = new ArrayList<>();
-    String q = "SELECT idLibro, titolo FROM Libri" +
-        " WHERE '%' || LOWER(titolo) || '%' LIKE ?" +
-        " OFFSET ? LIMIT ?";
+    String q = "SELECT id_libro, titolo FROM libri WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
-      ps.setString(1, title.toLowerCase());
+      ps.setString(1, "%"+title.toLowerCase()+"%");
       ps.setInt(2, pageNumber * PAGE_SIZE);
       ps.setInt(3, PAGE_SIZE);
+
 
       ResultSet rs = ps.executeQuery();
 
@@ -53,8 +54,11 @@ public class LibroDao implements DAO<Libro> {
       }
 
     } catch (SQLException e) {
-      // throw error?
+        System.out.println("Errore nelle connessione al database.");
+        e.printStackTrace();
     }
+
+      System.out.println("Numero risultati: " + libri.size());
 
     return libri;
   }

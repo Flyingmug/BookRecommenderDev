@@ -22,6 +22,9 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     super();
     datasource = DatabaseConfig.getDataSource();
     libri = new LibroDao(datasource);
+
+    // TESTING DATABASE PURPOSES
+//    this.searchTitolo("a");
   }
 
   //
@@ -32,8 +35,20 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // libri
   //
 
+  public List<Libro> searchTitolo(String titolo) throws RemoteException {
 
+      List<Libro> elenco =libri.getPage(0, titolo);
+      System.out.println("Numero risultati SERVER: " + elenco.size());
+    return elenco;
 
+  }
+  public List<Libro> searchAutore(String autore) throws RemoteException {
+      return List.of();
+  }
+
+  public List<Libro> searchAnnoAutore(String annoAutore) throws RemoteException {
+      return List.of();
+  }
 
   public LibroPaginaDTO getPaginaLibro(long idLibro) throws RemoteException {
 

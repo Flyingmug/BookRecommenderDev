@@ -34,7 +34,7 @@ public class LibroDao implements DAO<Libro> {
     System.out.println("Chiave ricevuta: " + title);
 
     List<Libro> libri = new ArrayList<>();
-    String q = "SELECT id_libro, titolo FROM libri WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
+    String q = "SELECT id_libro, titolo FROM Libri WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {

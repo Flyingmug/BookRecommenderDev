@@ -1,11 +1,15 @@
 package com.example.bookrecommenderdev.server;
 
+import com.example.bookrecommenderdev.model.*;
 import com.example.bookrecommenderdev.server.dao.LibroDao;
 import com.example.bookrecommenderdev.server.db.DatabaseConfig;
+import com.example.bookrecommenderdev.server.dto.LibroPaginaDTO;
+import com.example.bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
@@ -20,15 +24,90 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     libri = new LibroDao(datasource);
   }
 
-
+  //
   // metodi
   //
+
   //
+  // libri
   //
+
+
+
+
+  public LibroPaginaDTO getPaginaLibro(long idLibro) throws RemoteException {
+
+    return null;
+  }
+
+  public LibroPaginaPersonaleDTO getPaginaLibroPersonale() throws RemoteException {
+
+    return null;
+  }
+
   //
-  public void cercaLibro(String titolo) throws RemoteException {
-    // NOTE: NOT VOID
-    libri.get(123);
+  // librerie
+  //
+  public List<Libreria> getListLibrerie(long idUtente) throws RemoteException {
+
+    return List.of();
+  }
+
+  public List<Libro> getContenutoLibreria(List<Long> idList) throws RemoteException {
+
+    return List.of();
+  }
+
+  public void createLibreria(Libreria lib) throws RemoteException, InsertDBException {
+
+  }
+
+  public void deleteLibreria(Libreria lib) throws RemoteException {
+
+  }
+
+  public void deleteLibreria(String nome, long idUtente) throws RemoteException {
+
+  }
+
+  //
+  // Valutazioni
+  //
+
+  public List<Valutazione> getValutazioni(long idLibro) throws RemoteException {
+
+    return List.of();
+  }
+
+  //
+  // Consigli
+  //
+
+  public List<Libro> getConsigli(long idLibro) throws RemoteException {
+
+    return List.of();
+  }
+
+  //
+  // Utente
+  //
+
+  /**
+   * Utilizza nome e password per controllare la presenza della coppia nel database
+   *
+   * @param nome nome utente
+   * @param password password utente
+   * @return token di sessione............
+   */
+  public String login(String nome, String password) throws RemoteException {
+
+
+
+    return null;
+  }
+
+  public void registrazione(Utente u) throws RemoteException, InsertDBException {
+
   }
 
 }

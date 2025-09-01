@@ -8,6 +8,7 @@ module com.example.bookrecommenderdev {
   requires org.kordamp.ikonli.javafx;
 
 
+
   opens com.example.bookrecommenderdev.client to javafx.fxml;
   exports com.example.bookrecommenderdev.client;
   exports com.example.bookrecommenderdev.client.controller;

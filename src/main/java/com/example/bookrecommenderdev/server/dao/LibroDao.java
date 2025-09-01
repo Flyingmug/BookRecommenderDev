@@ -27,9 +27,7 @@ public class LibroDao {
   }
 
   public List<Libro> getPage(int pageNumber, String title) {
-
     System.out.println("Chiave ricevuta: " + title);
-
     List<Libro> libri = new ArrayList<>();
     String q = "SELECT id_libro, titolo FROM Libri WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
 
@@ -58,5 +56,4 @@ public class LibroDao {
 
     return libri;
   }
-
 }

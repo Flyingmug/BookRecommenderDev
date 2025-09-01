@@ -2,7 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-!**/src/main/**/server/db/DatabaseConfig.java
+src/main/java/com/example/bookrecommenderdev/server/db/DatabaseConfig.java
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

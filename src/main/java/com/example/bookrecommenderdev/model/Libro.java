@@ -14,8 +14,8 @@ public class Libro implements Serializable {
   @Serial
   private static final long serialVersionUID = 1L;
 
-  int idLibro;
-  int annoPubblicazione;
+  int id_libro;
+  int anno_pubblicazioni;
   String titolo;
   String autori;
   String editore;
@@ -25,28 +25,33 @@ public class Libro implements Serializable {
    * Costruttore Libro
    * @param autori String
    * @param titolo String
-   * @param annoPubblicazione int
+   * @param anno_pubblicazioni int
    */
-  public Libro(int idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
-    this.idLibro = idLibro;
+  public Libro(int id_libro, int anno_pubblicazioni, String titolo, String autori, String editore, String categorie) {
+    this.id_libro = id_libro;
+    this.anno_pubblicazioni = anno_pubblicazioni;
     this.titolo = titolo;
     this.autori = autori;
-    this.annoPubblicazione = annoPubblicazione;
     this.editore = editore;
     this.categorie = categorie;
   }
 
+  public Libro(int id_libro, String titolo, String autori, int anno_pubblicazioni) {
+    this.id_libro = id_libro;
+    this.titolo = titolo;
+    this.autori = autori;
+    this.anno_pubblicazioni = anno_pubblicazioni;
+  }
 
-
-  public Libro(int idLibro, String titolo) {
-    this.idLibro = idLibro;
+  public Libro(int id_libro, String titolo) {
+    this.id_libro = id_libro;
     this.titolo = titolo;
   }
 
   /**
    * @return id libro
    */
-  public long getIdLibro() { return idLibro; }
+  public long getIdLibro() { return id_libro; }
   /**
    * @return titolo libro
    */
@@ -58,7 +63,7 @@ public class Libro implements Serializable {
   /**
    * @return anno di pubblicazione
    */
-  public int getAnnoPubblicazione() { return annoPubblicazione; }
+  public int getAnnoPubblicazione() { return anno_pubblicazioni; }
   /**
    * @return editore del libro
    */
@@ -72,7 +77,7 @@ public class Libro implements Serializable {
    * Reperisce la stringa titolo+autore+annoPubblicazione
    * @return String*/
   public String toShortHandFullString() {
-    return titolo + ", " + autori + ", " + annoPubblicazione;
+    return titolo + ", " + autori + ", " + anno_pubblicazioni;
   }
 
   /**
@@ -81,7 +86,7 @@ public class Libro implements Serializable {
    */
   @Override
   public boolean equals(Object obj) {
-    return obj.getClass() == Libro.class && this.idLibro == ((Libro) obj).getIdLibro();
+    return obj.getClass() == Libro.class && this.id_libro == ((Libro) obj).getIdLibro();
   }
 }
 

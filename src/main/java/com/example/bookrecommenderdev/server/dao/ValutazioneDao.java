@@ -129,7 +129,6 @@ public class ValutazioneDao
             System.out.println("Errore nelle connessione al database.");
             e.printStackTrace();
         }
-
         return valutazione;
     }
 

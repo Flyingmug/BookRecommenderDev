@@ -20,7 +20,11 @@ public class ValutazioneDao
         this.datasource = ds;
     }
 
-
+    /**
+     * Cerca medie delle valutazioni dei punteggi
+     * @param id_libro
+     * @return array di 5 float contentente le cinque medie
+     */
     public float[] getAverage (int id_libro){
 
         System.out.println("Chiave ricevuta: " + id_libro);
@@ -74,11 +78,9 @@ public class ValutazioneDao
         try (Connection conn = datasource.getConnection();
              PreparedStatement ps = conn.prepareStatement(q)) {
 
-
             ps.setInt(1, id_libro);
 
             ResultSet rs = ps.executeQuery();
-
 
             while (rs.next()) {
                 elenco.add(new Valutazione(rs.getInt("stile"),
@@ -93,9 +95,7 @@ public class ValutazioneDao
                         rs.getString("recensione_edizione")));
             }
 
-
             System.out.println("Numero risultati: "+ elenco.size());
-
 
         } catch (SQLException e) {
             System.out.println("Errore nelle connessione al database.");
@@ -105,6 +105,42 @@ public class ValutazioneDao
         return elenco;
     }
 
+    public Valutazione get (int id_libro, int id_utente){
+        Valutazione valutazione = null;
+        System.out.println("Chiave ricevuta: " + id_libro);
+        String q = "SELECT * FROM Valutazioni WHERE id_libro = ? AND id_utente = ?";
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(q)) {
+
+            ps.setInt(1, id_libro);
+            ps.setInt(2, id_utente);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                valutazione = new Valutazione(rs.getInt("id_libro"),
+                        rs.getInt("id_utente"),
+                        rs.getInt("stile"),
+                        rs.getInt("contenuto"),
+                        rs.getInt("gradevolezza"),
+                        rs.getInt("originalita"),
+                        rs.getInt("edizione"),
+                        rs.getString("recensione_stile"),
+                        rs.getString("recensione_contenuto"),
+                        rs.getString("recensione_gradevolezza"),
+                        rs.getString("recensione_originalita"),
+                        rs.getString("recensione_edizione"));
+            }
+
+            System.out.println("Valutazione istanziata: " + (valutazione != null));
+
+        } catch (SQLException e) {
+            System.out.println("Errore nelle connessione al database.");
+            e.printStackTrace();
+        }
+
+        return valutazione;
+    }
 
 
     public boolean save (int id_libro, int id_utente, Valutazione valutazione){
@@ -127,7 +163,4 @@ public class ValutazioneDao
         }
         return false;
     }
-
-
-
 }

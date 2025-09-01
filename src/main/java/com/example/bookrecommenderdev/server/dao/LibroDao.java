@@ -54,7 +54,7 @@ public class LibroDao {
         e.printStackTrace();
     }
 
-      System.out.println("Numero risultati: " + libri.size());
+      System.out.println("Numero risultati QUERY: " + libri.size());
 
     return libri;
   }

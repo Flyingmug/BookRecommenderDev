@@ -1,6 +1,7 @@
 package com.example.bookrecommenderdev.model;
 
-import java.util.UUID;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Questa classe definisce le caratteristiche dei libri, composti da titolo, autore, editore, categoria,
@@ -9,9 +10,11 @@ import java.util.UUID;
  * - o reperirli (getTitolo / toShortHandFullString)
  * @author Selimi Sebian
  * @author Moscatelli Alexander*/
-public class Libro {
+public class Libro implements Serializable {
+  @Serial
+  private static final long serialVersionUID = 1L;
 
-  long idLibro;
+  int idLibro;
   int annoPubblicazione;
   String titolo;
   String autori;
@@ -24,7 +27,7 @@ public class Libro {
    * @param titolo String
    * @param annoPubblicazione int
    */
-  public Libro(long idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
+  public Libro(int idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
     this.idLibro = idLibro;
     this.titolo = titolo;
     this.autori = autori;
@@ -32,6 +35,8 @@ public class Libro {
     this.editore = editore;
     this.categorie = categorie;
   }
+
+
 
   public Libro(int idLibro, String titolo) {
     this.idLibro = idLibro;

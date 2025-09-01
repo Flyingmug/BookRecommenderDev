@@ -1,6 +1,7 @@
 package com.example.bookrecommenderdev.server.dao;
 
 import com.example.bookrecommenderdev.model.Libro;
+import com.example.bookrecommenderdev.model.Valutazione;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -23,8 +24,6 @@ public class LibroDao implements DAO<Libro> {
     // 1. connessione al database
     // 2. query SELECT tramite id del libro
     // 3. trasformazione del risultato in oggetto di classe libro
-
-
 
     return Optional.empty();
   }
@@ -65,6 +64,7 @@ public class LibroDao implements DAO<Libro> {
 
   @Override
   public List<Libro> getAll() {
+
     return List.of();
   }
 

@@ -11,9 +11,9 @@ public class DatabaseConfig {
 
   static {
     HikariConfig cfg = new HikariConfig();
-    cfg.setJdbcUrl("jdbc:postgresql://localhost:5432/bookrecommenderdev");
+    cfg.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
     cfg.setUsername("postgres");
-    cfg.setPassword("11111111");
+    cfg.setPassword("1234");
     cfg.setMaximumPoolSize(20);
     cfg.setMinimumIdle(2);
     cfg.setIdleTimeout(30_000);

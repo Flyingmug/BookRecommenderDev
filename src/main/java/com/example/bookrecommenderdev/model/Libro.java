@@ -14,7 +14,7 @@ public class Libro implements Serializable {
   @Serial
   private static final long serialVersionUID = 1L;
 
-  long idLibro;
+  int idLibro;
   int annoPubblicazione;
   String titolo;
   String autori;
@@ -27,7 +27,7 @@ public class Libro implements Serializable {
    * @param titolo String
    * @param annoPubblicazione int
    */
-  public Libro(long idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
+  public Libro(int idLibro, String titolo, String autori, int annoPubblicazione, String editore, String categorie) {
     this.idLibro = idLibro;
     this.titolo = titolo;
     this.autori = autori;

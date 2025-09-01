@@ -4,9 +4,10 @@ module com.example.bookrecommenderdev {
   requires java.rmi;
   requires java.sql;
   requires com.zaxxer.hikari;
+    requires com.example.bookrecommenderdev;
 
 
-  opens com.example.bookrecommenderdev.client to javafx.fxml;
+    opens com.example.bookrecommenderdev.client to javafx.fxml;
   exports com.example.bookrecommenderdev.client;
   exports com.example.bookrecommenderdev.client.controller;
   opens com.example.bookrecommenderdev.client.controller to javafx.fxml;

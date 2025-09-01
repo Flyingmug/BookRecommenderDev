@@ -36,6 +36,8 @@ public class Libro implements Serializable {
     this.categorie = categorie;
   }
 
+
+
   public Libro(int idLibro, String titolo) {
     this.idLibro = idLibro;
     this.titolo = titolo;

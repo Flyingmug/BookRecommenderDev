@@ -40,7 +40,6 @@ public class LibroDao {
       ps.setInt(2, pageNumber * PAGE_SIZE);
       ps.setInt(3, PAGE_SIZE);
 
-
       ResultSet rs = ps.executeQuery();
 
       while (rs.next()) {

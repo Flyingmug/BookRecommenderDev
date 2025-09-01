@@ -1,17 +1,19 @@
 package com.example.bookrecommenderdev.model;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Classe utilizzata per definire le caratteristiche degli utenti: nome, cognome, codFiscale, email, userId, password.
  * @author Selimi Sebian
  * @author Moscatelli Alexander*/
 public class Utente implements Serializable {
+  int id_utente;  // id nel database
   String nome;
   String cognome;
   String codiceFiscale;
   String email;
-  String userId;
+  UUID userId;  // id dell' account
   String password;
 
 
@@ -25,12 +27,13 @@ public class Utente implements Serializable {
    * @param userId String
    * @param password String
    */
-  public Utente(String nome, String cognome, String codiceFiscale, String email, String userId, String password) {
+  public Utente(int id_utente, String nome, String cognome, String codiceFiscale, String email, String userId, String password) {
+    this.id_utente = id_utente;
     this.nome = nome;
     this.cognome = cognome;
     this.codiceFiscale = codiceFiscale;
     this.email = email;
-    this.userId = userId;
+    this.userId = UUID.fromString(userId);
     this.password = password;
   }
 
@@ -49,7 +52,7 @@ public class Utente implements Serializable {
   public String getEmail() { return email; }
   /**
    * @return id utente*/
-  public String getUserId() { return userId; }
+  public String getUserId() { return userId.toString(); }
   /**
    * @return password */
   public String getPassword() { return password; }

@@ -4,6 +4,7 @@ module com.example.bookrecommenderdev {
   requires java.rmi;
   requires java.sql;
   requires com.zaxxer.hikari;
+  requires org.postgresql.jdbc;
 
 
   opens com.example.bookrecommenderdev.client to javafx.fxml;

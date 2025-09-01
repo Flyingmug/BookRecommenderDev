@@ -8,14 +8,20 @@ package com.example.bookrecommenderdev.model;
  * @author Selimi Sebian
  * @author Moscatelli Alexander*/
 public class Valutazione {
-  String idLibro;
-  String idUtente;
+  final static int MAX_SIZE_RECENSIONE = 256;
+
+  int id_libro;
+  int id_utente;
   int stile;
   int contenuto;
   int gradevolezza;
   int originalita;
   int edizione;
-  String recensione;
+  String recensione_stile;
+  String recensione_contenuto;
+  String recensione_gradevolezza;
+  String recensione_originalita;
+  String recensione_edizione;
 
   /**
    * Costruttore.
@@ -26,32 +32,60 @@ public class Valutazione {
   /**
    * Costruttore.
    * I parametri passati vengono utilizzati per creare un'istanza.
-   * @param idLibro String
-   * @param idUtente String
-   * @param stile int
-   * @param contenuto int
-   * @param gradevolezza int
-   * @param originalita int
-   * @param edizione int
-   * @param recensione String
+   * @param id_libro String
+   * @param id_utente String
+   * @param stile int punteggio
+   * @param contenuto int punteggio
+   * @param gradevolezza int punteggio
+   * @param originalita int punteggio
+   * @param edizione int punteggio
+   * @param recStile String recensione testuale
+   * @param recContenuto String recensione testuale
+   * @param recGradevolezza String recensione testuale
+   * @param recOriginalita String recensione testuale
+   * @param recEdizione String recensione testuale
    */
-  public Valutazione(String idLibro, String idUtente, int stile, int contenuto, int gradevolezza, int originalita, int edizione, String recensione) {
-    this.idLibro = idLibro;
-    this.idUtente = idUtente;
+  public Valutazione(int id_libro, int id_utente, int stile, int contenuto, int gradevolezza, int originalita,
+                     int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,
+                     String recEdizione) {
+
+    this.id_libro = id_libro;
+    this.id_utente = id_utente;
     this.stile = stile;
     this.contenuto = contenuto;
     this.gradevolezza = gradevolezza;
     this.originalita = originalita;
     this.edizione = edizione;
-    setRecensione(recensione);
+    setRecensione("stile", recStile);
+    setRecensione("contenuto", recContenuto);
+    setRecensione("gradevolezza", recGradevolezza);
+    setRecensione("originalita", recOriginalita);
+    setRecensione("edizione", recEdizione);
   }
+
+  public Valutazione(int stile, int contenuto, int gradevolezza, int originalita,
+                     int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,
+                     String recEdizione) {
+
+    this.stile = stile;
+    this.contenuto = contenuto;
+    this.gradevolezza = gradevolezza;
+    this.originalita = originalita;
+    this.edizione = edizione;
+    setRecensione("stile", recStile);
+    setRecensione("contenuto", recContenuto);
+    setRecensione("gradevolezza", recGradevolezza);
+    setRecensione("originalita", recOriginalita);
+    setRecensione("edizione", recEdizione);
+  }
+
 
   /**
    * @return id libro */
-  public String getIdLibro() { return idLibro; }
+  public int getIdLibro() { return id_libro; }
   /**
    * @return id utente */
-  public String getIdUtente() { return idUtente; }
+  public int getIdUtente() { return id_utente; }
   /**
    * @return punteggio stile */
   public int getStile() { return stile; }
@@ -72,7 +106,19 @@ public class Valutazione {
   public int getVotoFinale() { return (stile+contenuto+gradevolezza+originalita+edizione)/5; }
   /**
    * @return recensione testuale*/
-  public String getRecensione() { return recensione; }
+  public String getRecensioneStile() { return recensione_stile; }
+  /**
+   * @return recensione testuale*/
+  public String getRecensioneContenuto() { return recensione_contenuto; }
+  /**
+   * @return recensione testuale*/
+  public String getRecensioneGradevolezzo() { return recensione_gradevolezza; }
+  /**
+   * @return recensione testuale*/
+  public String getRecensioneOriginalita() { return recensione_originalita; }/**
+   * @return recensione testuale*/
+  public String getRecensioneEdizione() { return recensione_edizione; }
+
 
   /**
    * @param stile punteggio stile */
@@ -91,23 +137,42 @@ public class Valutazione {
   public void setEdizione(int edizione) { this.edizione = edizione; }
   /**
    * Imposta la recensione e rimuove ogni carattere dal 256° in poi
-   * @param recensione recensione
+   * @param nomeCampo nome campo recensito
+   * @param testo recensione
    */
-  public void setRecensione(String recensione) {
-    if (recensione.length() > 256) {
-      this.recensione = recensione.substring(0, 255);
-    } else {
-      this.recensione = recensione;
+  public void setRecensione(String nomeCampo, String testo) {
+    if (testo != null && testo.length() > MAX_SIZE_RECENSIONE) {
+      testo = testo.substring(0, MAX_SIZE_RECENSIONE);
+    }
+
+    switch (nomeCampo) {
+      case "stile":
+        this.recensione_stile = testo;
+        break;
+      case "contenuto":
+        this.recensione_contenuto = testo;
+        break;
+      case "gradevolezza":
+        this.recensione_gradevolezza = testo;
+        break;
+      case "originalita":
+        this.recensione_originalita = testo;
+        break;
+      case "edizione":
+        this.recensione_edizione = testo;
+        break;
+      default:
+        break;
     }
   }
   /**
    * Metodo per settare il campo: idLibro.
    * @param idLibro int*/
-  public void setIdLibro(String idLibro) { this.idLibro = idLibro; }
+  public void setIdLibro(int idLibro) { this.id_libro = idLibro; }
   /**
    * Metodo per settare il campo: idUtente.
    * @param idUtente int*/
-  public void setIdUtente(String idUtente) { this.idUtente = idUtente; }
+  public void setIdUtente(int idUtente) { this.id_utente = idUtente; }
 
     /** aaaaaaaaa */
 }

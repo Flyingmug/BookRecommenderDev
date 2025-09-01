@@ -15,10 +15,7 @@ import java.util.List;
 public class ValutazioneDao
 {
     private final DataSource datasource;
-
-    public ValutazioneDao(DataSource ds) {
-        this.datasource = ds;
-    }
+    public ValutazioneDao(DataSource ds) { this.datasource = ds; }
 
     /**
      * Cerca medie delle valutazioni dei punteggi

@@ -9,17 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LibroDao implements DAO<Libro> {
+public class LibroDao {
 
   private final int PAGE_SIZE = 50;
   private final DataSource datasource;
-
   public LibroDao(DataSource ds) {
     this.datasource = ds;
   }
 
-  @Override
-  public Optional<Libro> get(long id) {
+  public Optional<Libro> get(int id) {
 
     // 1. connessione al database
     // 2. query SELECT tramite id del libro
@@ -62,24 +60,4 @@ public class LibroDao implements DAO<Libro> {
     return libri;
   }
 
-  @Override
-  public List<Libro> getAll() {
-
-    return List.of();
-  }
-
-  @Override
-  public void save(Libro libro) {
-
-  }
-
-  @Override
-  public void update(Libro libro, String[] params) {
-
-  }
-
-  @Override
-  public void delete(Libro libro) {
-
-  }
 }

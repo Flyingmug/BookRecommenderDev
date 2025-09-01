@@ -10,60 +10,35 @@ import java.util.List;
  */
 public class Libreria {
 
-  List<Libro> elenco;
-  String idLibreria;
+  int id_libreria;
+  int id_utente;
   String nome;
 
   /**
    * Restituisce una istanza della classe Libreria, con elenco di libri vuoto.
-   * @param idLibreria id libreria
+   * @param id_libreria id libreria
    * @param nome nome libreria
    */
-  public Libreria(String idLibreria, String nome) {
-    elenco = new LinkedList<>();
-    this.idLibreria = idLibreria;
+  public Libreria(int id_libreria,int id_utente, String nome) {
+    this.id_libreria = id_libreria;
+    this.id_utente = id_utente;
     this.nome = nome;
+  }
+
+  public Libreria() {
+
   }
 
   /**
    * @return id libreria
    */
-  public String getIdLibreria() { return idLibreria; }
+  public int getIdLibreria() { return id_libreria; }
 
   /**
    * @return nome libreria
    */
   public String getNomeLibreria() { return nome; }
 
-  /**
-   * @return elenco dei libri contenuti
-   */
-  public List<Libro> getElencoLibri() { return elenco; }
-
-  /**
-   * @return conteggio dei libri presenti
-   */
-  public int getConteggio() { return elenco.size(); }
-
-  /**
-   * Aggiunge un libro alla libreria
-   * @param libro libro
-   */
-  public void aggiungiLibro(Libro libro) {
-    if (!elenco.contains(libro)) {
-      elenco.add(libro);
-    }
-  }
-
-  /**
-   * Aggiunge una lista di libri alla libreria (concatenazione)
-   * @param lista lista di libri
-   */
-  public void aggiungiListaLibri(List<Libro> lista) {
-    if (!lista.isEmpty()) {
-      elenco.addAll(lista);
-    }
-  }
 
   /**
    * @param obj oggetto da confrontare

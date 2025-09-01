@@ -141,15 +141,27 @@ public class ValutazioneDao
 
 
     public boolean save (int id_libro, int id_utente, Valutazione valutazione){
-
         System.out.println("Chiavi ricevute: " + id_libro);
-
-        String q = "INSERT INTO Valutazioni (";
+        String q = "INSERT INTO Valutazioni (" +
+          "id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione, " +
+          "recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione) " +
+          "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement ps = conn.prepareStatement(q)) {
 
-            ps.setInt(1, id_libro);
+            ps.setInt(1, valutazione.getIdUtente());
+            ps.setInt(2, valutazione.getIdLibro());
+            ps.setInt(3, valutazione.getStile());
+            ps.setInt(4, valutazione.getContenuto());
+            ps.setInt(5, valutazione.getGradevolezza());
+            ps.setInt(6, valutazione.getOriginalita());
+            ps.setInt(7, valutazione.getEdizione());
+            ps.setString(8, valutazione.getRecensioneStile());
+            ps.setString(9, valutazione.getRecensioneContenuto());
+            ps.setString(10, valutazione.getRecensioneGradevolezzo());
+            ps.setString(11, valutazione.getRecensioneOriginalita());
+            ps.setString(12, valutazione.getRecensioneEdizione());
 
             int rowsAffected = ps.executeUpdate(q);
             System.out.println("Righe modificate: " + rowsAffected);

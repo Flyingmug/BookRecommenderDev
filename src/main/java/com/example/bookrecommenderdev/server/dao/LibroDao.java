@@ -56,7 +56,7 @@ public class LibroDao {
   public List<Libro> getPage(int pageNumber, String title) {
     System.out.println("Chiave ricevuta: " + title);
     List<Libro> libri = new ArrayList<>();
-    String q = "SELECT id_libro, titolo FROM Libri WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
+    String q = "SELECT id_libro, titolo, a.nome_autore as autori, anno_pubblicazione FROM Libri l JOIN Autori ON l.id_autore = a.id_autore a WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {

@@ -34,10 +34,7 @@ public class ValutazioneDao
              PreparedStatement ps = conn.prepareStatement(q)) {
 
             ps.setInt(1, id_libro);
-
-
             ResultSet rs = ps.executeQuery();
-
 
             while (rs.next()) {
                 averageScores[0] = rs.getInt("stile");
@@ -46,7 +43,6 @@ public class ValutazioneDao
                 averageScores[3] = rs.getInt("originalita");
                 averageScores[4] = rs.getInt("edizione");
             }
-
 
             System.out.println("Numero risultati: " +
                     averageScores[0] +
@@ -76,7 +72,6 @@ public class ValutazioneDao
              PreparedStatement ps = conn.prepareStatement(q)) {
 
             ps.setInt(1, id_libro);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -98,7 +93,6 @@ public class ValutazioneDao
             System.out.println("Errore nelle connessione al database.");
             e.printStackTrace();
         }
-
         return elenco;
     }
 

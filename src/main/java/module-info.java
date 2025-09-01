@@ -7,6 +7,7 @@ module com.example.bookrecommenderdev {
   requires org.postgresql.jdbc;
 
 
+
   opens com.example.bookrecommenderdev.client to javafx.fxml;
   exports com.example.bookrecommenderdev.client;
   exports com.example.bookrecommenderdev.client.controller;

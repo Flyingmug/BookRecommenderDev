@@ -9,6 +9,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.rmi.NotBoundException;
@@ -37,7 +38,20 @@ public class ClientBRController {
     @FXML
     private Region mainPageSpacer;
 
+    @FXML
+    private Label resultTitle;
+    @FXML
+    private HBox resultTitleWrapper;
+    @FXML
+    private VBox booksResultDisplay;
+    @FXML
+    private VBox booksResultWrapper;
+
+    @FXML
+    private FontIcon noBooksIcon;
+
     private ServerInterface bookRecommender;
+
 
     @FXML
     public void initialize() {
@@ -57,6 +71,12 @@ public class ClientBRController {
 
             centerStackContainer.setBackground(new Background(backgroundImage));
         }
+
+        // icone non visibili
+        noBooksIcon = new FontIcon("mdi2b-book-alert");
+        noBooksIcon.setIconSize(38);
+
+        testBooksearchpage();
     }
 
     private void initRegistry() {
@@ -76,9 +96,9 @@ public class ClientBRController {
     protected void onHomepage() {
         resultPage.setVisible(false);
         homePage.setVisible(true);
+        resetSearchpage();
         resetHomepage();
     }
-
     private void resetHomepage() {
 
         if (!homePage.getChildren().contains(searchbarWrapper)) {
@@ -88,7 +108,9 @@ public class ClientBRController {
             homePage.getChildren().addAll(welcomeText, searchbarWrapper, mainPageSpacer);
         }
     }
-
+    private void resetSearchpage() {
+        resultTitleWrapper.getChildren().remove(noBooksIcon);
+    }
 
 
     @FXML
@@ -96,7 +118,7 @@ public class ClientBRController {
 
         // get input
         String input = searchbar.getText();
-        System.out.println(input);  // DEBUG
+        System.out.println("Searched: " + input);  // DEBUG
 
         if (input == null || input.isEmpty()) return;
 
@@ -106,10 +128,22 @@ public class ClientBRController {
 
         try {
             List<Libro> res = bookRecommender.searchTitolo(input);
-            System.out.println(res.size());
-            if (res.size() > 0) {
-                System.out.println("Primo titolo: " + res.getFirst().getTitolo());
+            res.clear();
+
+            // log di debug e set dei risultati
+            if (!res.isEmpty()) {
+                resultTitle.setText("Risultati");
+                System.out.println("Numero di risultati: " + res.size());
+                booksResultWrapper.setVisible(true);
+
+                loadResults(res);
+            } else {
+                booksResultWrapper.setVisible(false);
+                resultTitle.setText("Nessun risultato");
+                resultTitleWrapper.getChildren().addLast(noBooksIcon);
+                System.out.println("Empty result set.");
             }
+
 
         } catch(RemoteException e) {
             System.out.println("Error while fetching data");
@@ -128,6 +162,25 @@ public class ClientBRController {
     private void openResultsPage() {
 
     }
+
+
+
+    private void loadResults(List<Libro> results) {
+
+        for (Libro l: results) {
+            VBox row = new VBox(5); // spacing inside row
+            Label titolo = new Label(l.getTitolo());
+            Label autore = new Label(l.getAutori());
+            Label anno = new Label(String.valueOf(l.getAnnoPubblicazione()));
+
+            row.getChildren().addAll(titolo, autore, anno);
+            row.setStyle("-fx-padding: 10; -fx-border-color: #99b1e9; -fx-border-width: 0 0 1 0;");
+
+            booksResultDisplay.getChildren().add(row);
+        }
+
+    }
+
 
 
     @FXML
@@ -213,5 +266,18 @@ public class ClientBRController {
     @FXML
     protected void onAction() {
 
+    }
+
+    //
+    //
+    //
+    //
+    // test methods
+
+    private void testBooksearchpage() {
+        // simulate input insertion
+        searchbar.setText("Heart");
+        // simulate search icon click
+        onSearchAction();
     }
 }

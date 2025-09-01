@@ -34,63 +34,86 @@
    <center>
       <StackPane fx:id="centerStackContainer" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 
-         <VBox fx:id="homePage" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-               <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="369.0" text="BookRecommender" textAlignment="CENTER">
-                  <font>
-                     <Font name="Constantia" size="32.0" />
-                  </font>
-               </Label>
-               <StackPane fx:id="searchbarWrapper" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="500.0" prefHeight="60.0" prefWidth="640.0" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-width: 1; -fx-background-radius: 5; -fx-border-color: lightgrey;" styleClass="searchbar-center">
-                  <HBox alignment="CENTER" minWidth="-Infinity" prefWidth="213.0" style="-fx-padding: 0 10 0 10;">
-                     <TextField fx:id="searchbar" minHeight="-Infinity" prefWidth="0.0" promptText="Cerca..." style="-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-border-color: transparent; -fx-background-color: transparent;" HBox.hgrow="ALWAYS">
-                        <font>
-                           <Font name="Constantia" size="20.0" />
-                        </font>
-                     </TextField>
-                     <Button fx:id="searchButton" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#onSearchAction" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
-                        <tooltip>
-                           <Tooltip text="Cerca" />
-                        </tooltip>
-                        <graphic>
-                           <FontIcon iconColor="#4E5498" iconLiteral="mdi2m-magnify" iconSize="38" />
-                        </graphic>
-                     </Button>
-                     <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
-                        <tooltip>
-                           <Tooltip text="Criterio di ricerca" />
-                        </tooltip>
-                        <graphic>
-                           <FontIcon iconColor="#4E5498" iconLiteral="mdi2t-table-filter" iconSize="32" />
-                        </graphic>
-                     </Button>
-                  </HBox>
-               </StackPane>
-               <Region fx:id="mainPageSpacer" prefHeight="60.0" prefWidth="1000.0" />
-         </VBox>
-         <ScrollPane fx:id="resultPage" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" visible="false">
-            <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-               <Label prefHeight="25.0" prefWidth="90.0" text="Risultati" textAlignment="CENTER">
-                  <VBox.margin>
-                     <Insets bottom="10.0" />
-                  </VBox.margin>
-                  <padding>
-                     <Insets left="5.0" right="5.0" />
-                  </padding>
-                  <font>
-                     <Font name="Constantia" size="18.0" />
-                  </font>
-               </Label>
-               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                  <children>
-                     <TableView fx:id="bookResults" minWidth="700.0" style="-fx-background-color: white; -fx-border-color: lightgrey; -fx-padding: 20;" HBox.hgrow="ALWAYS">
-                        <HBox.margin>
-                           <Insets left="100.0" right="100.0" />
-                        </HBox.margin>
-
-                     </TableView>
-                  </children>
+         <VBox fx:id="homePage" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+            <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="369.0" text="BookRecommender" textAlignment="CENTER">
+               <font>
+                  <Font name="Constantia" size="32.0" />
+               </font>
+            </Label>
+            <StackPane fx:id="searchbarWrapper" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="500.0" prefHeight="60.0" prefWidth="640.0" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-width: 1; -fx-background-radius: 5; -fx-border-color: lightgrey;" styleClass="searchbar-center">
+               <HBox alignment="CENTER" minWidth="-Infinity" prefWidth="213.0" style="-fx-padding: 0 10 0 10;">
+                  <TextField fx:id="searchbar" minHeight="-Infinity" prefWidth="0.0" promptText="Cerca..." style="-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-border-color: transparent; -fx-background-color: transparent;" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Constantia" size="20.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="searchButton" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#onSearchAction" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
+                     <tooltip>
+                        <Tooltip text="Cerca" />
+                     </tooltip>
+                     <graphic>
+                        <FontIcon iconColor="#4E5498" iconLiteral="mdi2m-magnify" iconSize="38" />
+                     </graphic>
+                  </Button>
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
+                     <tooltip>
+                        <Tooltip text="Criterio di ricerca" />
+                     </tooltip>
+                     <graphic>
+                        <FontIcon iconColor="#4E5498" iconLiteral="mdi2t-table-filter" iconSize="32" />
+                     </graphic>
+                  </Button>
                </HBox>
-               <HBox prefHeight="50.0" />
+            </StackPane>
+            <Region fx:id="mainPageSpacer" prefHeight="60.0" prefWidth="1000.0" />
+         </VBox>
+         <ScrollPane fx:id="resultPage" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" styleClass="scroll-pane">
+            <VBox alignment="CENTER" focusTraversable="true" style="-fx-background-color: transparent;">
+               <HBox fx:id="resultTitleWrapper" alignment="CENTER">
+                     <Label fx:id="resultTitle" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" text="Risultati" textAlignment="CENTER">
+                        <font>
+                           <Font name="Arial" size="24.0" />
+                        </font>
+                        <padding>
+                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                     </Label>
+                  <VBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </VBox.margin>
+               </HBox>
+               <VBox fx:id="booksResultWrapper" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                  <VBox fx:id="booksResultDisplay" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: #7896db; -fx-background-color: white;" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <BorderPane VBox.vgrow="NEVER">
+                     <left>
+                        <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="105.0" text="Previous" BorderPane.alignment="CENTER">
+                           <graphic>
+                              <FontIcon iconLiteral="mdi2a-arrow-left" iconSize="38" styleClass="result-page-arrow" />
+                           </graphic>
+                        </Button>
+                     </left>
+                     <right>
+                        <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: lightgrey;" text="Next" BorderPane.alignment="CENTER">
+                           <graphic>
+                              <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="38" styleClass="result-page-arrow" />
+                           </graphic>
+                        </Button>
+                     </right>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </BorderPane>
+               </VBox>
+               <padding>
+                  <Insets left="120.0" right="120.0" />
+               </padding>
             </VBox>
          </ScrollPane>
       </StackPane>

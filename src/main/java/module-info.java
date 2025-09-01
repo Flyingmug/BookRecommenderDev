@@ -5,6 +5,7 @@ module com.example.bookrecommenderdev {
   requires java.sql;
   requires com.zaxxer.hikari;
   requires org.postgresql.jdbc;
+  requires org.kordamp.ikonli.javafx;
 
 
 

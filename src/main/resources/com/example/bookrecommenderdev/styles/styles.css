@@ -18,6 +18,17 @@
     -fx-pref-height: 60px;
 }
 
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
 .searchbar-navbar {
     -fx-pref-height: 45px;
+}
+
+.result-page-arrow {
+    -fx-icon-color: black;
 }

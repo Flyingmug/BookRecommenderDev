@@ -51,7 +51,9 @@ public class LibroDao {
         System.out.println("Errore nelle connessione al database.");
         e.printStackTrace();
     }
-      System.out.println("Numero risultati: " + libri.size());
+
+      System.out.println("Numero risultati QUERY: " + libri.size());
+
     return libri;
   }
 }

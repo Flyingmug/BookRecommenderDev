@@ -6,7 +6,7 @@ module com.example.bookrecommenderdev {
   requires com.zaxxer.hikari;
   requires org.postgresql.jdbc;
   requires org.kordamp.ikonli.javafx;
-
+  requires java.desktop;
 
 
   opens com.example.bookrecommenderdev.client to javafx.fxml;

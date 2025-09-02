@@ -2,6 +2,7 @@ package com.example.bookrecommenderdev.server;
 
 import com.example.bookrecommenderdev.model.*;
 import com.example.bookrecommenderdev.server.dao.LibroDao;
+import com.example.bookrecommenderdev.server.dao.UtenteDao;
 import com.example.bookrecommenderdev.server.db.DatabaseConfig;
 import com.example.bookrecommenderdev.server.dto.LibroPaginaDTO;
 import com.example.bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
@@ -10,6 +11,7 @@ import javafx.util.Pair;
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
@@ -17,13 +19,13 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // campi
   private final DataSource datasource;
   private final LibroDao libri;
-
+  private final UtenteDao utenti;
 
   public ServerImplementation() throws RemoteException {
     super();
     datasource = DatabaseConfig.getDataSource();
     libri = new LibroDao(datasource);
-
+    utenti = new UtenteDao(datasource);
     // TESTING DATABASE PURPOSES
 //    this.searchTitolo("a");
   }
@@ -115,9 +117,17 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    */
   public String login(String nome, String password) throws RemoteException {
 
+    try {
+      List<Utente> lista = utenti.get(nome, password);
+      System.out.println("Size: " + lista.size());
 
+      if (lista.isEmpty()) return "no-such-user";
 
-    return null;
+      return "success";
+    } catch (SQLException e) {
+      return "db-error";
+    }
+
   }
 
   public void registrazione(Utente u) throws RemoteException, InsertDBException {

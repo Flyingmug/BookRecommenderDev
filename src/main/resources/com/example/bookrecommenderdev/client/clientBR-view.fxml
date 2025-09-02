@@ -10,12 +10,13 @@
    <top>
       <HBox fx:id="navbar" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="1000.0" style="-fx-background-color: #d5d5d5; -fx-padding: 0 40 0 40; -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);" BorderPane.alignment="CENTER">
          <Region HBox.hgrow="ALWAYS" />
-         <HBox alignment="CENTER" prefHeight="145.0" prefWidth="257.0" style="-fx-spacing: 20;">
-            <Button mnemonicParsing="false" onAction="#onLibraryList" prefHeight="36.0" style="-fx-background-color: transparent; -fx-padding: 0 15 0 15; -fx-border-width: 2;" styleClass="libraries-button, navbar-button" text="Librerie">
+         <HBox fx:id="navbarControls" alignment="CENTER" prefHeight="145.0" style="-fx-spacing: 20;">
+            <Button fx:id="loginButton" layoutX="87.0" layoutY="59.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="36.0" styleClass="login-button, navbar-button" text="Login">
                <font>
                   <Font size="15.0" />
-               </font></Button>
-            <Button layoutX="87.0" layoutY="59.0" mnemonicParsing="false" prefHeight="36.0" style="-fx-background-color: transparent; -fx-padding: 0 15 0 15;" styleClass="login-button, navbar-button" text="Login">
+               </font>
+            </Button>
+            <Button fx:id="registerButton" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onRegister" prefHeight="36.0" styleClass="register-button, navbar-button" text="Registrati">
                <font>
                   <Font size="15.0" />
                </font>
@@ -41,7 +42,7 @@
             </Label>
             <StackPane fx:id="searchbarWrapper" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="500.0" prefHeight="60.0" prefWidth="640.0" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-width: 1; -fx-background-radius: 5; -fx-border-color: lightgrey;" styleClass="searchbar-center">
                <HBox alignment="CENTER" minWidth="-Infinity" prefWidth="213.0" style="-fx-padding: 0 10 0 10;">
-                  <TextField fx:id="searchbar" minHeight="-Infinity" prefWidth="0.0" promptText="Cerca..." style="-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-border-color: transparent; -fx-background-color: transparent;" HBox.hgrow="ALWAYS">
+                  <TextField fx:id="searchbar" focusTraversable="false" minHeight="-Infinity" prefWidth="0.0" promptText="Cerca..." style="-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-border-color: transparent; -fx-background-color: transparent;" HBox.hgrow="ALWAYS">
                      <font>
                         <Font name="Constantia" size="20.0" />
                      </font>
@@ -66,7 +67,7 @@
             </StackPane>
             <Region fx:id="mainPageSpacer" prefHeight="60.0" prefWidth="1000.0" />
          </VBox>
-         <ScrollPane fx:id="resultPage" fitToWidth="true" hbarPolicy="NEVER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" styleClass="scroll-pane">
+         <ScrollPane fx:id="resultPage" fitToWidth="true" hbarPolicy="NEVER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" styleClass="scroll-pane" visible="false">
             <VBox alignment="CENTER" focusTraversable="true" style="-fx-background-color: transparent;">
                <HBox fx:id="resultTitleWrapper" alignment="CENTER">
                      <Label fx:id="resultTitle" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" text="Risultati" textAlignment="CENTER">
@@ -122,6 +123,34 @@
                </padding>
             </VBox>
          </ScrollPane>
+         <VBox fx:id="loginPage" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
+            <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" spacing="20.0" style="-fx-border-color: #41a2e5; -fx-border-width: 3; -fx-border-radius: 15;" VBox.vgrow="NEVER">
+               <Label text="Login">
+                  <font>
+                     <Font name="Arial" size="30.0" />
+                  </font>
+               </Label>
+               <Label fx:id="loginFeedback" styleClass="login-feedback-label" />
+               <TextField fx:id="loginName" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" promptText="Nome">
+                  <font>
+                     <Font size="18.0" />
+                  </font></TextField>
+               <TextField fx:id="loginPassword" layoutX="113.0" layoutY="113.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" promptText="Password">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </TextField>
+               <Button fx:id="confirmLoginButton" onAction="#onConfirmLogin" mnemonicParsing="false" text="Conferma">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Button>
+               <padding>
+                  <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
+               </padding>
+            </VBox>
+         </VBox>
+         <VBox fx:id="registerPage" prefHeight="200.0" prefWidth="100.0" visible="false" />
       </StackPane>
    </center>
 </BorderPane>

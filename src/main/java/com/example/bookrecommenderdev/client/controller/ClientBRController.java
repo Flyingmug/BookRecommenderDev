@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -16,6 +17,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.util.Pair;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.net.URL;
@@ -26,8 +29,19 @@ import java.rmi.registry.Registry;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.bookrecommenderdev.utils.Tools.*;
+
 public class ClientBRController {
   final static int PAGE_SIZE = 50;
+  private static final Logger log = LoggerFactory.getLogger(ClientBRController.class);
+
+
+  @FXML
+  private Label serverErrorTitle;
+  @FXML
+  private Label serverErrorLabel;
+  @FXML
+  private VBox serverConnErrorWrapper;
 
   @FXML
   private Label welcomeText;
@@ -41,6 +55,8 @@ public class ClientBRController {
   private TextField searchbar;
   @FXML
   private HBox navbar;
+  @FXML
+  private HBox navbarControls;
   @FXML
   private StackPane searchbarWrapper;
   @FXML
@@ -66,6 +82,26 @@ public class ClientBRController {
   @FXML
   private Button nextPageButton;
 
+  @FXML
+  private VBox loginPage;
+  @FXML
+  private Label loginFeedback;
+  @FXML
+  private TextField loginName;
+  @FXML
+  private TextField loginPassword;
+  @FXML
+  private Button loginButton;
+  @FXML
+  private Button confirmLoginButton;
+  @FXML
+  private Button registerButton;
+  @FXML
+  private VBox registerPage;
+  @FXML
+  private Button confirmRegistrationButton;
+  @FXML
+  private Button librariesButton;
 
   private ServerInterface bookRecommender;
   int currentResultPageIndex;
@@ -74,6 +110,7 @@ public class ClientBRController {
 
   @FXML
   public void initialize() {
+    initPriorityLayout();
     initRegistry();
     initSetupLayout();
 
@@ -83,7 +120,7 @@ public class ClientBRController {
     //
     //
     // TEST
-    testBooksearchpage();
+//    testBooksearchpage();
   }
 
   /**
@@ -119,7 +156,25 @@ public class ClientBRController {
 
     HBox.setMargin(noResultsTitleWrapper, new Insets(100, 0, 0, 0));
 
+
+    librariesButton = new Button("Librerie");
+    librariesButton.setFont(new Font("Arial", 15));
+    librariesButton.getStyleClass().addAll("libraries-button", "navbar-button");
+    librariesButton.setOnAction(e -> onLibraryList());
+
+    setPreventMultipleSpacesAndLimit(loginName, 64);
+    setPreventMultipleSpacesAndLimit(loginPassword, 64);
   }
+  private void initPriorityLayout() {
+    serverErrorTitle = new Label();
+    serverErrorTitle.getStyleClass().addAll("error-label", "connection-error-title");
+    serverErrorLabel = new Label();
+    serverErrorLabel.getStyleClass().addAll("error-label", "connection-error-label");
+    serverConnErrorWrapper = new VBox();
+    serverConnErrorWrapper.setAlignment(Pos.CENTER);
+    serverConnErrorWrapper.getChildren().addAll(serverErrorTitle, serverErrorLabel);
+  }
+
   /**
    * Inizializza l'oggetto remoto del server dal repository.
    */
@@ -128,10 +183,11 @@ public class ClientBRController {
       Registry reg = LocateRegistry.getRegistry("localhost", 1099);
       bookRecommender = (ServerInterface) reg.lookup("serverBR");
     } catch(RemoteException e) {
-      e.printStackTrace();
+      notifyServerError(e.getMessage(), "Server connection failed!\n (Server might not be online or address is wrong)");
       // error display on main page
     } catch(NotBoundException e) {
-      e.printStackTrace();
+      notifyServerError(e.getMessage(), "Server not found!\n");
+
       // error display on main page
     }
   }
@@ -141,7 +197,7 @@ public class ClientBRController {
    */
   @FXML
   protected void onHomepage() {
-    resultPage.setVisible(false);
+    hideAllPages();
     resetHomepage();
     currentResultPageIndex=0;
     currentSearchInput="";
@@ -158,6 +214,9 @@ public class ClientBRController {
       searchbar.setText("");
       homePage.getChildren().addAll(welcomeText, searchbarWrapper, mainPageSpacer);
     }
+  }
+  private void hideAllPages() {
+    centerStackContainer.getChildren().forEach(child -> child.setVisible(false));
   }
 
 
@@ -325,12 +384,58 @@ public class ClientBRController {
   }
 
   @FXML
-  protected void onRegister() {
+  protected void onLogin() {
+    hideAllPages();
+    loginPage.setVisible(true);
+    loginFeedback.setText("");
+  }
+  @FXML
+  protected void onConfirmLogin() {
+
+    String name = loginName.getText().trim();
+    String password = loginPassword.getText().trim();
+
+    if (!verifyName(name)) {
+      loginFeedback.setText("Nome utente deve essere tra 1 e 64 caratteri");
+      return;
+    }
+
+    if (!verifyPassword(password)) {
+      loginFeedback.setText("Password deve essere tra 8 e 64 caratteri");
+      return;
+    }
+
+    try {
+      String res = bookRecommender.login(name, password);
+
+      switch(res) {
+        case "success":
+          loginFeedback.setText("Login avvenuto con successo");
+          break;
+        case "no-such-user":
+          loginFeedback.setText("Credenziali errate");
+          break;
+        case "db-error":
+          loginFeedback.setText("Errore nel reperimento dei dati");
+          break;
+        default:
+          loginFeedback.setText("Response parsing error");
+          break;
+      }
+
+    } catch(RemoteException e) {
+      loginFeedback.setText("Errore nella connessione al server");
+    }
 
   }
 
   @FXML
-  protected void onLogin() {
+  protected void onRegister() {
+    hideAllPages();
+    registerPage.setVisible(true);
+  }
+  @FXML
+  protected void onConfirmRegistration() {
 
   }
 
@@ -400,5 +505,15 @@ public class ClientBRController {
     searchbar.setText("Heart");
     // simulate search icon click
     onSearchAction();
+  }
+
+
+
+  private void notifyServerError(String originalMessage, String titleMessage) {
+    navbar.getChildren().clear();
+    centerStackContainer.getChildren().clear();
+    serverErrorTitle.setText(titleMessage);
+    serverErrorLabel.setText(originalMessage);
+    centerStackContainer.getChildren().add(serverConnErrorWrapper);
   }
 }

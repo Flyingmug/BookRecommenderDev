@@ -7,6 +7,7 @@ module com.example.bookrecommenderdev {
   requires org.postgresql.jdbc;
   requires org.kordamp.ikonli.javafx;
   requires java.desktop;
+  requires org.slf4j;
 
 
   opens com.example.bookrecommenderdev.client to javafx.fxml;

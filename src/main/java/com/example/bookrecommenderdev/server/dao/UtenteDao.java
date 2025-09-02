@@ -26,10 +26,9 @@ public class UtenteDao {
    * @param password
    * @return ottiene la lista di utenti con nome e password corrispondenti
    */
-  public List<Utente> get(String nome, String password){
+  public List<Utente> get(String nome, String password) throws SQLException {
     List<Utente> utenti = new LinkedList<>();
 
-    System.out.println("Chiave ricevuta: " + nome);
     String q = "SELECT u.* FROM UtentiRegistrati u WHERE u.nome = ? AND u.password = ?;";
 
     try (Connection conn = datasource.getConnection();
@@ -45,16 +44,15 @@ public class UtenteDao {
           rs.getInt("id_utente"),
           rs.getString("nome"),
           rs.getString("cognome"),
-          rs.getString("codice_fiscale"),
           rs.getString("email"),
-          rs.getString("userId"),
-          rs.getString("password")
+          rs.getString("codice_fiscale"),
+          rs.getString("password"),
+          rs.getString("userId")
         ));
       }
 
     } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
+      throw new SQLException("Error while querying database.");
     }
 
     System.out.println("Numero risultati: " + utenti.size());

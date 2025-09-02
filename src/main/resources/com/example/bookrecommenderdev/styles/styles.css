@@ -4,6 +4,10 @@
     -fx-border-radius: 3;
     -fx-border-width: 2px;
     -fx-border-style: solid;
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-padding: 0 15 0 15;
+    -fx-pref-height: 36;
 }
 
 .libraries-button:hover {
@@ -12,6 +16,10 @@
 
 .login-button:hover {
     -fx-border-color: #06afb4;
+}
+
+.register-button:hover {
+    -fx-border-color: #41e5b1;
 }
 
 .searchbar-center {
@@ -48,4 +56,21 @@
 
 .result-page-arrow {
     -fx-icon-color: black;
+}
+
+.login-feedback-label {
+    -fx-text-fill: #f22828;
+}
+
+.error-label {
+    -fx-text-fill: #f22828;
+    -fx-text-alignment: center;
+}
+
+.connection-error-label {
+    -fx-font: bold 16px "Arial";
+}
+
+.connection-error-title {
+    -fx-font: bold 32px "Arial";
 }

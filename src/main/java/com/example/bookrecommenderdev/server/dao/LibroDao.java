@@ -76,7 +76,9 @@ public class LibroDao {
         do {
           libri.add(new Libro(
               rs.getInt("id_libro"),
-              rs.getString("titolo")
+              rs.getString("titolo"),
+              rs.getString("autori"),
+              rs.getInt("anno_pubblicazione")
           ));
         } while (rs.next());
       }

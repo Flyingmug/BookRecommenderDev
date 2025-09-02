@@ -51,7 +51,7 @@ public class Libro implements Serializable {
   /**
    * @return id libro
    */
-  public long getIdLibro() { return id_libro; }
+  public int getIdLibro() { return id_libro; }
   /**
    * @return titolo libro
    */

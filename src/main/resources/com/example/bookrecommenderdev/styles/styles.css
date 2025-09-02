@@ -29,6 +29,23 @@
     -fx-pref-height: 45px;
 }
 
+
+.result-book {
+    -fx-underline: false;
+}
+.result-book:hover {
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+.result-book-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-width: USE_COMPUTED_SIZE;
+    -fx-pref-height: USE_COMPUTED_SIZE;
+}
+
 .result-page-arrow {
     -fx-icon-color: black;
 }

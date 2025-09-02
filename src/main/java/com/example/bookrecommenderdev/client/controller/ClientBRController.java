@@ -215,6 +215,11 @@ public class ClientBRController {
       homePage.getChildren().addAll(welcomeText, searchbarWrapper, mainPageSpacer);
     }
   }
+  private void resetLoginPage() {
+    loginFeedback.setText("");
+    loginName.setText("");
+    loginPassword.setText("");
+  }
   private void hideAllPages() {
     centerStackContainer.getChildren().forEach(child -> child.setVisible(false));
   }
@@ -387,8 +392,9 @@ public class ClientBRController {
   protected void onLogin() {
     hideAllPages();
     loginPage.setVisible(true);
-    loginFeedback.setText("");
+    resetLoginPage();
   }
+
   @FXML
   protected void onConfirmLogin() {
 

@@ -84,7 +84,10 @@ public class Utente implements Serializable {
    */
   @Override
   public boolean equals(Object obj) {
-    Utente u = (Utente)obj;
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof Utente u)) return false;
+
     return this.getEmail().equals(u.getEmail()) || this.getCodiceFiscale().equals(u.getCodiceFiscale());
   }
 }

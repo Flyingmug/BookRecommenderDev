@@ -21,8 +21,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
+import java.util.Optional;
 
 public class ClientBRController {
+    final static int PAGE_SIZE = 50;
+
     @FXML
     private Label welcomeText;
     @FXML
@@ -55,17 +58,25 @@ public class ClientBRController {
     private HBox noResultsTitleWrapper;
     @FXML
     private Label resultIndexCounter;
+    @FXML
+    private Button previousPageButton;
+    @FXML
+    private Button nextPageButton;
+
 
     private ServerInterface bookRecommender;
-
-    int i = 0;  // DEBUG
-
+    int currentResultPageIndex;
+    int bookResultCount;
+    String currentSearchInput;
 
     @FXML
     public void initialize() {
         initRegistry();
         initSetupLayout();
 
+        currentResultPageIndex = 0;
+        bookResultCount = 0;
+        currentSearchInput = "";
         //
         //
         // TEST
@@ -129,15 +140,16 @@ public class ClientBRController {
     protected void onHomepage() {
         resultPage.setVisible(false);
         resetHomepage();
+        currentResultPageIndex=0;
+        currentSearchInput="";
         homePage.setVisible(true);
     }
     /**
-     * Ripristina gli elementi della pagina iniziale nelle loro posizioni originali
+     * Ripristina gli elementi della pagina iniziale nelle loro posizioni originali.
      */
     private void resetHomepage() {
 
         if (!homePage.getChildren().contains(searchbarWrapper)) {
-            System.out.println("searchbar missing -> moving it");
             searchbarWrapper.getStyleClass().remove("searchbar-navbar");
             searchbarWrapper.getStyleClass().add("searchbar-center");
             searchbar.setText("");
@@ -150,46 +162,50 @@ public class ClientBRController {
     protected void onSearchAction() {
 
         // get input
-        String input = searchbar.getText();
-        System.out.println("Searched: " + input);  // DEBUG
-
-        // if input is empty do nothing
-        if (input == null || input.isEmpty()) return;
+        String newInput = searchbar.getText();
+        System.out.println("Searched: " + newInput);  // DEBUG
+            if (newInput == null || newInput.isEmpty()) return;
 
         topSearchbar();
         homePage.setVisible(false);
         resultPage.setVisible(true);
 
+        // if there is a new input, set it as the current search value
+        boolean newSearch = !newInput.equals(currentSearchInput);
+        if (newSearch) {
+            setPrevControlVisibility(false);
+            currentResultPageIndex = 0;
+            currentSearchInput = newInput;
+        }
+
         try {
-            Pair<List<Libro>, Integer> data = bookRecommender.searchTitolo(input);
-            List<Libro> res = data.getKey();    // testing purposes
-            if ((i%2)==0)   // testing purposes
-                res.clear();
-            i++;    // testing purposes
+            Pair<List<Libro>, Integer> data = bookRecommender.searchTitolo(newInput, currentResultPageIndex);
+            List<Libro> books = data.getKey();
+            int totalResults = data.getValue();
 
-
-            if (!data.getKey().isEmpty() && data.getValue() > 0) {
-                // Data present
-                System.out.println("Numero di risultati: " + data.getValue());   // DEBUG
-
-                setResultsFoundTitle(true);
-                booksResultWrapper.setVisible(true);
-
-                loadResults(data); // crea gli oggetti per rappresentare i dati
-            } else {
-                // No results
-                System.out.println("Empty result set.");   // DEBUG
-
-                setResultsFoundTitle(false);
-                booksResultWrapper.setVisible(false);
+            if (books.isEmpty() || totalResults == 0) {
+                System.out.println("Empty result set."); // DEBUG
+                showNoResults();
+                return;
             }
 
+            System.out.println("Numero di risultati: " + totalResults); // DEBUG
+
+            if (newSearch) setNextControlVisibility(totalResults > PAGE_SIZE);
+
+            setResultsFoundTitle(true);
+            booksResultWrapper.setVisible(true);
+            loadResults(data);
 
         } catch(RemoteException e) {
             System.out.println("Error while fetching data");
             e.printStackTrace();
         }
 
+    }
+    private void showNoResults() {
+        setResultsFoundTitle(false);
+        booksResultWrapper.setVisible(false);
     }
     private void topSearchbar() {
         if (!navbar.getChildren().contains(searchbarWrapper)) {
@@ -199,15 +215,19 @@ public class ClientBRController {
             navbar.getChildren().addFirst(searchbarWrapper);
         }
     }
+    private void setPrevControlVisibility(boolean visibility) {
+        previousPageButton.setVisible(visibility);
+    }
+    private void setNextControlVisibility(boolean visibility) {
+        nextPageButton.setVisible(visibility);
+    }
 
     /**
-     * Rimpiazza i children del contenitore del titolo a seconda del risultato della ricerca
+     * Rimpiazza i children del contenitore del titolo a seconda del risultato della ricerca.
      * @param success risultati trovati o meno
      */
     private void setResultsFoundTitle(boolean success) {
-
         resultTitleWrapper.getChildren().clear();
-
         if (success) {
             resultTitleWrapper.getChildren().add(resultTitle);
         } else {
@@ -215,6 +235,10 @@ public class ClientBRController {
         }
     }
 
+    /**
+     * Attraverso data costruisce degli oggetti di tipo VBox per mostrare i dati di ciascun Libro
+     * @param data
+     */
     private void loadResults(Pair<List<Libro>, Integer> data) {
 
         // elimina eventuali elementi precedenti
@@ -223,29 +247,53 @@ public class ClientBRController {
 
         List<Libro> results = data.getKey();
 
-
+        bookResultCount = data.getValue();
+        resultIndexCounter.setText(formatIndexCounter());
 
         for (Libro l: results) {
-            VBox row = new VBox(5); // spacing inside row
-            System.out.println(l.getAutori());
-            Label titolo = new Label(l.getTitolo());
-            Label autore = new Label(l.getAutori());
-            Label anno = new Label(l.getAnnoPubblicazione() > 0 ? Integer.toString(l.getAnnoPubblicazione()) : "");
-
-//            private String formatAnno(int anno) {
-//                return anno > 0 ? Integer.toString(anno) : "";
-//            }
-//            Label anno = new Label(formatAnno(l.getAnnoPubblicazione()));
-
-            row.getChildren().addAll(titolo, autore, anno);
+            VBox row = new VBox(5);
             row.setStyle("-fx-padding: 10; -fx-border-color: #99b1e9; -fx-border-width: 0 0 1 0;");
 
+            Label titolo = new Label(l.getTitolo());
+            titolo.setMaxWidth(750);
+            titolo.setEllipsisString("...");
+
+            Label autore = new Label(l.getAutori());
+            autore.setMaxWidth(750);
+            autore.setEllipsisString("...");
+
+            Label anno = new Label(l.getAnnoPubblicazione() > 0 ? Integer.toString(l.getAnnoPubblicazione()) : "");
+
+            row.getChildren().addAll(titolo, autore, anno);
             booksResultDisplay.getChildren().add(row);
         }
 
     }
+    private String formatIndexCounter() {
+        return Math.min(PAGE_SIZE*currentResultPageIndex+1, bookResultCount) +
+            "-" + Math.min(PAGE_SIZE*(1+currentResultPageIndex), bookResultCount) +
+            " di " + bookResultCount + " risultati";
+    }
 
+    @FXML
+    protected void onNextResults() {
+        goToPage(currentResultPageIndex + 1);
+        resultPage.setVvalue(0);
+    }
+    @FXML
+    protected void onPreviousResults() {
+        goToPage(currentResultPageIndex - 1);
+        resultPage.setVvalue(1);
+    }
+    private void goToPage(int newIndex) {
+        if (newIndex < 0 || newIndex * PAGE_SIZE >= bookResultCount) return;
 
+        currentResultPageIndex = newIndex;
+        onSearchAction();
+
+        setPrevControlVisibility(currentResultPageIndex > 0);
+        setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < bookResultCount);
+    }
 
     @FXML
     protected void onLibraryList() {
@@ -299,16 +347,6 @@ public class ClientBRController {
 
     @FXML
     protected void onCriteriaSelection() {
-
-    }
-
-    @FXML
-    protected void onNextResults() {
-
-    }
-
-    @FXML
-    protected void onPreviousResults() {
 
     }
 

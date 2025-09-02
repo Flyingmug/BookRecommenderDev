@@ -36,8 +36,8 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // libri
   //
 
-  public Pair<List<Libro>, Integer> searchTitolo(String titolo) throws RemoteException {
-    Pair<List<Libro>, Integer> elenco = libri.getPage(0, titolo);
+  public Pair<List<Libro>, Integer> searchTitolo(String titolo, int indicePagina) throws RemoteException {
+    Pair<List<Libro>, Integer> elenco = libri.getPage(indicePagina, titolo);
     System.out.println("Numero risultati SERVER: " + elenco.getKey().size());
     return elenco;
   }

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface ServerInterface extends Remote {
 
-  Pair<List<Libro>, Integer> searchTitolo(String titolo) throws RemoteException;
+  Pair<List<Libro>, Integer> searchTitolo(String titolo, int indicePagina) throws RemoteException;
   List<Libro> searchAutore(String autore) throws RemoteException;
   List<Libro> searchAnnoAutore(String annoAutore) throws RemoteException;
   LibroPaginaDTO getPaginaLibro(long idLibro) throws RemoteException;

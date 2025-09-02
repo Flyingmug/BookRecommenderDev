@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane prefHeight="632.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bookrecommenderdev.client.controller.ClientBRController">
+<BorderPane maxWidth="1.7976931348623157E308" prefHeight="632.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bookrecommenderdev.client.controller.ClientBRController">
    <top>
       <HBox fx:id="navbar" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="1000.0" style="-fx-background-color: #d5d5d5; -fx-padding: 0 40 0 40; -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);" BorderPane.alignment="CENTER">
          <Region HBox.hgrow="ALWAYS" />
@@ -32,8 +32,7 @@
       </HBox>
    </top>
    <center>
-      <StackPane fx:id="centerStackContainer" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-
+      <StackPane fx:id="centerStackContainer" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <VBox fx:id="homePage" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
             <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="369.0" text="BookRecommender" textAlignment="CENTER">
                <font>
@@ -67,7 +66,7 @@
             </StackPane>
             <Region fx:id="mainPageSpacer" prefHeight="60.0" prefWidth="1000.0" />
          </VBox>
-         <ScrollPane fx:id="resultPage" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" styleClass="scroll-pane">
+         <ScrollPane fx:id="resultPage" fitToWidth="true" hbarPolicy="NEVER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" styleClass="scroll-pane">
             <VBox alignment="CENTER" focusTraversable="true" style="-fx-background-color: transparent;">
                <HBox fx:id="resultTitleWrapper" alignment="CENTER">
                      <Label fx:id="resultTitle" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" text="Risultati" textAlignment="CENTER">
@@ -82,7 +81,7 @@
                      <Insets bottom="10.0" top="10.0" />
                   </VBox.margin>
                </HBox>
-               <VBox fx:id="booksResultWrapper" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+               <VBox fx:id="booksResultWrapper">
                   <HBox alignment="BOTTOM_LEFT">
                         <Label fx:id="resultIndexCounter" prefHeight="20.0" text="X-Y di Z risultati">
                            <padding>
@@ -90,21 +89,21 @@
                            </padding>
                         </Label>
                   </HBox>
-                  <VBox fx:id="booksResultDisplay" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: #7896db; -fx-background-color: white;" VBox.vgrow="ALWAYS">
+                  <VBox fx:id="booksResultDisplay" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: #7896db; -fx-background-color: white;" VBox.vgrow="ALWAYS">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </VBox>
                   <BorderPane VBox.vgrow="NEVER">
                      <left>
-                        <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="105.0" text="Previous" BorderPane.alignment="CENTER">
+                        <Button fx:id="previousPageButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onPreviousResults" prefHeight="40.0" prefWidth="105.0" text="Previous" BorderPane.alignment="CENTER">
                            <graphic>
                               <FontIcon iconLiteral="mdi2a-arrow-left" iconSize="38" styleClass="result-page-arrow" />
                            </graphic>
                         </Button>
                      </left>
                      <right>
-                        <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: lightgrey;" text="Next" BorderPane.alignment="CENTER">
+                        <Button fx:id="nextPageButton" alignment="CENTER" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onNextResults" prefHeight="40.0" prefWidth="105.0" text="Next" BorderPane.alignment="CENTER">
                            <graphic>
                               <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="38" styleClass="result-page-arrow" />
                            </graphic>

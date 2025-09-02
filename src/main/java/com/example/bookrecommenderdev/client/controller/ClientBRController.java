@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
+import javafx.util.Pair;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -52,6 +53,8 @@ public class ClientBRController {
 
     @FXML
     private HBox noResultsTitleWrapper;
+    @FXML
+    private Label resultIndexCounter;
 
     private ServerInterface bookRecommender;
 
@@ -158,20 +161,21 @@ public class ClientBRController {
         resultPage.setVisible(true);
 
         try {
-            List<Libro> res = bookRecommender.searchTitolo(input);
+            Pair<List<Libro>, Integer> data = bookRecommender.searchTitolo(input);
+            List<Libro> res = data.getKey();    // testing purposes
             if ((i%2)==0)   // testing purposes
                 res.clear();
-            i++;
+            i++;    // testing purposes
 
 
-            if (!res.isEmpty()) {
+            if (!data.getKey().isEmpty() && data.getValue() > 0) {
                 // Data present
-                System.out.println("Numero di risultati: " + res.size());   // DEBUG
+                System.out.println("Numero di risultati: " + data.getValue());   // DEBUG
 
                 setResultsFoundTitle(true);
                 booksResultWrapper.setVisible(true);
 
-                loadResults(res); // crea gli oggetti per rappresentare i dati
+                loadResults(data); // crea gli oggetti per rappresentare i dati
             } else {
                 // No results
                 System.out.println("Empty result set.");   // DEBUG
@@ -211,14 +215,19 @@ public class ClientBRController {
         }
     }
 
-    private void loadResults(List<Libro> results) {
+    private void loadResults(Pair<List<Libro>, Integer> data) {
 
         // elimina eventuali elementi precedenti
         if(!booksResultDisplay.getChildren().isEmpty())
             booksResultDisplay.getChildren().clear();
 
+        List<Libro> results = data.getKey();
+
+
+
         for (Libro l: results) {
             VBox row = new VBox(5); // spacing inside row
+            System.out.println(l.getAutori());
             Label titolo = new Label(l.getTitolo());
             Label autore = new Label(l.getAutori());
             Label anno = new Label(l.getAnnoPubblicazione() > 0 ? Integer.toString(l.getAnnoPubblicazione()) : "");

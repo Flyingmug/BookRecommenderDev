@@ -5,6 +5,7 @@ import com.example.bookrecommenderdev.server.dao.LibroDao;
 import com.example.bookrecommenderdev.server.db.DatabaseConfig;
 import com.example.bookrecommenderdev.server.dto.LibroPaginaDTO;
 import com.example.bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
+import javafx.util.Pair;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
@@ -35,12 +36,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // libri
   //
 
-  public List<Libro> searchTitolo(String titolo) throws RemoteException {
-
-      List<Libro> elenco =libri.getPage(0, titolo);
-      System.out.println("Numero risultati SERVER: " + elenco.size());
+  public Pair<List<Libro>, Integer> searchTitolo(String titolo) throws RemoteException {
+    Pair<List<Libro>, Integer> elenco = libri.getPage(0, titolo);
+    System.out.println("Numero risultati SERVER: " + elenco.getKey().size());
     return elenco;
-
   }
   public List<Libro> searchAutore(String autore) throws RemoteException {
       return List.of();

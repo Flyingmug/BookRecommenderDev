@@ -62,6 +62,16 @@
     -fx-text-fill: #f22828;
 }
 
+.profile-picture-button {
+    -fx-pref-height: 50;
+    -fx-pref-width: 50;
+    -fx-background-radius: 9999;
+}
+
+.profile-picture-text {
+    -fx-font: bold 20px "Arial";
+}
+
 .error-label {
     -fx-text-fill: #f22828;
     -fx-text-alignment: center;

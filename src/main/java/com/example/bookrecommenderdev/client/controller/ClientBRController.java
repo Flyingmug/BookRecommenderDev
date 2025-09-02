@@ -3,13 +3,12 @@ package com.example.bookrecommenderdev.client.controller;
 import com.example.bookrecommenderdev.model.Libro;
 import com.example.bookrecommenderdev.model.Utente;
 import com.example.bookrecommenderdev.server.ServerInterface;
+import com.example.bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
@@ -25,12 +24,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 import static com.example.bookrecommenderdev.utils.InputVerifiers.*;
+import static com.example.bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 
 public class ClientBRController {
   final static int PAGE_SIZE = 50;
+  final static String LOCAL_CREDENTIALS = "credentials.txt";
   private static final Logger log = LoggerFactory.getLogger(ClientBRController.class);
 
 
@@ -93,6 +94,8 @@ public class ClientBRController {
   private Button loginButton;
   @FXML
   private Button confirmLoginButton;
+  @FXML
+  private CheckBox loginRicordaCredenziali;
 
   // registrazione
   @FXML
@@ -113,6 +116,18 @@ public class ClientBRController {
   private Button registerButton;
   @FXML
   private Button confirmRegistrationButton;
+  @FXML
+  private CheckBox registerRicordaCredenziali;
+
+  @FXML
+  private Button profileButton;
+  @FXML
+  private Label profilePicture;
+  @FXML
+  private Button logoutButton;
+
+  @FXML
+  private VBox profilePage;
 
   // librerie
   @FXML
@@ -123,6 +138,10 @@ public class ClientBRController {
   int bookResultCount;
   String currentSearchInput;
 
+  // utente corrente
+  Utente currentUser;
+
+
   @FXML
   public void initialize() {
     initPriorityLayout();
@@ -132,6 +151,8 @@ public class ClientBRController {
     currentResultPageIndex = 0;
     bookResultCount = 0;
     currentSearchInput = "";
+    onHomepage();
+
     //
     //
     // TEST
@@ -172,10 +193,6 @@ public class ClientBRController {
     HBox.setMargin(noResultsTitleWrapper, new Insets(100, 0, 0, 0));
 
 
-    librariesButton = new Button("Librerie");
-    librariesButton.setFont(new Font("Arial", 15));
-    librariesButton.getStyleClass().addAll("libraries-button", "navbar-button");
-    librariesButton.setOnAction(e -> onLibraryList());
 
     // login fields
     preventMultipleSpacesAndLimit(loginEmail, 255);
@@ -195,8 +212,23 @@ public class ClientBRController {
     serverConnErrorWrapper = new VBox();
     serverConnErrorWrapper.setAlignment(Pos.CENTER);
     serverConnErrorWrapper.getChildren().addAll(serverErrorTitle, serverErrorLabel);
-  }
 
+
+    librariesButton = new Button("Librerie");
+    librariesButton.setFont(new Font("Arial", 15));
+    librariesButton.getStyleClass().addAll("libraries-button", "navbar-button");
+    librariesButton.setOnAction(e -> onLibraryList());
+
+    profileButton = new Button();
+    profileButton.setText("");
+    profileButton.tooltipProperty().set(new Tooltip("Pagina profilo"));
+    setRandomBackgroundColor(profileButton);
+    profileButton.getStyleClass().add("profile-picture-button");
+    profileButton.setOnAction(e -> onProfilePage());
+    profilePicture = new Label();
+    profilePicture.getStyleClass().add("profile-picture-text");
+    profileButton.setGraphic(profilePicture);
+  }
   /**
    * Inizializza l'oggetto remoto del server dal repository.
    */
@@ -211,9 +243,23 @@ public class ClientBRController {
       notifyServerError(e.getMessage(), "Server not found!\n");
 
       // error display on main page
+    } finally {
+      if (bookRecommender != null)
+        initVerifyLocalUserCredentials();
     }
   }
 
+  private void initVerifyLocalUserCredentials() {
+    String str = FileManager.read(LOCAL_CREDENTIALS);
+    if (str != null && !str.isEmpty()) {
+      String[] split = str.split(",");
+      String email = split[0];
+      String password = split[1];
+      loginEmail.setText(email);
+      loginPassword.setText(password);
+      onConfirmLogin();
+    }
+  }
   /**
    * Caricamento pagina iniziale
    */
@@ -241,6 +287,7 @@ public class ClientBRController {
     loginFeedback.setText("");
     loginEmail.setText("");
     loginPassword.setText("");
+    loginRicordaCredenziali.setSelected(false);
   }
   private void resetRegisterPage() {
     registerFeedback.setText("");
@@ -250,6 +297,7 @@ public class ClientBRController {
     registerEmail.setText("");
     registerPassword.setText("");
     registerCodiceFiscale.setText("");
+    registerRicordaCredenziali.setSelected(false);
   }
   private void hideAllPages() {
     centerStackContainer.getChildren().forEach(child -> child.setVisible(false));
@@ -442,11 +490,19 @@ public class ClientBRController {
     }
 
     try {
-      String res = bookRecommender.login(email, password);
+      Pair<Utente, String> res = bookRecommender.login(email, password);
 
-      switch(res) {
+      switch(res.getValue()) {
         case "success":
+
+          currentUser = res.getKey();
+
+          if (loginRicordaCredenziali.isSelected())
+            saveCredentials();
+
           setLoginFeedback("Login avvenuto con successo");
+          setUserAccessed();
+          onHomepage();
           break;
         case "no-such-user":
           setLoginFeedback("Credenziali errate");
@@ -518,6 +574,9 @@ public class ClientBRController {
       switch(res) {
         case "success":
           setRegistrationFeedback("Registrazione avvenuta con successo");
+          currentUser = u;
+          if (registerRicordaCredenziali.isSelected())
+            saveCredentials();
           break;
         case "user-exists":
           setRegistrationFeedback("L'utente specificato esiste");
@@ -538,15 +597,32 @@ public class ClientBRController {
     }
   }
 
+  private void saveCredentials() {
+    FileManager.write(LOCAL_CREDENTIALS, currentUser.getEmail() + "," + currentUser.getPassword());
+  }
+  private void setUserAccessed() {
+    navbarControls.getChildren().removeAll(loginButton, registerButton);
+    navbarControls.getChildren().addFirst(librariesButton);
+    profilePicture.setText(("" + currentUser.getNome().charAt(0) + currentUser.getCognome().charAt(0)).toUpperCase());
+    navbarControls.getChildren().addLast(profileButton);
+  }
+
+  @FXML
+  protected void onLogout() {
+    // delete file
+    currentUser = null;
+    navbarControls.getChildren().removeAll(librariesButton, profileButton);
+    navbarControls.getChildren().addFirst(loginButton);
+    navbarControls.getChildren().addFirst(registerButton);
+    FileManager.delete(LOCAL_CREDENTIALS);
+    onHomepage();
+  }
+
   @FXML
   protected void onLibraryOpen() {
 
   }
 
-  @FXML
-  protected void onLogout() {
-
-  }
 
   @FXML
   protected void onLibraryDelete() {
@@ -584,8 +660,9 @@ public class ClientBRController {
   }
 
   @FXML
-  protected void onProfileSettings() {
-
+  protected void onProfilePage() {
+    hideAllPages();
+    profilePage.setVisible(true);
   }
 
   @FXML
@@ -622,4 +699,5 @@ public class ClientBRController {
   private void setRegistrationFeedback(String message) {
     registerFeedback.setText(message);
   }
+
 }

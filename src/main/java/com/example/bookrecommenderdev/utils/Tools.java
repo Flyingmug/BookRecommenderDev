@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class Tools {
   private static final String INTEGER_REGEX = "^-?\\d+$"; // Match per gli interi
-  private static final String FISCAL_REGEX = "^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]";
 
   /**
    * Verifica se la stringa contiene un numero intero
@@ -22,23 +21,6 @@ public class Tools {
    */
   public static boolean isInteger(String str) {
     return str != null && str.matches(INTEGER_REGEX);
-  }
-
-  /**
-   * Verifica la correttezza del parametro secondo il formato codice fiscale italiano
-   * @param codf codice fiscale
-   * @return boolean
-   */
-  public static boolean verCodiceFiscale(String codf) {
-    return codf != null && codf.matches(FISCAL_REGEX);
-  }
-
-  public static boolean verifyName(String name) {
-    return name != null && !name.isEmpty() && name.length() < 64;
-  }
-
-  public static boolean verifyPassword(String password) {
-    return password != null && password.length() >= 8 && password.length() < 64;
   }
 
   /**
@@ -91,30 +73,4 @@ public class Tools {
     return list.subList(salto, Math.min(salto + limite, list.size()));
   }
 
-  public static void setPreventMultipleSpacesAndLimit(TextField textField, int maxLength) {
-    TextFormatter<String> formatter = new TextFormatter<>(change -> {
-      String newText = change.getControlNewText();
-
-      // Step 1: Remove leading spaces
-      newText = newText.replaceAll("^\\s+", "");
-
-      // Step 2: Replace multiple spaces between words with a single space
-      newText = newText.replaceAll("\\s{2,}", " ");
-
-      // Step 3: Limit to max length
-      if (newText.length() > maxLength) {
-        newText = newText.substring(0, maxLength);
-      }
-
-      // If modified, replace entire text
-      if (!newText.equals(change.getControlNewText())) {
-        change.setText(newText);
-        change.setRange(0, change.getControlText().length());
-      }
-
-      return change;
-    });
-
-    textField.setTextFormatter(formatter);
-  }
 }

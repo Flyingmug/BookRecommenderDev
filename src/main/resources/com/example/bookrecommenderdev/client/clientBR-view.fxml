@@ -123,7 +123,7 @@
                </padding>
             </VBox>
          </ScrollPane>
-         <VBox fx:id="loginPage" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
+         <VBox fx:id="loginPage" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" visible="false" StackPane.alignment="CENTER">
             <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" spacing="20.0" style="-fx-border-color: #41a2e5; -fx-border-width: 3; -fx-border-radius: 15;" VBox.vgrow="NEVER">
                <Label text="Login">
                   <font>
@@ -131,7 +131,7 @@
                   </font>
                </Label>
                <Label fx:id="loginFeedback" styleClass="login-feedback-label" />
-               <TextField fx:id="loginName" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" promptText="Nome">
+               <TextField fx:id="loginEmail" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" promptText="Email">
                   <font>
                      <Font size="18.0" />
                   </font></TextField>
@@ -140,7 +140,7 @@
                      <Font size="18.0" />
                   </font>
                </TextField>
-               <Button fx:id="confirmLoginButton" onAction="#onConfirmLogin" mnemonicParsing="false" text="Conferma">
+               <Button fx:id="confirmLoginButton" mnemonicParsing="false" onAction="#onConfirmLogin" text="Conferma">
                   <font>
                      <Font size="18.0" />
                   </font>
@@ -150,7 +150,56 @@
                </padding>
             </VBox>
          </VBox>
-         <VBox fx:id="registerPage" prefHeight="200.0" prefWidth="100.0" visible="false" />
+         <VBox fx:id="registerPage" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
+            <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-border-color: #7377d5; -fx-border-width: 15; -fx-border-radius: 20;" VBox.vgrow="NEVER">
+               <Label text="Crea il tuo account">
+                  <font>
+                     <Font name="Arial" size="30.0" />
+                  </font>
+               </Label>
+               <Label fx:id="registerFeedback" styleClass="login-feedback-label">
+                  <VBox.margin>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </VBox.margin></Label>
+               <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                  <TextField fx:id="registerName" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" promptText="Nome">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="registerSurname" layoutX="10.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" promptText="Cognome">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </TextField>
+               </HBox>
+               <TextField fx:id="registerEmail" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" prefWidth="500.0" promptText="Email">
+                  <font>
+                     <Font size="18.0" />
+                  </font></TextField>
+               <TextField fx:id="registerPassword" layoutX="75.0" layoutY="206.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" prefWidth="500.0" promptText="Password">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </TextField>
+               <TextField fx:id="registerCodiceFiscale" layoutX="75.0" layoutY="266.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" prefWidth="500.0" promptText="Codice fiscale">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </TextField>
+               <Button fx:id="confirmRegistrationButton" mnemonicParsing="false" onAction="#onConfirmRegistration" text="Conferma">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </Button>
+               <padding>
+                  <Insets bottom="75.0" left="50.0" right="50.0" top="75.0" />
+               </padding>
+            </VBox>
+         </VBox>
       </StackPane>
    </center>
 </BorderPane>

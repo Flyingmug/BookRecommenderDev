@@ -1,12 +1,11 @@
 package com.example.bookrecommenderdev.client.controller;
 
 import com.example.bookrecommenderdev.model.Libro;
+import com.example.bookrecommenderdev.model.Utente;
 import com.example.bookrecommenderdev.server.ServerInterface;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -20,16 +19,15 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-import static com.example.bookrecommenderdev.utils.Tools.*;
+import static com.example.bookrecommenderdev.utils.InputVerifiers.*;
 
 public class ClientBRController {
   final static int PAGE_SIZE = 50;
@@ -82,24 +80,41 @@ public class ClientBRController {
   @FXML
   private Button nextPageButton;
 
+  // login
   @FXML
   private VBox loginPage;
   @FXML
   private Label loginFeedback;
   @FXML
-  private TextField loginName;
+  private TextField loginEmail;
   @FXML
   private TextField loginPassword;
   @FXML
   private Button loginButton;
   @FXML
   private Button confirmLoginButton;
-  @FXML
-  private Button registerButton;
+
+  // registrazione
   @FXML
   private VBox registerPage;
   @FXML
+  private Label registerFeedback;
+  @FXML
+  private TextField registerName;
+  @FXML
+  private TextField registerSurname;
+  @FXML
+  private TextField registerEmail;
+  @FXML
+  private TextField registerPassword;
+  @FXML
+  private TextField registerCodiceFiscale;
+  @FXML
+  private Button registerButton;
+  @FXML
   private Button confirmRegistrationButton;
+
+  // librerie
   @FXML
   private Button librariesButton;
 
@@ -162,8 +177,15 @@ public class ClientBRController {
     librariesButton.getStyleClass().addAll("libraries-button", "navbar-button");
     librariesButton.setOnAction(e -> onLibraryList());
 
-    setPreventMultipleSpacesAndLimit(loginName, 64);
-    setPreventMultipleSpacesAndLimit(loginPassword, 64);
+    // login fields
+    preventMultipleSpacesAndLimit(loginEmail, 255);
+    preventMultipleSpacesAndLimit(loginPassword, 64);
+    // registration fields
+    preventMultipleSpacesAndLimit(registerName, 64);
+    preventMultipleSpacesAndLimit(registerSurname, 64);
+    preventMultipleSpacesAndLimit(registerEmail, 255);
+    preventMultipleSpacesAndLimit(registerPassword, 64);
+    restrictLooseFiscalCodeInput(registerCodiceFiscale);
   }
   private void initPriorityLayout() {
     serverErrorTitle = new Label();
@@ -217,8 +239,17 @@ public class ClientBRController {
   }
   private void resetLoginPage() {
     loginFeedback.setText("");
-    loginName.setText("");
+    loginEmail.setText("");
     loginPassword.setText("");
+  }
+  private void resetRegisterPage() {
+    registerFeedback.setText("");
+    registerName.setText("");
+    registerName.setText("");
+    registerSurname.setText("");
+    registerEmail.setText("");
+    registerPassword.setText("");
+    registerCodiceFiscale.setText("");
   }
   private void hideAllPages() {
     centerStackContainer.getChildren().forEach(child -> child.setVisible(false));
@@ -304,7 +335,7 @@ public class ClientBRController {
 
   /**
    * Attraverso data costruisce degli oggetti di tipo VBox per mostrare i dati di ciascun Libro
-   * @param data
+   * @param data dati ricevuti
    */
   private void loadResults(Pair<List<Libro>, Integer> data) {
 
@@ -394,43 +425,42 @@ public class ClientBRController {
     loginPage.setVisible(true);
     resetLoginPage();
   }
-
   @FXML
   protected void onConfirmLogin() {
 
-    String name = loginName.getText().trim();
-    String password = loginPassword.getText().trim();
+    String email = loginEmail.getText();
+    String password = loginPassword.getText();
 
-    if (!verifyName(name)) {
-      loginFeedback.setText("Nome utente deve essere tra 1 e 64 caratteri");
+    if (!verifyEmail(email)) {
+      setLoginFeedback("Nome utente deve essere tra 1 e 64 caratteri");
       return;
     }
 
     if (!verifyPassword(password)) {
-      loginFeedback.setText("Password deve essere tra 8 e 64 caratteri");
+      setLoginFeedback("Password deve essere tra 8 e 64 caratteri");
       return;
     }
 
     try {
-      String res = bookRecommender.login(name, password);
+      String res = bookRecommender.login(email, password);
 
       switch(res) {
         case "success":
-          loginFeedback.setText("Login avvenuto con successo");
+          setLoginFeedback("Login avvenuto con successo");
           break;
         case "no-such-user":
-          loginFeedback.setText("Credenziali errate");
+          setLoginFeedback("Credenziali errate");
           break;
         case "db-error":
-          loginFeedback.setText("Errore nel reperimento dei dati");
+          setLoginFeedback("Errore nel reperimento dei dati");
           break;
         default:
-          loginFeedback.setText("Response parsing error");
+          setLoginFeedback("Response parsing error");
           break;
       }
 
     } catch(RemoteException e) {
-      loginFeedback.setText("Errore nella connessione al server");
+      setLoginFeedback("Errore nella connessione al server");
     }
 
   }
@@ -439,10 +469,73 @@ public class ClientBRController {
   protected void onRegister() {
     hideAllPages();
     registerPage.setVisible(true);
+    resetRegisterPage();
   }
   @FXML
   protected void onConfirmRegistration() {
+    String name = registerName.getText();
+    String surname = registerSurname.getText();
+    String email = registerEmail.getText();
+    String password = registerPassword.getText();
+    String codiceFiscale = registerCodiceFiscale.getText();
 
+    if (!verifyName(name)) {
+      setRegistrationFeedback("Nome deve essere tra 1 e 64 caratteri");
+      return;
+    }
+
+    if (!verifyName(surname)) {
+      setRegistrationFeedback("Cognome deve essere tra 1 e 64 caratteri");
+      return;
+    }
+
+    if (!verifyEmail(email)) {
+      setRegistrationFeedback("Password deve essere tra 1 e 255 caratteri");
+      return;
+    }
+
+    if (!verifyPassword(password)) {
+      setRegistrationFeedback("Password deve essere tra 8 e 64 caratteri");
+      return;
+    }
+
+    if (!verCodiceFiscale(codiceFiscale)) {
+      setRegistrationFeedback("Sintassi codice fiscale errata");
+      return;
+    }
+
+
+    try {
+      Utente u = new Utente(
+          name,
+          surname,
+          email,
+          codiceFiscale,
+          password
+      );
+      String res = bookRecommender.registrazione(u);
+
+      switch(res) {
+        case "success":
+          setRegistrationFeedback("Registrazione avvenuta con successo");
+          break;
+        case "user-exists":
+          setRegistrationFeedback("L'utente specificato esiste");
+          break;
+        case "insert-error":
+          setRegistrationFeedback("Errore nell'inserimento dei dati");
+          break;
+        case "db-error":
+          setRegistrationFeedback("Errore nel reperimento dei dati");
+          break;
+        default:
+          setRegistrationFeedback("Response parsing error");
+          break;
+      }
+
+    } catch(RemoteException e) {
+      setRegistrationFeedback("Errore nella connessione al server");
+    }
   }
 
   @FXML
@@ -521,5 +614,12 @@ public class ClientBRController {
     serverErrorTitle.setText(titleMessage);
     serverErrorLabel.setText(originalMessage);
     centerStackContainer.getChildren().add(serverConnErrorWrapper);
+  }
+
+  private void setLoginFeedback(String message) {
+    loginFeedback.setText(message);
+  }
+  private void setRegistrationFeedback(String message) {
+    registerFeedback.setText(message);
   }
 }

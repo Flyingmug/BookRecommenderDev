@@ -27,5 +27,5 @@ public interface ServerInterface extends Remote {
   List<Valutazione> getValutazioni(long idLibro) throws RemoteException;
   List<Libro> getConsigli(long idLibro) throws RemoteException;
   String login(String nome, String password) throws RemoteException;
-  void registrazione(Utente u) throws RemoteException, InsertDBException;
+  String registrazione(Utente u) throws RemoteException, InsertDBException;
 }

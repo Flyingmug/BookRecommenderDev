@@ -40,6 +40,13 @@ public class Utente implements Serializable {
     this.userId = UUID.fromString(userId);
   }
 
+  public Utente(String nome, String cognome, String email, String codiceFiscale, String password) {
+    this.nome = nome;
+    this.cognome = cognome;
+    this.email = email;
+    this.codiceFiscale = codiceFiscale;
+    this.password = password;
+  }
 
   /**
    * @return nome */
@@ -62,4 +69,22 @@ public class Utente implements Serializable {
   /**
    * @return id utente*/
   public String getUserId() { return userId.toString(); }
+
+  /**
+   * Imposta un userId casuale all'oggetto
+   */
+  public void setUserId() {
+    userId = UUID.randomUUID();
+  }
+
+  /**
+   * Controlla l'uguaglianza controllando l'email e il codice fiscale
+   * @param obj
+   * @return
+   */
+  @Override
+  public boolean equals(Object obj) {
+    Utente u = (Utente)obj;
+    return this.getEmail().equals(u.getEmail()) || this.getCodiceFiscale().equals(u.getCodiceFiscale());
+  }
 }

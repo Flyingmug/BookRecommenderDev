@@ -111,14 +111,14 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   /**
    * Utilizza nome e password per controllare la presenza della coppia nel database
    *
-   * @param nome nome utente
+   * @param email nome utente
    * @param password password utente
    * @return token di sessione............
    */
-  public String login(String nome, String password) throws RemoteException {
+  public String login(String email, String password) throws RemoteException {
 
     try {
-      List<Utente> lista = utenti.get(nome, password);
+      List<Utente> lista = utenti.get(email, password, false);
       System.out.println("Size: " + lista.size());
 
       if (lista.isEmpty()) return "no-such-user";
@@ -130,8 +130,23 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
   }
 
-  public void registrazione(Utente u) throws RemoteException, InsertDBException {
+  public String registrazione(Utente u) throws RemoteException, InsertDBException {
 
+    try {
+      List<Utente> lista = utenti.get(u.getEmail(), u.getCodiceFiscale(), true);
+
+      System.out.println("utenti: " + lista.size());
+
+      if(lista.contains(u)) return "user-exists";
+
+      u.setUserId();
+      boolean outcome = utenti.save(u);
+
+      return outcome ? "success":"insert-error";
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return "db-error";
+    }
   }
 
 }

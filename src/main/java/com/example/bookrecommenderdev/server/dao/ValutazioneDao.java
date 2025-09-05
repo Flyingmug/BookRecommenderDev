@@ -1,6 +1,5 @@
 package com.example.bookrecommenderdev.server.dao;
 
-import com.example.bookrecommenderdev.model.Libro;
 import com.example.bookrecommenderdev.model.Valutazione;
 
 import javax.sql.DataSource;
@@ -8,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,17 +16,18 @@ public class ValutazioneDao
     public ValutazioneDao(DataSource ds) { this.datasource = ds; }
 
     /**
-     * Cerca medie delle valutazioni dei punteggi
-     * @param id_libro
-     * @return array di 5 float contentente le cinque medie
+     * Calcola le medie delle valutazioni dei punteggi di un libro
+     *
+     * @param id_libro id di un libro
+     * @return array di 5 float contenente le cinque medie
      */
-    public float[] getAverage (int id_libro){
+    public double[] getAverage(int id_libro) throws SQLException {
 
         System.out.println("Chiave ricevuta: " + id_libro);
-        float[] averageScores = new float[5];
+        double[] averageScores = new double[5];
 
 
-        String q = "SELECT AVG(stile) as stile, AVG(contenuto) as contenuto, AVG(gradevolezza) as gradevolezza, AVG(originalita) as originalita, AVG(edizione) as edizione FROM Valutazioni WHERE id_libro = ?";
+        String q = "SELECT AVG(stile) as stile, AVG(contenuto) as contenuto, AVG(gradevolezza) as gradevolezza, AVG(originalita) as originalita, AVG(edizione) as edizione FROM ValutazioniLibri WHERE id_libro = ?";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement ps = conn.prepareStatement(q)) {
@@ -51,16 +50,12 @@ public class ValutazioneDao
                     averageScores[3] +
                     averageScores[4]);
 
-        } catch (SQLException e) {
-            System.out.println("Errore nelle connessione al database.");
-            e.printStackTrace();
+            return averageScores[0] > 0 ? averageScores : null;
         }
-
-        return averageScores;
     }
 
     public List<Valutazione> getAll (int id_libro){
-        List<Valutazione> elenco = new LinkedList<Valutazione>();
+        List<Valutazione> elenco = new LinkedList<>();
 
         System.out.println("Chiave ricevuta: " + id_libro);
 
@@ -96,7 +91,7 @@ public class ValutazioneDao
         return elenco;
     }
 
-    public Valutazione get (int id_libro, int id_utente){
+    public Valutazione get(int id_libro, int id_utente){
         Valutazione valutazione = null;
         System.out.println("Chiave ricevuta: " + id_libro);
         String q = "SELECT * FROM Valutazioni WHERE id_libro = ? AND id_utente = ?";
@@ -133,7 +128,7 @@ public class ValutazioneDao
     }
 
 
-    public boolean save (int id_libro, int id_utente, Valutazione valutazione){
+    public boolean save (int id_libro, Valutazione valutazione){
         System.out.println("Chiavi ricevute: " + id_libro);
         String q = "INSERT INTO Valutazioni (" +
           "id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione, " +

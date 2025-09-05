@@ -1,10 +1,12 @@
 package com.example.bookrecommenderdev.server;
 
 import com.example.bookrecommenderdev.model.*;
+import com.example.bookrecommenderdev.server.dao.ConsiglioLibroDao;
 import com.example.bookrecommenderdev.server.dao.LibroDao;
 import com.example.bookrecommenderdev.server.dao.UtenteDao;
+import com.example.bookrecommenderdev.server.dao.ValutazioneDao;
 import com.example.bookrecommenderdev.server.db.DatabaseConfig;
-import com.example.bookrecommenderdev.server.dto.LibroPaginaDTO;
+import com.example.bookrecommenderdev.server.dto.PaginaLibro;
 import com.example.bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
 import javafx.util.Pair;
 
@@ -16,16 +18,19 @@ import java.util.List;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
-  // campi
-  private final DataSource datasource;
   private final LibroDao libri;
   private final UtenteDao utenti;
+  private final ValutazioneDao valutazioni;
+  private final ConsiglioLibroDao consigli;
 
   public ServerImplementation() throws RemoteException {
     super();
-    datasource = DatabaseConfig.getDataSource();
+    // campi
+    DataSource datasource = DatabaseConfig.getDataSource();
     libri = new LibroDao(datasource);
     utenti = new UtenteDao(datasource);
+    valutazioni = new ValutazioneDao(datasource);
+    consigli = new ConsiglioLibroDao(datasource);
     // TESTING DATABASE PURPOSES
 //    this.searchTitolo("a");
   }
@@ -39,9 +44,13 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   //
 
   public Pair<List<Libro>, Integer> searchTitolo(String titolo, int indicePagina) throws RemoteException {
-    Pair<List<Libro>, Integer> elenco = libri.getPage(indicePagina, titolo);
-    System.out.println("Numero risultati SERVER: " + elenco.getKey().size());
-    return elenco;
+    Pair<List<Libro>, Integer> elenco = null;
+    try {
+      elenco = libri.getPage(indicePagina, titolo);
+      return elenco;
+    } catch (SQLException e) {
+      return null;
+    }
   }
   public List<Libro> searchAutore(String autore) throws RemoteException {
       return List.of();
@@ -51,9 +60,32 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return List.of();
   }
 
-  public LibroPaginaDTO getPaginaLibro(long idLibro) throws RemoteException {
+  public PaginaLibro getPaginaLibro(int idLibro) throws RemoteException {
 
-    return null;
+    try {
+      Libro l = libri.get(idLibro);
+      double[] v = valutazioni.getAverage(idLibro);
+
+//      List<ConsigliLettura> listaConsigli = consigli.getAll(idLibro, true);
+//      List<Integer> elencoIdLibri = new LinkedList<>();
+//      for (ConsigliLettura c: listaConsigli) {
+//        elencoIdLibri.add( c.getIdconsiglio1());
+//        elencoIdLibri.add( c.getIdconsiglio2());
+//        elencoIdLibri.add( c.getIdconsiglio3());
+//        System.out.println(c.getIdconsiglio1());
+//        System.out.println(c.getIdconsiglio2());
+//        System.out.println(c.getIdconsiglio3());
+//      }
+
+      return new PaginaLibro(l, v);
+
+    } catch(SQLException e) {
+      System.out.println("test");
+      e.printStackTrace();
+      System.out.println(e.getMessage());
+      return null;
+    }
+
   }
 
   public LibroPaginaPersonaleDTO getPaginaLibroPersonale() throws RemoteException {

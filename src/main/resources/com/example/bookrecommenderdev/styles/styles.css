@@ -50,8 +50,6 @@
     -fx-padding: 0;
     -fx-min-width: 0;
     -fx-min-height: 0;
-    -fx-pref-width: USE_COMPUTED_SIZE;
-    -fx-pref-height: USE_COMPUTED_SIZE;
 }
 
 .result-page-arrow {
@@ -71,6 +69,17 @@
 .profile-picture-text {
     -fx-font: bold 20px "Arial";
 }
+
+
+.scores-section {
+    -fx-background-color: #a7c9e480;
+}
+
+
+
+
+
+
 
 .error-label {
     -fx-text-fill: #f22828;

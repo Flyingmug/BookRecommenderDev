@@ -1,30 +1,33 @@
 package com.example.bookrecommenderdev.client.controller;
 
+import com.example.bookrecommenderdev.client.factory.BookDisplayFactory;
 import com.example.bookrecommenderdev.model.Libro;
 import com.example.bookrecommenderdev.model.Utente;
 import com.example.bookrecommenderdev.server.ServerInterface;
+import com.example.bookrecommenderdev.server.dto.PaginaLibro;
 import com.example.bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.util.Pair;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static com.example.bookrecommenderdev.utils.InputVerifiers.*;
 import static com.example.bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
@@ -32,8 +35,7 @@ import static com.example.bookrecommenderdev.utils.Tools.setRandomBackgroundColo
 public class ClientBRController {
   final static int PAGE_SIZE = 50;
   final static String LOCAL_CREDENTIALS = "credentials.txt";
-  private static final Logger log = LoggerFactory.getLogger(ClientBRController.class);
-
+  static BookDisplayFactory bookDisplayCreator = new BookDisplayFactory();
 
   @FXML
   private Label serverErrorTitle;
@@ -124,10 +126,27 @@ public class ClientBRController {
   @FXML
   private Label profilePicture;
   @FXML
-  private Button logoutButton;
-
+  private Button logoutButton;  // might be unnecessary, only thing needed is the onAction
   @FXML
   private VBox profilePage;
+
+
+  @FXML
+  public VBox bookPage;
+  @FXML
+  public Label bookPageTitolo;
+  @FXML
+  public Label bookPageAutori;
+  @FXML
+  public Label bookPageAnnoPubblicazione;
+  @FXML
+  public Label bookPageEditore;
+  @FXML
+  public Label bookPageCategorie;
+
+  @FXML
+  public VBox scoresContainer;
+
 
   // librerie
   @FXML
@@ -151,12 +170,12 @@ public class ClientBRController {
     currentResultPageIndex = 0;
     bookResultCount = 0;
     currentSearchInput = "";
-    onHomepage();
+
 
     //
     //
     // TEST
-//    testBooksearchpage();
+    testBooksearchpage();
   }
 
   /**
@@ -217,14 +236,14 @@ public class ClientBRController {
     librariesButton = new Button("Librerie");
     librariesButton.setFont(new Font("Arial", 15));
     librariesButton.getStyleClass().addAll("libraries-button", "navbar-button");
-    librariesButton.setOnAction(e -> onLibraryList());
+    librariesButton.setOnAction(_ -> onLibraryList());
 
     profileButton = new Button();
     profileButton.setText("");
     profileButton.tooltipProperty().set(new Tooltip("Pagina profilo"));
     setRandomBackgroundColor(profileButton);
     profileButton.getStyleClass().add("profile-picture-button");
-    profileButton.setOnAction(e -> onProfilePage());
+    profileButton.setOnAction(_ -> onProfilePage());
     profilePicture = new Label();
     profilePicture.getStyleClass().add("profile-picture-text");
     profileButton.setGraphic(profilePicture);
@@ -299,6 +318,13 @@ public class ClientBRController {
     registerCodiceFiscale.setText("");
     registerRicordaCredenziali.setSelected(false);
   }
+  private void resetBookPage() {
+    scoresContainer.getChildren().clear();
+  }
+  
+  /**
+   * Nasconde tutti i contenitori rappresentanti le pagine dell'applicazione
+  */
   private void hideAllPages() {
     centerStackContainer.getChildren().forEach(child -> child.setVisible(false));
   }
@@ -313,7 +339,7 @@ public class ClientBRController {
     if (newInput == null || newInput.isEmpty()) return;
 
     topSearchbar();
-    homePage.setVisible(false);
+    hideAllPages();
     resultPage.setVisible(true);
 
     // if there is a new input, set it as the current search value
@@ -388,8 +414,7 @@ public class ClientBRController {
   private void loadResults(Pair<List<Libro>, Integer> data) {
 
     // elimina eventuali elementi precedenti
-    if(!booksResultDisplay.getChildren().isEmpty())
-      booksResultDisplay.getChildren().clear();
+    booksResultDisplay.getChildren().clear();
 
     List<Libro> results = data.getKey();
 
@@ -397,31 +422,7 @@ public class ClientBRController {
     resultIndexCounter.setText(formatIndexCounter());
 
     for (Libro l: results) {
-      VBox row = new VBox(5);
-      row.setStyle("-fx-padding: 10; -fx-border-color: #99b1e9; -fx-border-width: 0 0 1 0;");
-
-      Label titolo = new Label(l.getTitolo());
-      titolo.setMaxWidth(750);
-      titolo.setEllipsisString("...");
-      titolo.setFont(new Font("Arial", 14));
-      titolo.setTextFill(Paint.valueOf("#1e81c5"));
-      titolo.getStyleClass().add("result-book");
-      Button titoloButton = new Button();
-      titoloButton.setGraphic(titolo);
-      titoloButton.getStyleClass().add("result-book-button");
-      titoloButton.setOnAction(e -> onPublicBookPage(l.getIdLibro()));
-
-
-      Label autori = new Label(l.getAutori());
-      autori.setMaxWidth(750);
-      autori.setEllipsisString("...");
-
-      autori.setFont(new Font("Arial", 12));
-
-      Label anno = new Label(l.getAnnoPubblicazione() > 0 ? Integer.toString(l.getAnnoPubblicazione()) : "");
-      anno.setFont(new Font("Arial", 12));
-
-      row.getChildren().addAll(titoloButton, autori, anno);
+      VBox row = bookDisplayCreator.createVBox(l, this::onPublicBookPage);
       booksResultDisplay.getChildren().add(row);
     }
 
@@ -452,26 +453,13 @@ public class ClientBRController {
     setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < bookResultCount);
   }
 
-  @FXML
-  protected void onLibraryList() {
-    try {
-      bookRecommender.getListLibrerie(1);
 
-    } catch (RemoteException e) {
-
-    }
-  }
-
-  @FXML
-  protected void onPublicBookPage(int id_libro) {
-    System.out.println("id: " + id_libro);
-  }
 
   @FXML
   protected void onLogin() {
     hideAllPages();
-    loginPage.setVisible(true);
     resetLoginPage();
+    loginPage.setVisible(true);
   }
   @FXML
   protected void onConfirmLogin() {
@@ -524,8 +512,8 @@ public class ClientBRController {
   @FXML
   protected void onRegister() {
     hideAllPages();
-    registerPage.setVisible(true);
     resetRegisterPage();
+    registerPage.setVisible(true);
   }
   @FXML
   protected void onConfirmRegistration() {
@@ -618,11 +606,70 @@ public class ClientBRController {
     onHomepage();
   }
 
+
+  /**
+   * Mostra il contenitore della pagina di un libro, nel quale vengono caricati i dati del libro selezionato.
+   * @param idLibro id del libro selezionato
+   */
+  @FXML
+  protected void onPublicBookPage(int idLibro) {
+    System.out.println("id: " + idLibro); // DEBUG
+
+    resetBookPage();
+    hideAllPages();
+    bookPage.setVisible(true);
+
+    try {
+
+      PaginaLibro pagina = bookRecommender.getPaginaLibro(idLibro);
+
+
+      if (pagina != null) {
+
+        if (pagina.getLibro() != null) {
+          Libro l = pagina.getLibro();
+
+          bookPageTitolo.setText(l.getTitolo());
+          bookPageAutori.setText(l.getAutori());
+          bookPageAnnoPubblicazione.setText(Integer.toString(l.getAnnoPubblicazione()));
+          bookPageCategorie.setText(l.getCategorie());
+          bookPageEditore.setText(l.getEditore());
+        }
+
+        if (pagina.getValutazioniAggregate() != null) {
+          double[] scores = pagina.getValutazioniAggregate();
+          showScores(scores);
+        }
+
+      }
+
+    } catch (RemoteException e) {
+      e.printStackTrace();
+
+      //
+      //
+      //
+      // Add error display
+      //
+      //
+      //
+    }
+  }
+
   @FXML
   protected void onLibraryOpen() {
 
   }
 
+  @FXML
+  protected void onLibraryList() {
+    try {
+      bookRecommender.getListLibrerie(1);
+
+    } catch (RemoteException e) {
+
+    }
+  }
 
   @FXML
   protected void onLibraryDelete() {
@@ -670,6 +717,56 @@ public class ClientBRController {
 
   }
 
+
+  /**
+   * Crea la rappresentazione dei punteggi e della media di essi
+   * @param valutazioni array contenente almeno 5 valutazioni
+   */
+  private void showScores(double[] valutazioni) {
+
+    double totalScore = Arrays.stream(valutazioni)
+        .filter(v -> v > 0)
+        .average()
+        .orElse(0.0);
+    scoresContainer.getChildren().add(buildStars(totalScore, 24));
+
+    for (double score: valutazioni) {
+      scoresContainer.getChildren().add(buildStars(score, 20));
+    }
+  }
+  /**
+   * Restituisce un contenitore di icone di stelle rappresentanti il valore dato come parametro
+   * @param score valore rappresentato
+   * @return contenitore di icone
+   */
+  private HBox buildStars(double score, int size) {
+    HBox stars = new HBox(2);
+
+    int fullStars = (int) score;                 // whole number part
+    boolean hasHalf = (score - fullStars) >= 0.5; // half star if remainder is greater than 0.5
+
+    for (int i = 1; i <= 5; i++) {
+      FontIcon star;
+
+      if (i <= fullStars) {
+        star = new FontIcon("mdi2s-star"); // full
+        star.setIconColor(Paint.valueOf("gold"));
+      } else if (i == fullStars + 1 && hasHalf) {
+        star = new FontIcon("mdi2s-star-half-full"); // half
+        star.setIconColor(Paint.valueOf("gold"));
+      } else {
+        star = new FontIcon("mdi2s-star-outline"); // empty
+        star.setIconColor(Paint.valueOf("gray"));
+      }
+
+      star.setIconSize(size);
+      stars.getChildren().add(star);
+    }
+
+    return stars;
+  }
+
+
   //
   //
   //
@@ -678,12 +775,10 @@ public class ClientBRController {
 
   private void testBooksearchpage() {
     // simulate input insertion
-    searchbar.setText("Heart");
+    searchbar.setText("Goat Brothers");
     // simulate search icon click
     onSearchAction();
   }
-
-
 
   private void notifyServerError(String originalMessage, String titleMessage) {
     navbar.getChildren().clear();

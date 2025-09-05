@@ -1,14 +1,12 @@
 package com.example.bookrecommenderdev.server.dao;
 
 import com.example.bookrecommenderdev.model.Libro;
-import com.example.bookrecommenderdev.model.Valutazione;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class LibroDao {
 
@@ -18,12 +16,16 @@ public class LibroDao {
     this.datasource = ds;
   }
 
-  public Libro get(int id_libro) {
+  public Libro get(int id_libro) throws SQLException {
     Libro libro = null;
     System.out.println("Chiave ricevuta: " + id_libro);
     String q = "SELECT " +
-      "    l.id_libro, l.anno_pubblicazione, l.titolo, a.nome_autore, e.nome_editore, " +
-      "    STRING_AGG(c.nome_categoria, ', ' ORDER BY c.nome_categoria) AS categorie " +
+      " l.id_libro as idLibro," +
+      " l.anno_pubblicazione as annoPubblicazione," +
+      " l.titolo," +
+      " a.nome_autore as autori," +
+      " e.nome_editore as editore, " +
+      " STRING_AGG(c.nome_categoria, ', ' ORDER BY c.nome_categoria) AS categorie " +
       "FROM Libri l JOIN Autori a ON l.id_autore = a.id_autore JOIN Editori e ON l.id_editore = e.id_editore " +
       "JOIN Libri_Categorie lc ON l.id_libro = lc.id_libro JOIN Categorie c ON lc.id_categoria = c.id_categoria " +
       "WHERE l.id_libro = ? " +
@@ -37,7 +39,7 @@ public class LibroDao {
 
       while (rs.next()) {
         libro = new Libro(
-          rs.getInt("id_libro"),
+          rs.getInt("idLibro"),
           rs.getInt("annoPubblicazione"),
           rs.getString("titolo"),
           rs.getString("autori"),
@@ -45,16 +47,12 @@ public class LibroDao {
           rs.getString("categorie"));
       }
 
-      System.out.println("Valutazione istanziata: " + (libro != null));
-
-    } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
     }
+    System.out.println("DB:" + libro);
     return libro;
   }
 
-  public Pair<List<Libro>, Integer> getPage(int pageNumber, String title) {
+  public Pair<List<Libro>, Integer> getPage(int pageNumber, String title) throws SQLException {
     System.out.println("Chiave ricevuta: " + title);
     List<Libro> libri = new ArrayList<>();
     int totalCount = 0;
@@ -82,12 +80,12 @@ public class LibroDao {
           ));
         } while (rs.next());
       }
-
-    } catch (SQLException e) {
-        System.out.println("Errore nelle connessione al database.");
-        e.printStackTrace();
     }
-      System.out.println("Numero risultati QUERY: " + libri.size());
+    System.out.println("Numero risultati QUERY: " + libri.size());
     return new Pair<>(libri, totalCount);
+  }
+
+  public List<Libro> getFrom(List<Integer> elenco_id) throws SQLException {
+    return null;
   }
 }

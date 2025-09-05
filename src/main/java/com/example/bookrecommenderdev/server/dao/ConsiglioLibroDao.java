@@ -1,7 +1,6 @@
 package com.example.bookrecommenderdev.server.dao;
 
 import com.example.bookrecommenderdev.model.ConsigliLettura;
-import com.example.bookrecommenderdev.model.Valutazione;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -20,7 +19,7 @@ public class ConsiglioLibroDao {
    * @param id_libro secondo cui ricercare
    * @return lista di consigli
    */
-  public List<ConsigliLettura> getAll (int id_libro){
+  public List<ConsigliLettura> getAll(int id_libro, boolean limited) throws SQLException {
     List<ConsigliLettura> elenco = new LinkedList<>();
 
     System.out.println("Chiave ricevuta: " + id_libro);
@@ -31,7 +30,7 @@ public class ConsiglioLibroDao {
       "INNER JOIN Libri lb ON cl.id_libro = lb.id_libro LEFT JOIN Libri l1 ON cl.consiglio1 = l1.id_libro " +
       "LEFT JOIN Libri l2 ON cl.consiglio2 = l2.id_libro " +
       "LEFT JOIN Libri l3 ON cl.consiglio3 = l3.id_libro " +
-      "WHERE cl.id_libro = ? ORDER BY cl.id_utente;";
+      "WHERE cl.id_libro = ? ORDER BY cl.id_utente " + (limited ? ";" : "LIMIT 10");
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -51,15 +50,12 @@ public class ConsiglioLibroDao {
 
       System.out.println("Numero risultati: "+ elenco.size());
 
-    } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
     }
     return elenco;
   }
 
 
-  public boolean save (int id_libro, int id_utente, ConsigliLettura consigliLettura){
+  public boolean save (int id_libro, ConsigliLettura consigliLettura){
     System.out.println("Chiavi ricevute: " + id_libro);
     String q = "INSERT INTO ConsigliLibri (id_utente, id_libro, consiglio1, consiglio2, consiglio3) " +
       "VALUES (?, ?, ?, ?, ?);";

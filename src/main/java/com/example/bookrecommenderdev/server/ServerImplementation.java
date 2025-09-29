@@ -1,10 +1,7 @@
 package com.example.bookrecommenderdev.server;
 
 import com.example.bookrecommenderdev.model.*;
-import com.example.bookrecommenderdev.server.dao.ConsiglioLibroDao;
-import com.example.bookrecommenderdev.server.dao.LibroDao;
-import com.example.bookrecommenderdev.server.dao.UtenteDao;
-import com.example.bookrecommenderdev.server.dao.ValutazioneDao;
+import com.example.bookrecommenderdev.server.dao.*;
 import com.example.bookrecommenderdev.server.db.DatabaseConfig;
 import com.example.bookrecommenderdev.server.dto.PaginaLibro;
 import com.example.bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
@@ -22,6 +19,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   private final UtenteDao utenti;
   private final ValutazioneDao valutazioni;
   private final ConsiglioLibroDao consigli;
+  private final LibreriaDao librerie;
 
   public ServerImplementation() throws RemoteException {
     super();
@@ -31,6 +29,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     utenti = new UtenteDao(datasource);
     valutazioni = new ValutazioneDao(datasource);
     consigli = new ConsiglioLibroDao(datasource);
+    librerie = new LibreriaDao(datasource);
     // TESTING DATABASE PURPOSES
 //    this.searchTitolo("a");
   }
@@ -96,9 +95,17 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   //
   // librerie
   //
-  public List<Libreria> getListLibrerie(long idUtente) throws RemoteException {
+  public List<Pair<Libreria, Integer>> getListLibrerie(long idUtente) throws RemoteException {
 
-    return List.of();
+    try {
+      List<Pair<Libreria, Integer>> libs = librerie.getLibrerie(idUtente);
+      return libs;
+    } catch(SQLException e) {
+      System.err.println("Error in list obtaining");
+      e.printStackTrace();
+      System.out.println(e.getMessage());
+      return null;
+    }
   }
 
   public List<Libro> getContenutoLibreria(List<Long> idList) throws RemoteException {

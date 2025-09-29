@@ -19,7 +19,7 @@ public interface ServerInterface extends Remote {
   List<Libro> searchAnnoAutore(String annoAutore) throws RemoteException;
   PaginaLibro getPaginaLibro(int idLibro) throws RemoteException;
   LibroPaginaPersonaleDTO getPaginaLibroPersonale() throws RemoteException;
-  List<Libreria> getListLibrerie(long idUtente) throws RemoteException;
+  List<Pair<Libreria, Integer>> getListLibrerie(long idUtente) throws RemoteException;
   List<Libro> getContenutoLibreria(List<Long> idList) throws RemoteException;
   void createLibreria(Libreria lib) throws RemoteException;
   void deleteLibreria(Libreria lib) throws RemoteException;

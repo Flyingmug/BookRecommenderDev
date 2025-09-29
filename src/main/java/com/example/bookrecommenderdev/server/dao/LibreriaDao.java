@@ -1,10 +1,7 @@
 package com.example.bookrecommenderdev.server.dao;
 
 import com.example.bookrecommenderdev.model.Libreria;
-import com.example.bookrecommenderdev.model.Libro;
-import com.example.bookrecommenderdev.model.Valutazione;
 import javafx.util.Pair;
-import org.postgresql.core.Tuple;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,13 +11,13 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LibreriaDAO {
+public class LibreriaDao {
   private final DataSource datasource;
-  public LibreriaDAO(DataSource ds) { this.datasource = ds; }
+  public LibreriaDao(DataSource ds) { this.datasource = ds; }
 
 
   //Get librerie
-  public List<Pair<Libreria, Integer>> getLibrerie (int id_utente){
+  public List<Pair<Libreria, Integer>> getLibrerie (long id_utente) throws SQLException {
     List<Pair<Libreria, Integer>> elenco = new LinkedList<>();
 
 
@@ -34,7 +31,7 @@ public class LibreriaDAO {
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
-      ps.setInt(1, id_utente);
+      ps.setLong(1, id_utente);
       ResultSet rs = ps.executeQuery();
 
       while (rs.next()) {
@@ -52,9 +49,6 @@ public class LibreriaDAO {
 
       System.out.println("Numero risultati: "+ elenco.size());
 
-    } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
     }
 
     return elenco;

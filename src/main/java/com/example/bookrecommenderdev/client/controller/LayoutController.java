@@ -41,8 +41,6 @@ public class LayoutController {
   private HBox navbar;
   @FXML
   private HBox navbarControls;
-
-
   @FXML
   private Button librariesButton;
   @FXML
@@ -66,8 +64,10 @@ public class LayoutController {
     initRegistry();
     initSetupLayout();
 
-    context = new AppContext(bookRecommender);
+    context = new AppContext(bookRecommender, currentUser);
     Router.init(centerStackContainer, context);
+    Router.go("/"); // apertura della pagina iniziale all'esecuzione
+
     //
     //
     // TEST
@@ -131,7 +131,6 @@ public class LayoutController {
     try {
       Registry reg = LocateRegistry.getRegistry("localhost", 1099);
       bookRecommender = (ServerInterface) reg.lookup("serverBR");
-      Router.go("/"); // apertura della pagina iniziale all'esecuzione
 
     } catch(RemoteException e) {
       notifyServerError(e.getMessage(), "Server connection failed!\n (Server might not be online or address is wrong)");
@@ -208,12 +207,15 @@ public class LayoutController {
   }
 
   public void onRegister(ActionEvent actionEvent) {
+    Router.go("/registration");
   }
 
   public void onHomepage(ActionEvent actionEvent) {
+    Router.go("/");
   }
 
   public void onLogin(ActionEvent actionEvent) {
+    Router.go("/login");
   }
 
   public void onSearchAction(MouseEvent mouseEvent) {

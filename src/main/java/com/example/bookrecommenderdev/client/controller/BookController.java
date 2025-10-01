@@ -1,6 +1,7 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.BookRecommenderService;
+import com.example.bookrecommenderdev.client.AppContext;
+import com.example.bookrecommenderdev.client.Routable;
 import com.example.bookrecommenderdev.model.Libro;
 import com.example.bookrecommenderdev.server.dto.PaginaLibro;
 import javafx.fxml.FXML;
@@ -12,8 +13,9 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Map;
 
-public class BookController {
+public class BookController implements Routable {
 
   @FXML
   public VBox bookPage;
@@ -30,6 +32,8 @@ public class BookController {
 
   @FXML
   public VBox scoresContainer;
+
+  AppContext context;
 
   @FXML
   public void initialize() {
@@ -54,7 +58,7 @@ public class BookController {
 
     try {
 
-      PaginaLibro pagina = BookRecommenderService.getServer().getPaginaLibro(idLibro);
+      PaginaLibro pagina = context.server().getPaginaLibro(idLibro);
 
 
       if (pagina != null) {
@@ -135,5 +139,10 @@ public class BookController {
     }
 
     return stars;
+  }
+
+  @Override
+  public void onRoute(Map<String, String> params, AppContext context) {
+    this.context = context;
   }
 }

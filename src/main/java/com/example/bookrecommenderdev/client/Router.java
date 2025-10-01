@@ -11,13 +11,15 @@ import java.util.Map;
 public class Router {
   private static StackPane rootContainer;
   private static final Map<String, String> routes = new HashMap<>();
+  private static AppContext appContext;
 
   /**
-   * Metodo di inizializzazione per il router con lo stack da gestire.
+   * Metodo di inizializzazione per il router con il riferimento
    * @param container Stack interessato
    */
-  public static void init(StackPane container) {
+  public static void init(StackPane container, AppContext ctx) {
     rootContainer = container;
+    appContext = ctx;
 
     // Registrazione delle pagine
     routes.put("/", "home-view.fxml");
@@ -30,11 +32,6 @@ public class Router {
     routes.put("/libraries/:query", "library-view.fxml");
     // error routes?
 
-    for (Map.Entry<String, String> e: routes.entrySet()) {
-      System.out.println(e.getKey() + " - " + e.getValue());
-    }
-
-    System.out.println();
   }
 
 
@@ -59,9 +56,8 @@ public class Router {
 
   /**
    * Metodo helper per la gestione delle pagine. odadasdasdasdaseffdc
-   * @param route percorso
+   * @param route nome del percorso
    * @param path percorso richiesto
-   * @return
    */
   private static Map<String, String> matchRoute(String route, String path) {
     String[] routeParts = route.split("/");
@@ -83,7 +79,8 @@ public class Router {
 
   /**
    * Metodo helper per caricare una pagina.
-   * @param fxml Nome del file .fxml
+   *
+   * @param fxml   Nome del file .fxml
    * @param params parametri da passare
    */
   private static void loadPage(String fxml, Map<String, String> params) {
@@ -92,9 +89,9 @@ public class Router {
       Parent root = loader.load();
       Object controller = loader.getController();
 
-      // Assegnazione dei parametri per pagine che li richiedono
+      // Assegnazione dei parametri alle pagine che li richiedono
       if (controller instanceof Routable routable) {
-        routable.onRoute(params);
+        routable.onRoute(params, appContext);
       }
 
       rootContainer.getChildren().setAll(root);

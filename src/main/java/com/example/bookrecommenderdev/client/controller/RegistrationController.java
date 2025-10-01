@@ -1,8 +1,8 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.BookRecommenderService;
+import com.example.bookrecommenderdev.client.AppContext;
+import com.example.bookrecommenderdev.client.Routable;
 import com.example.bookrecommenderdev.model.Utente;
-import com.example.bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 import static com.example.bookrecommenderdev.utils.InputVerifiers.*;
 import static com.example.bookrecommenderdev.utils.InputVerifiers.verCodiceFiscale;
@@ -18,7 +19,7 @@ import static com.example.bookrecommenderdev.utils.InputVerifiers.verifyEmail;
 import static com.example.bookrecommenderdev.utils.InputVerifiers.verifyName;
 import static com.example.bookrecommenderdev.utils.InputVerifiers.verifyPassword;
 
-public class RegistrationController {
+public class RegistrationController implements Routable {
 
   final static String LOCAL_CREDENTIALS = "credentials.txt";
 
@@ -44,6 +45,8 @@ public class RegistrationController {
   @FXML
   private CheckBox registerRicordaCredenziali;
 
+  private AppContext context;
+
   @FXML
   public void initialize() {
 // registration fields
@@ -52,6 +55,12 @@ public class RegistrationController {
     preventMultipleSpacesAndLimit(registerEmail, 255);
     preventMultipleSpacesAndLimit(registerPassword, 64);
     restrictLooseFiscalCodeInput(registerCodiceFiscale);
+  }
+
+
+  @Override
+  public void onRoute(Map<String, String> params, AppContext context) {
+    this.context = context;
   }
 
 //  private void initVerifyLocalUserCredentials() {
@@ -119,7 +128,7 @@ public class RegistrationController {
           codiceFiscale,
           password
       );
-      String res = BookRecommenderService.getServer().registrazione(u);
+      String res = context.server().registrazione(u);
 
       switch(res) {
         case "success":

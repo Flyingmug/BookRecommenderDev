@@ -1,6 +1,7 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.BookRecommenderService;
+import com.example.bookrecommenderdev.client.AppContext;
+import com.example.bookrecommenderdev.client.Routable;
 import com.example.bookrecommenderdev.client.factory.BookDisplayFactory;
 import com.example.bookrecommenderdev.model.Libro;
 import javafx.fxml.FXML;
@@ -17,9 +18,10 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 
-public class SearchResultsController {
+public class SearchResultsController implements Routable {
   final static int PAGE_SIZE = 50;
   static BookDisplayFactory bookDisplayCreator = new BookDisplayFactory();
 
@@ -44,9 +46,16 @@ public class SearchResultsController {
   @FXML
   private ScrollPane booksResultsPage;
 
+  private AppContext context;
   int currentResultPageIndex;
   int bookResultCount;
   String currentSearchInput;
+
+
+  @Override
+  public void onRoute(Map<String, String> params, AppContext context) {
+    this.context = context;
+  }
 
   @FXML
   public void initialize() {
@@ -89,7 +98,7 @@ public class SearchResultsController {
     }
 
     try {
-      Pair<List<Libro>, Integer> data = BookRecommenderService.getServer().searchTitolo(newInput, currentResultPageIndex);
+      Pair<List<Libro>, Integer> data = context.server().searchTitolo(newInput, currentResultPageIndex);
       List<Libro> books = data.getKey();
       int totalResults = data.getValue();
 

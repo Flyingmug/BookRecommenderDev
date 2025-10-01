@@ -1,6 +1,7 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.BookRecommenderService;
+import com.example.bookrecommenderdev.client.AppContext;
+import com.example.bookrecommenderdev.client.Routable;
 import com.example.bookrecommenderdev.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,12 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
-import java.awt.print.Book;
 import java.rmi.RemoteException;
+import java.util.Map;
 
 import static com.example.bookrecommenderdev.utils.InputVerifiers.*;
 
-public class LoginController {
+public class LoginController implements Routable {
 
   // login
   @FXML
@@ -32,6 +33,8 @@ public class LoginController {
   private Button confirmLoginButton;
   @FXML
   private CheckBox loginRicordaCredenziali;
+
+  private AppContext context;
 
   @FXML
   public void initialize() {
@@ -65,7 +68,7 @@ public class LoginController {
     }
 
     try {
-      Pair<Utente, String> res = BookRecommenderService.getServer().login(email, password);
+      Pair<Utente, String> res = context.server().login(email, password);
 
       switch(res.getValue()) {
         case "success":
@@ -107,5 +110,8 @@ public class LoginController {
     loginFeedback.setText(message);
   }
 
-
+  @Override
+  public void onRoute(Map<String, String> params, AppContext context) {
+    this.context = context;
+  }
 }

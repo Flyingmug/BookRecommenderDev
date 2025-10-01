@@ -1,11 +1,9 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.BookRecommenderService;
+import com.example.bookrecommenderdev.client.AppContext;
 import com.example.bookrecommenderdev.client.Router;
-import com.example.bookrecommenderdev.model.Libreria;
 import com.example.bookrecommenderdev.model.Utente;
 import com.example.bookrecommenderdev.server.ServerInterface;
-import com.example.bookrecommenderdev.utils.FileManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -16,14 +14,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
-import javafx.util.Pair;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
 
 import static com.example.bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 
@@ -56,11 +53,11 @@ public class LayoutController {
   @FXML
   private StackPane searchbarWrapper;
 
-  private ServerInterface bookRecommender;
-
-
   // utente corrente
   Utente currentUser;
+
+  ServerInterface bookRecommender;
+  AppContext context;
 
 
   @FXML
@@ -69,11 +66,8 @@ public class LayoutController {
     initRegistry();
     initSetupLayout();
 
-
-    Router.init(centerStackContainer);
-    // apre la pagina iniziale
-    Router.go("/");
-
+    context = new AppContext(bookRecommender);
+    Router.init(centerStackContainer, context);
     //
     //
     // TEST
@@ -103,13 +97,16 @@ public class LayoutController {
 
   }
   private void initPriorityLayout() {
+    Label serverErrorIcon = new Label();
+    serverErrorIcon.setGraphic(new FontIcon("mdi2a-alert-outline"));
+    serverErrorIcon.setFont(new Font(75));
     serverErrorTitle = new Label();
     serverErrorTitle.getStyleClass().addAll("error-label", "connection-error-title");
     serverErrorLabel = new Label();
     serverErrorLabel.getStyleClass().addAll("error-label", "connection-error-label");
     serverConnErrorWrapper = new VBox();
     serverConnErrorWrapper.setAlignment(Pos.CENTER);
-    serverConnErrorWrapper.getChildren().addAll(serverErrorTitle, serverErrorLabel);
+    serverConnErrorWrapper.getChildren().addAll(serverErrorIcon, serverErrorTitle, serverErrorLabel);
 
 
     librariesButton = new Button("Librerie");
@@ -132,7 +129,10 @@ public class LayoutController {
    */
   private void initRegistry() {
     try {
-      BookRecommenderService.init("localhost", 1099);
+      Registry reg = LocateRegistry.getRegistry("localhost", 1099);
+      bookRecommender = (ServerInterface) reg.lookup("serverBR");
+      Router.go("/"); // apertura della pagina iniziale all'esecuzione
+
     } catch(RemoteException e) {
       notifyServerError(e.getMessage(), "Server connection failed!\n (Server might not be online or address is wrong)");
       // error display on main page
@@ -183,52 +183,21 @@ public class LayoutController {
 //  }
 
 
-//  @FXML
-//  protected void onLogin() {
-//    hideAllPages();
-//    resetLoginPage();
-//    loginPage.setVisible(true);
-//  }
-
-
-//  @FXML
-//  protected void onRegister() {
-//    hideAllPages();
-//    resetRegisterPage();
-//    registerPage.setVisible(true);
-//  }
-
-
-
-
-
-
-
   @FXML
   protected void onSearchCriteriaDisplay() {
-
   }
-
   @FXML
   protected void onCriteriaSelection() {
-
   }
-
   @FXML
   protected void onCreateUser() {
-
   }
-
   @FXML
   protected void onDeleteUser() {
-
   }
-
   @FXML
   protected void onAction() {
-
   }
-
 
   private void notifyServerError(String originalMessage, String titleMessage) {
     navbar.getChildren().clear();
@@ -237,7 +206,6 @@ public class LayoutController {
     serverErrorLabel.setText(originalMessage);
     centerStackContainer.getChildren().add(serverConnErrorWrapper);
   }
-
 
   public void onRegister(ActionEvent actionEvent) {
   }

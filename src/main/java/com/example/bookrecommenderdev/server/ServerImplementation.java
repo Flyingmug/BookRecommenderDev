@@ -13,6 +13,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.example.bookrecommenderdev.model.AuthStatus.*;
+
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
   private final LibroDao libri;
@@ -154,17 +156,17 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    * @param password password utente
    * @return token di sessione............
    */
-  public Pair<Utente, String> login(String email, String password) throws RemoteException {
+  public Pair<Utente, AuthStatus> login(String email, String password) throws RemoteException {
 
     try {
       List<Utente> lista = utenti.get(email, password, false);
       System.out.println("Size: " + lista.size());
 
-      if (lista.isEmpty()) return new Pair<>(null, "no-such-user");
+      if (lista.isEmpty()) return new Pair<>(null, NO_SUCH_USER);
 
-      return new Pair<>(lista.getFirst(), "success");
+      return new Pair<>(lista.getFirst(), SUCCESS);
     } catch (SQLException e) {
-      return new Pair<>(null, "db-error");
+      return new Pair<>(null, DB_ERROR);
     }
   }
 

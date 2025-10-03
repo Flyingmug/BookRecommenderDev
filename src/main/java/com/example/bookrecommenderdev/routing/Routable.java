@@ -1,4 +1,4 @@
-package com.example.bookrecommenderdev.client;
+package com.example.bookrecommenderdev.routing;
 
 import java.util.Map;
 

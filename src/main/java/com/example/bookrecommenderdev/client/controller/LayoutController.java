@@ -1,14 +1,13 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.AppContext;
-import com.example.bookrecommenderdev.client.Router;
+import com.example.bookrecommenderdev.routing.AppContext;
+import com.example.bookrecommenderdev.routing.Route;
+import com.example.bookrecommenderdev.routing.RouteGroup;
+import com.example.bookrecommenderdev.routing.Router;
 import com.example.bookrecommenderdev.model.Utente;
 import com.example.bookrecommenderdev.server.ServerInterface;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -21,32 +20,21 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-
-import static com.example.bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LayoutController {
 
+  @FXML private Label serverErrorTitle;
+  @FXML private Label serverErrorLabel;
+  @FXML private VBox serverConnErrorWrapper;
 
-  @FXML
-  private Label serverErrorTitle;
-  @FXML
-  private Label serverErrorLabel;
-  @FXML
-  private VBox serverConnErrorWrapper;
+  @FXML private StackPane centerStackContainer;
 
-  @FXML
-  private StackPane centerStackContainer;
+  @FXML private HBox navbar;
+  @FXML private NavbarController navbarController;
+  @FXML private HBox navbarControls;
 
-  @FXML
-  private HBox navbar;
-  @FXML
-  private HBox navbarControls;
-  @FXML
-  private Button librariesButton;
-  @FXML
-  private Button profileButton;
-  @FXML
-  private Label profilePicture;
 
   @FXML
   private StackPane searchbarWrapper;
@@ -61,13 +49,25 @@ public class LayoutController {
   @FXML
   public void initialize() {
     initPriorityLayout();
+
+
+    Map<String, Route> routes = new HashMap<>();
+
+    // Registrazione delle pagine
+    routes.put("/", new Route("home-view.fxml"));
+    routes.put("/search/:query", new Route("searchResults-view.fxml", RouteGroup.WITH_SEARCH));
+    routes.put("/book/:query", new Route("book-view.fxml", RouteGroup.WITH_SEARCH));
+    routes.put("/login", new Route("login-view.fxml", RouteGroup.AUTH));
+    routes.put("/registration", new Route("registration-view.fxml", RouteGroup.AUTH));
+    routes.put("/profile", new Route("profile-view.fxml"));
+    routes.put("/libraries", new Route("libraries-view.fxml"));
+    routes.put("/libraries/:query", new Route("library-view.fxml"));
+
+    context = new AppContext(bookRecommender, currentUser, navbarController);
+    Router.init(centerStackContainer, context, routes);
+
     initRegistry();
     initSetupLayout();
-
-    context = new AppContext(bookRecommender, currentUser);
-    Router.init(centerStackContainer, context);
-    Router.go("/"); // apertura della pagina iniziale all'esecuzione
-
     //
     //
     // TEST
@@ -108,21 +108,6 @@ public class LayoutController {
     serverConnErrorWrapper.setAlignment(Pos.CENTER);
     serverConnErrorWrapper.getChildren().addAll(serverErrorIcon, serverErrorTitle, serverErrorLabel);
 
-
-    librariesButton = new Button("Librerie");
-    librariesButton.setFont(new Font("Arial", 15));
-    librariesButton.getStyleClass().addAll("libraries-button", "navbar-button");
-    librariesButton.setOnAction(_ -> onLibraryList());
-
-    profileButton = new Button();
-    profileButton.setText("");
-    profileButton.tooltipProperty().set(new Tooltip("Pagina profilo"));
-    setRandomBackgroundColor(profileButton);
-    profileButton.getStyleClass().add("profile-picture-button");
-    profileButton.setOnAction(_ -> Router.go("/profile"));
-    profilePicture = new Label();
-    profilePicture.getStyleClass().add("profile-picture-text");
-    profileButton.setGraphic(profilePicture);
   }
   /**
    * Inizializza l'oggetto remoto del server dal repository.
@@ -133,16 +118,17 @@ public class LayoutController {
       bookRecommender = (ServerInterface) reg.lookup("serverBR");
 
     } catch(RemoteException e) {
+      // error display on main page
       notifyServerError(e.getMessage(), "Server connection failed!\n (Server might not be online or address is wrong)");
-      // error display on main page
     } catch(NotBoundException e) {
-      notifyServerError(e.getMessage(), "Server not found!\n");
-
       // error display on main page
+      notifyServerError(e.getMessage(), "Server not found!\n");
     } finally {
-      if (bookRecommender != null)
+      if (bookRecommender != null) {
         System.out.println("TMP message: local info verification");
+        Router.go("/"); // apertura della pagina iniziale all'esecuzione
 //        initVerifyLocalUserCredentials();
+      }
     }
   }
 
@@ -206,17 +192,7 @@ public class LayoutController {
     centerStackContainer.getChildren().add(serverConnErrorWrapper);
   }
 
-  public void onRegister(ActionEvent actionEvent) {
-    Router.go("/registration");
-  }
 
-  public void onHomepage(ActionEvent actionEvent) {
-    Router.go("/");
-  }
-
-  public void onLogin(ActionEvent actionEvent) {
-    Router.go("/login");
-  }
 
   public void onSearchAction(MouseEvent mouseEvent) {
 

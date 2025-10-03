@@ -1,8 +1,9 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.AppContext;
-import com.example.bookrecommenderdev.client.Routable;
+import com.example.bookrecommenderdev.routing.AppContext;
+import com.example.bookrecommenderdev.routing.Routable;
 import com.example.bookrecommenderdev.model.Utente;
+import com.example.bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -13,6 +14,7 @@ import javafx.scene.layout.VBox;
 import java.rmi.RemoteException;
 import java.util.Map;
 
+import static com.example.bookrecommenderdev.Constants.LOCAL_CREDENTIALS;
 import static com.example.bookrecommenderdev.utils.InputVerifiers.*;
 import static com.example.bookrecommenderdev.utils.InputVerifiers.verCodiceFiscale;
 import static com.example.bookrecommenderdev.utils.InputVerifiers.verifyEmail;
@@ -21,7 +23,6 @@ import static com.example.bookrecommenderdev.utils.InputVerifiers.verifyPassword
 
 public class RegistrationController implements Routable {
 
-  final static String LOCAL_CREDENTIALS = "credentials.txt";
 
   // registrazione
   @FXML
@@ -40,10 +41,10 @@ public class RegistrationController implements Routable {
   private TextField registerCodiceFiscale;
   @FXML
   private Button registerButton;
+//  @FXML
+//  private Button confirmRegistrationButton;
   @FXML
-  private Button confirmRegistrationButton;
-  @FXML
-  private CheckBox registerRicordaCredenziali;
+  private CheckBox saveCredentialsCheck;
 
   private AppContext context;
 
@@ -83,11 +84,11 @@ public class RegistrationController implements Routable {
     registerEmail.setText("");
     registerPassword.setText("");
     registerCodiceFiscale.setText("");
-    registerRicordaCredenziali.setSelected(false);
+    saveCredentialsCheck.setSelected(false);
   }
 
   @FXML
-  protected void onConfirmRegistration() {
+  protected void onRegister() {
     String name = registerName.getText();
     String surname = registerSurname.getText();
     String email = registerEmail.getText();
@@ -134,7 +135,7 @@ public class RegistrationController implements Routable {
         case "success":
           setRegistrationFeedback("Registrazione avvenuta con successo");
 //          currentUser = u;
-          if (registerRicordaCredenziali.isSelected())
+          if (saveCredentialsCheck.isSelected())
             saveCredentials();
           break;
         case "user-exists":
@@ -157,7 +158,7 @@ public class RegistrationController implements Routable {
   }
 
   private void saveCredentials() {
-//    FileManager.write(LOCAL_CREDENTIALS, currentUser.getEmail() + "," + currentUser.getPassword());
+    FileManager.write(LOCAL_CREDENTIALS, context.user().getEmail() + "," + context.user().getPassword());
   }
 
   private void setRegistrationFeedback(String message) {

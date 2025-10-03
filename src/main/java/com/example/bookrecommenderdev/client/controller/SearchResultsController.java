@@ -1,7 +1,7 @@
 package com.example.bookrecommenderdev.client.controller;
 
-import com.example.bookrecommenderdev.client.AppContext;
-import com.example.bookrecommenderdev.client.Routable;
+import com.example.bookrecommenderdev.routing.AppContext;
+import com.example.bookrecommenderdev.routing.Routable;
 import com.example.bookrecommenderdev.client.factory.BookDisplayFactory;
 import com.example.bookrecommenderdev.model.Libro;
 import javafx.fxml.FXML;

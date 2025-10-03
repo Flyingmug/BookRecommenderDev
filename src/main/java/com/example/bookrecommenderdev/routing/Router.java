@@ -1,35 +1,33 @@
-package com.example.bookrecommenderdev.client;
+package com.example.bookrecommenderdev.routing;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Router {
   private static StackPane rootContainer;
-  private static final Map<String, String> routes = new HashMap<>();
+  private static Map<String, Route> routes;
   private static AppContext appContext;
 
   /**
-   * Metodo di inizializzazione per il router con il riferimento
-   * @param container Stack interessato
+   * Metodo di inizializzazione per il router con il riferimento.
+   * La lista di percorsi è un hashmap contenente coppie del tipo ("/nome-percorso", r: Route);
+   * Il nomi dei percorsi saranno utilizzati dal metodo {@link #go(String) go} durante la ricerca della
+   * presenza del percorso richiesto.
+   * @param container Stack interessato.
+   * @param ctx Contesto dell'applicazione.
+   * @param routeList Hashmap di percorsi.
    */
-  public static void init(StackPane container, AppContext ctx) {
+  public static void init(StackPane container, AppContext ctx, Map<String, Route> routeList) {
     rootContainer = container;
     appContext = ctx;
+    routes = routeList;
 
-    // Registrazione delle pagine
-    routes.put("/", "home-view.fxml");
-    routes.put("/search/:query", "searchResults-view.fxml");
-    routes.put("/book/:query", "book-view.fxml");
-    routes.put("/login", "login-view.fxml");
-    routes.put("/registration", "registration-view.fxml");
-    routes.put("/profile", "profile-view.fxml");
-    routes.put("/libraries", "libraries-view.fxml");
-    routes.put("/libraries/:query", "library-view.fxml");
     // error routes?
 
   }
@@ -37,16 +35,23 @@ public class Router {
 
   /**
    * Metodo incaricato di gestire la navigazione tra pagine logiche.
-   * @param path Percorso della pagina interessata
+   * @param path Percorso della pagina interessata.
    */
   public static void go(String path) {
-    for (Map.Entry<String, String> entry: routes.entrySet()) {
-      String route = entry.getKey();
-      String fxml = entry.getValue();
+    for (Map.Entry<String, Route> entry: routes.entrySet()) {
+      String routeName = entry.getKey();
+      Route route = entry.getValue();
+      String fxml = route.fxml();
 
-      Map<String, String> params = matchRoute(route, path);
+      Map<String, String> params = matchRoute(routeName, path);
       if (params != null) {
         loadPage(fxml, params);
+
+        switch (route.group()) {
+          case DEFAULT -> System.out.println("TestA");
+          case WITH_SEARCH -> System.out.println("TestB");
+          case AUTH -> System.out.println("TestC");
+        }
         return;
       }
     }
@@ -78,14 +83,14 @@ public class Router {
   }
 
   /**
-   * Metodo helper per caricare una pagina.
-   *
-   * @param fxml   Nome del file .fxml
-   * @param params parametri da passare
+   * Metodo helper per caricare una pagina utilizzando il nome del file corrispondente
+   * al percorso, come specificato nei percorsi durante l'inizializzazione.
+   * @param fxml Nome del file .fxml.
+   * @param params Parametri da passare alla pagina.
    */
   private static void loadPage(String fxml, Map<String, String> params) {
     try {
-      FXMLLoader loader = new FXMLLoader(Router.class.getResource(fxml)); // "/com/example/bookrecommenderdev/client" + fxml
+      FXMLLoader loader = new FXMLLoader(Router.class.getResource("/com/example/bookrecommenderdev/client/" + fxml)); // "/com/example/bookrecommenderdev/client" + fxml
       Parent root = loader.load();
       Object controller = loader.getController();
 

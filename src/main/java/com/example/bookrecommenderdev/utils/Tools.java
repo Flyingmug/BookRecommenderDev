@@ -18,6 +18,12 @@ public class Tools {
   private static final String INTEGER_REGEX = "^-?\\d+$"; // Match per gli interi
   private static final Random rand = new Random();
 
+
+  /**
+   * Applies a random background color to the specified node through
+   * the style property {@code -fx-background-color: rgb(r, g, b)}.
+   * @param node Target Node.
+   */
   public static void setRandomBackgroundColor(Node node) {
     // Generate random RGB values
     int r = rand.nextInt(256);

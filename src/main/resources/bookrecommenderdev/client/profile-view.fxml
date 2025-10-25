@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox fx:id="profilePage" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.ProfileController" prefHeight="200.0" prefWidth="100.0">
+   <VBox prefHeight="200.0" prefWidth="693.0" VBox.vgrow="ALWAYS">
+      <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#onLogout" text="Esci dall'account">
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </VBox.margin>
+      </Button>
+   </VBox>
+</VBox>

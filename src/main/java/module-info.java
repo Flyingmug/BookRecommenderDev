@@ -10,20 +10,20 @@ module com.example.bookrecommenderdev {
   requires org.slf4j;
 
 
-  opens com.example.bookrecommenderdev.client to javafx.fxml;
-  exports com.example.bookrecommenderdev.client;
-  exports com.example.bookrecommenderdev.client.controller;
-  opens com.example.bookrecommenderdev.client.controller to javafx.fxml;
+  opens bookrecommenderdev.client to javafx.fxml;
+  exports bookrecommenderdev.client;
+  exports bookrecommenderdev.client.controller;
+  opens bookrecommenderdev.client.controller to javafx.fxml;
 
-  opens com.example.bookrecommenderdev.server to javafx.fxml;
-  exports com.example.bookrecommenderdev.server;
-  exports com.example.bookrecommenderdev.server.controller;
-  exports com.example.bookrecommenderdev.server.dto;
-  opens com.example.bookrecommenderdev.server.controller to javafx.fxml;
+  opens bookrecommenderdev.server to javafx.fxml;
+  exports bookrecommenderdev.server;
+  exports bookrecommenderdev.server.controller;
+  exports bookrecommenderdev.server.dto;
+  opens bookrecommenderdev.server.controller to javafx.fxml;
 
-  exports com.example.bookrecommenderdev.model;
-  exports com.example.bookrecommenderdev;
-  opens com.example.bookrecommenderdev to javafx.fxml;
-  exports com.example.bookrecommenderdev.routing;
-  opens com.example.bookrecommenderdev.routing to javafx.fxml;
+  exports bookrecommenderdev.model;
+  exports bookrecommenderdev;
+  opens bookrecommenderdev to javafx.fxml;
+  exports bookrecommenderdev.routing;
+  opens bookrecommenderdev.routing to javafx.fxml;
 }

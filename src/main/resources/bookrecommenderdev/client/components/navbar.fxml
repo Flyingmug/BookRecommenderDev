@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.NavbarController"
+      alignment="CENTER"
+      maxWidth="1.7976931348623157E308"
+      prefHeight="70.0" prefWidth="1000.0"
+      style="-fx-background-color: #d5d5d5; -fx-padding: 0 40 0 40; -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);" BorderPane.alignment="CENTER"
+>
+      <StackPane fx:id="searchbar" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="500.0" prefHeight="60.0" prefWidth="640.0" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-width: 1; -fx-background-radius: 5; -fx-border-color: lightgrey;" styleClass="searchbar-navbar" visible="false">
+         <HBox alignment="CENTER" minWidth="-Infinity" prefWidth="213.0" style="-fx-padding: 0 10 0 10;">
+            <TextField fx:id="searchInput" focusTraversable="false" minHeight="-Infinity" prefWidth="0.0" promptText="Cerca..." style="-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-border-color: transparent; -fx-background-color: transparent;" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font name="Constantia" size="20.0" />
+               </font>
+            </TextField>
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSearchAction" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <tooltip>
+                  <Tooltip text="Cerca" />
+               </tooltip>
+               <graphic>
+                  <FontIcon iconColor="#4E5498" iconLiteral="mdi2m-magnify" iconSize="38" />
+               </graphic>
+            </Button>
+            <Button contentDisplay="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <tooltip>
+                  <Tooltip text="Criterio di ricerca" />
+               </tooltip>
+               <graphic>
+                  <FontIcon iconColor="#4E5498" iconLiteral="mdi2t-table-filter" iconSize="32" />
+               </graphic>
+            </Button>
+         </HBox>
+      </StackPane>
+      <Region HBox.hgrow="ALWAYS" />
+      <HBox alignment="CENTER" prefHeight="145.0" style="-fx-spacing: 20;">
+         <Button fx:id="loginButton" layoutX="87.0" layoutY="59.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="36.0" styleClass="login-button, navbar-button" text="Login">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Button>
+         <Button fx:id="registerButton" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onRegister" prefHeight="36.0" styleClass="register-button, navbar-button" text="Registrati">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Button>
+         <Button fx:id="librariesButton" managed="false" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onLibraries" prefHeight="36.0" styleClass="libraries-button, navbar-button" text="Librerie">
+            <tooltip>
+               <Tooltip text="Librerie personali" />
+            </tooltip>
+            <font>
+               <Font name="Arial" size="15.0" />
+            </font>
+         </Button>
+         <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#onHomepage" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
+            <tooltip>
+               <Tooltip text="Pagina iniziale" />
+            </tooltip>
+            <graphic>
+               <FontIcon iconColor="#4E5498" iconLiteral="mdi2h-home" iconSize="32" />
+            </graphic>
+         </Button>
+         <Button fx:id="profileButton" managed="false" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onProfile" prefHeight="36.0" styleClass="profile-picture-button">
+            <font>
+               <Font size="15.0" />
+            </font>
+            <tooltip>
+               <Tooltip text="Profilo" />
+            </tooltip>
+            <graphic>
+               <Label fx:id="profileText" styleClass="profile-picture-text" />
+            </graphic>
+         </Button>
+      </HBox>
+</HBox>

@@ -2,7 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-src/main/java/com/example/bookrecommenderdev/server/db/DatabaseConfig.java
+src/main/java/bookrecommenderdev/server/db/DatabaseConfig.java
 credentials.txt
 
 ### IntelliJ IDEA ###

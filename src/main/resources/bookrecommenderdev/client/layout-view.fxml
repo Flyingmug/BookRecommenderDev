@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane maxWidth="1.7976931348623157E308" prefHeight="632.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookrecommenderdev.client.controller.LayoutController">
+   <top>
+      <fx:include source="components/navbar.fxml" fx:id="navbar" />
+   </top>
+   <center>
+      <StackPane fx:id="centerStackContainer" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <VBox fx:id="serverConnErrorWrapper" managed="false">
+            <Label>
+               <font>
+                  <Font size="75" />
+               </font>
+               <graphic>
+                  <FontIcon iconLiteral="mdi2a-alert-outline" />
+               </graphic>
+            </Label>
+            <Label fx:id="serverErrorTitle" styleClass="error-label connection-error-title" />
+            <Label fx:id="serverErrorLabel" styleClass="error-label connection-error-title" />
+         </VBox>
+      </StackPane>
+
+   </center>
+</BorderPane>

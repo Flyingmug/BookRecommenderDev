@@ -1,69 +1,125 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.animations.Book;
-import bookrecommenderdev.animations.BookRectangle;
-import javafx.animation.AnimationTimer;
+import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.util.Duration;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoadingController {
 
 
-  @FXML public Canvas loadingCanvas;
-
-  List<Book> elements;
+  @FXML public Group animationGroup;
 
   @FXML
   public void initialize() {
+//    Group root = new Group();
 
-    elements = new LinkedList<>();
-    elements.add(new Book(
-        new BookRectangle(350, 100, 250, 120, 0, 0, 0, 3, Color.DARKBLUE),
-        100, 0, 0
-    ));
-//    elements.add(new Book(
-//        new BookRectangle(350, 200, 250, 80, 15, 10, 4, 3, Color.CYAN),
-//        200, 10, 0
-//    ));
-//    elements.add(new Book(
-//        new BookRectangle(350, 300, 250, 80, 15, 10, 4, 3, Color.BLUEVIOLET),
-//        150, 10, 0
-//    ));
-//    elements.add(new Book(
-//        new BookRectangle(350, 400, 250, 80, 15, 10, 4, 3, Color.AQUAMARINE),
-//        70, 10, 0
-//    ));
+    // === Create 4 groups, each with 2 paths ===
+    for (int i = 0; i < 1; i++) {
+      Group group = createPathGroup(300, 100, 5, 10, 25, 15);
+      group.setTranslateY(150 + i * 160);
 
-    elements.getFirst().addRotationKeyframe(0, 90);
-    elements.getFirst().addRotationKeyframe(1500, 0);
-    elements.getFirst().addRotationKeyframe(3000, 0);
+      // Animate the entire group (movement + rotation)
+//      Timeline groupTimeline = new Timeline(
+//          new KeyFrame(Duration.seconds(0),
+//              new KeyValue(group.translateYProperty(), 150)
+//          ),
+//          new KeyFrame(Duration.seconds(2/* + i * 0.5*/), // stagger slightly
+//              new KeyValue(group.translateYProperty(), 150 /*+ 50 * Math.sin(i * Math.PI / 2)*/)
+//          )
+//      );
+//      groupTimeline.setCycleCount(Animation.INDEFINITE);
+//      groupTimeline.setAutoReverse(true);
+//      groupTimeline.play();
 
-    GraphicsContext gc = loadingCanvas.getGraphicsContext2D();
+      animationGroup.getChildren().add(group);
+    }
 
-    AnimationTimer timer = new AnimationTimer() {
-      private long start = -1;
+  }
 
-      @Override
-      public void handle(long now) {
-        if (start < 0) start = now;
-        double elapsed = (now - start) / 1_000_000.0;
+  // === Helper: create a group with 2 related paths ===
+  private Group createPathGroup(double width, double height, double extendH, double extendW, double convexR, double concaveR) {
 
-        // Clear and draw
-        gc.setFill(Color.DIMGRAY);
-        gc.fillRect(0, 0, loadingCanvas.getWidth(), loadingCanvas.getHeight());
+    double extW = Math.min(extendW, width);
+    double convR = Math.min(convexR, width);
+    double concR = Math.min(concaveR, width);
+//    double tmp = convR;
+//    convR = Math.min(convR, w - concR);
+//    concR = Math.min(concR, w - tmp);
 
-        // draw
-        for(Book b: elements) {
-          b.draw(gc, elapsed);
-        }
 
-      }
-    };
-    timer.start();
+    Path path1 = new Path(
+        new MoveTo(0, 0),
+        new LineTo(width - convR, 0),
+        new QuadCurveTo(width, 0, width, height/2),
+        new QuadCurveTo(width, height, width - convR, height),
+        new LineTo(0, height),
+        new LineTo(0, height - extendH),
+        new LineTo(extW, height - extendH),
+        new QuadCurveTo(extW + concR, height - extendH, extW + concR, height/2),
+        new QuadCurveTo(extW + concR, extendH, extW, extendH),
+        new LineTo(0, extendH),
+        new ClosePath()
+    );
+    path1.setStrokeWidth(0);
+    path1.setFill(Color.TURQUOISE);
+
+    Path path2 = new Path(
+        new MoveTo(extW, extendH),
+        new LineTo(width - convR, extendH),
+        new QuadCurveTo(width - extendH, extendH, width - extendH, height/2),
+        new QuadCurveTo(width - extendH, height - extendH, width - convR, height - extendH),
+
+        new LineTo(extW, height - extendH),
+        new QuadCurveTo(extW + concR, height - extendH, extW + concR, height/2),
+        new QuadCurveTo(extW + concR, extendH, extW, extendH)
+    );
+    path2.setStrokeWidth(0);
+    path2.setFill(Color.IVORY);
+
+    // Animate path2's curvature
+//    QuadCurveTo curve2 = (QuadCurveTo) path2.getElements().get(2);
+//    Timeline pathTimeline = new Timeline(
+//        new KeyFrame(Duration.seconds(0),
+//            new KeyValue(curve2.controlYProperty(), 40),
+//            new KeyValue(path2.strokeProperty(), path2.getStroke())
+//        ),
+//        new KeyFrame(Duration.seconds(2),
+//            new KeyValue(curve2.controlYProperty(), -40),
+//            new KeyValue(path2.strokeProperty(), Color.WHITE)
+//        )
+//    );
+//    pathTimeline.setCycleCount(Animation.INDEFINITE);
+//    pathTimeline.setAutoReverse(true);
+//    pathTimeline.play();
+
+    return new Group(path1, path2);
+
+    /*
+    * double width = vals.get("vertical_projection_width");
+    double hyp = Math.hypot(width, vals.get("vertical_projection_height"));
+    cover.getWidth().addKeyframe(time, hyp);
+    pages.getWidth().addKeyframe(time, width);
+    * */
+  }
+
+  public static Map<String, Double> getVerticalProjections(double width, double height, double angleDeg) {
+    double phi = Math.toRadians(angleDeg);
+    double c = Math.cos(phi), s = Math.sin(phi);
+
+    BigDecimal verticalProjWidth = BigDecimal.valueOf(Math.abs(width * s)).setScale(3, RoundingMode.HALF_EVEN);
+    BigDecimal verticalProjHeight = BigDecimal.valueOf(Math.abs(height * c)).setScale(3, RoundingMode.HALF_EVEN);
+
+    Map<String, Double> result = new HashMap<>();
+    result.put("vertical_projection_width", verticalProjWidth.doubleValue());
+    result.put("vertical_projection_height", verticalProjHeight.doubleValue());
+    return result;
   }
 }

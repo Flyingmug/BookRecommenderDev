@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookrecommenderdev.client.controller.LoadingController">
-   <Canvas fx:id="loadingCanvas" height="500.0" style="-fx-border-color: blue; -fx-border-width: 2;" width="800.0" />
+<?import javafx.scene.Group?>
+<StackPane style="-fx-background-color: #26282a;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookrecommenderdev.client.controller.LoadingController">
+   <Group fx:id="animationGroup" style="-fx-border-color: blue; -fx-border-width: 2;" />
 </StackPane>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.Group?>
 <StackPane style="-fx-background-color: #26282a;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookrecommenderdev.client.controller.LoadingController">
-   <Group fx:id="animationGroup" style="-fx-border-color: blue; -fx-border-width: 2;" />
+   <StackPane fx:id="animationGroup" style="-fx-border-color: blue; -fx-border-width: 2;" StackPane.alignment="CENTER" />
 </StackPane>

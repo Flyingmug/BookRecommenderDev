@@ -8,6 +8,7 @@ module com.example.bookrecommenderdev {
   requires org.kordamp.ikonli.javafx;
   requires java.desktop;
   requires org.slf4j;
+  requires javafx.web;
 
 
   opens bookrecommenderdev.client to javafx.fxml;

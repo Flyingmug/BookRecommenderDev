@@ -14,11 +14,14 @@ public class NavbarController {
   @FXML private StackPane searchbar;
   @FXML private TextField searchInput;
 
-  @FXML public Button loginButton;
-  @FXML public Button registerButton;
+  @FXML private Button loginButton;
+  @FXML private Button registerButton;
   @FXML private Button librariesButton;
   @FXML private Button profileButton;
   @FXML private Label profileText;
+
+  @FXML private Button prevPage;
+  @FXML private Button nextPage;
 
   @FXML
   public void initialize() {
@@ -32,21 +35,19 @@ public class NavbarController {
   public void showProfilePicture(Boolean v) { profileButton.setManaged(v); }
   public void setProfileInitials(String s) { profileText.setText(s.substring(0,2)); }
 
-  @FXML public void onRegister() {
-    Router.go("/registration");
-  }
+  @FXML public void onRegister() { Router.go("/registration"); }
 
-  @FXML public void onHomepage() {
-    Router.go("/");
-  }
+  @FXML public void onHomepage() { Router.go("/"); }
 
-  @FXML public void onLogin() {
-    Router.go("/login");
-  }
+  @FXML public void onLogin() { Router.go("/login"); }
 
   @FXML public void onLibraries() {  }
 
-  @FXML public void onProfile() { Router.go("/profile");}
+  @FXML public void onProfile() { Router.go("/profile"); }
+
+  @FXML public void onPrevPage() { Router.goPrevious(); }
+
+  @FXML public void onNextPage() { Router.goNext(); }
 
   @FXML public void onSearchAction() {
     String input = searchInput.getText();

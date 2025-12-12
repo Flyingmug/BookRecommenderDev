@@ -9,6 +9,8 @@ module com.example.bookrecommenderdev {
   requires java.desktop;
   requires org.slf4j;
   requires javafx.web;
+  requires javafx.graphics;
+  requires javafx.base;
 
 
   opens bookrecommenderdev.client to javafx.fxml;

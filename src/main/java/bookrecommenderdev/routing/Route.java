@@ -4,6 +4,8 @@ public class Route {
   private final String fxml;
   private final RouteGroup group;
 
+  // todo covert to record class if rest is standard
+
   // Constructor with explicit group
   public Route(String fxml, RouteGroup group) {
     this.fxml = fxml;

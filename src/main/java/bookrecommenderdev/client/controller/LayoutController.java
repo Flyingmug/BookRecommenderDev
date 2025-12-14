@@ -58,10 +58,15 @@ public class LayoutController {
     routes.put("/libraries", new Route("libraries-view.fxml"));
     routes.put("/libraries/:query", new Route("library-view.fxml"));
 
-    context = new AppContext(bookRecommender, currentUser, navbarController);
-    Router.init(centerStackContainer, context, routes);
-
     initRegistry();
+    if (bookRecommender != null) {
+      context = new AppContext(bookRecommender, currentUser, navbarController);
+      Router.init(centerStackContainer, context, routes);
+
+      Router.go("/loading"); // Go to loading page on initialization
+      initVerifyLocalUserCredentials();
+    }
+
     setCenterBackground();
     //
     //
@@ -73,7 +78,6 @@ public class LayoutController {
    * Carica lo sfondo della pagina centrale.
    */
   private void setCenterBackground() {
-
     // background
     URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/library-background2.jpg");
     if (imageUrl != null) {
@@ -92,28 +96,25 @@ public class LayoutController {
 
   }
   /**
-   * Inizializza l'oggetto remoto del server dal repository.
+   * Inizializza l'oggetto remoto RMI server dal repository.
    */
   private void initRegistry() {
     try {
       Registry reg = LocateRegistry.getRegistry("localhost", 1099);
       bookRecommender = (ServerInterface) reg.lookup("serverBR");
-
     } catch(RemoteException e) {
       notifyServerError(e.getMessage(), "Server connection failed!\n (Server might not be online or address is wrong)");
-
     } catch(NotBoundException e) {
       notifyServerError(e.getMessage(), "Server not found!\n");
-
-    } finally {
-      if (bookRecommender != null) {
-        System.out.println("TMP message: local info verification");
-        Router.go("/loading"); // apertura della pagina iniziale all'esecuzione
-        initVerifyLocalUserCredentials();
-      }
     }
   }
+
+  /**
+   * DDD
+    */
   private void initVerifyLocalUserCredentials() {
+//    System.out.println("TMP message: local info verification"); // debug
+
     String str = FileManager.read(LOCAL_CREDENTIALS);
     if (str != null && !str.isEmpty()) {
       String[] split = str.split(",");
@@ -124,8 +125,10 @@ public class LayoutController {
 //      onConfirmLogin();
     }
 
-    try {
+    // todo separate string manipulation from logic
 
+    try {
+      // todo implementation
     } catch (Error e) {
 
     }

@@ -13,7 +13,6 @@ public class AppContext {
     this.server = server;
     this.currentUser = currentUser;
     this.navbar = navbar;
-
   }
 
   public ServerInterface server() { return server; }

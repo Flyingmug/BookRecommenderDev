@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,6 +42,7 @@ public class HomeController {
   }
 
   public void onSearchAction() {
-
+    String input = searchbar.getText();
+    Router.go("/search/" + input); // Input relayed as a path parameter
   }
 }

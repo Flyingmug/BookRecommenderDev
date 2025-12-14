@@ -108,7 +108,7 @@ public class Router {
   private static void loadPage(String fxml, Map<String, String> params, TransitionAnimation transition) {
     try {
       FXMLLoader loader = new FXMLLoader(Router.class.getResource("/bookrecommenderdev/client/" + fxml)); // "/com/example/bookrecommenderdev/client" + fxml
-      Parent root = loader.load();
+      Parent newRoot = loader.load();
       Object controller = loader.getController();
 
       // Assegnazione dei parametri alle pagine che li richiedono
@@ -119,14 +119,14 @@ public class Router {
       // Handle Transition
       switch(transition) {
         case FADE_INTO:
-          fadeTransition(rootContainer, root, Duration.millis(250));
+          fadeTransition(rootContainer, newRoot, Duration.millis(115));
           break;
         case SIDE_STACK:
           // todo implement side stacking
-          rootContainer.getChildren().add(root);
+          rootContainer.getChildren().add(newRoot);
           break;
         default:
-          rootContainer.getChildren().setAll(root);
+          rootContainer.getChildren().setAll(newRoot);
 
       }
 

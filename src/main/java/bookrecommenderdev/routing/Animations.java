@@ -8,18 +8,19 @@ import javafx.util.Duration;
 public class Animations {
 
   /**
-   * Gestisce una transizione a scomparsa tra due pagine riferite.
-   * @param currentNode Elemento presente
+   * Gestisce una transizione 'a scomparsa' tra due pagine riferite.
+   * I parametri richiedono l'elemento contenitore e il nuovo nodo.
+   * @param rootNode Elemento radice contenente il nodo corrente
    * @param newNode Nuovo elemento
    * @param duration Durata del'animazione
    */
-  public static void fadeTransition(StackPane currentNode, Node newNode, Duration duration) {
-    Node oldNode = currentNode.getChildren().isEmpty()
+  public static void fadeTransition(StackPane rootNode, Node newNode, Duration duration) {
+    Node oldNode = rootNode.getChildren().isEmpty()
         ? null
-        : currentNode.getChildren().getFirst();
+        : rootNode.getChildren().getFirst();
 
     newNode.setOpacity(0);
-    currentNode.getChildren().add(newNode);
+    rootNode.getChildren().add(newNode);
 
     // Se il nodo precedente è nullo, esegue solo la transizione di fade-in
     if (oldNode == null) {
@@ -39,7 +40,7 @@ public class Animations {
     fadeIn.setToValue(1);
 
     fadeOut.setOnFinished(e -> {
-      currentNode.getChildren().remove(oldNode);
+      rootNode.getChildren().remove(oldNode);
       fadeIn.play();
     });
 

@@ -49,12 +49,16 @@ public class SearchResultsController implements Routable {
   private AppContext context;
   int currentResultPageIndex;
   int bookResultCount;
-  String currentSearchInput;
+  String currentSearch;
 
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
+    System.out.println("Search query: " + params.get("query")); // debug
+
     this.context = context;
+    currentSearch = params.get("query"); // set the current search query
+    search(currentSearch);
   }
 
   @FXML
@@ -62,7 +66,7 @@ public class SearchResultsController implements Routable {
 
     currentResultPageIndex = 0;
     bookResultCount = 0;
-    currentSearchInput = "";
+    currentSearch = "";
 
     // icona di ricerca
     FontIcon noBooksIcon = new FontIcon("mdi2b-book-alert-outline");
@@ -77,28 +81,23 @@ public class SearchResultsController implements Routable {
     HBox.setMargin(noResultsTitleWrapper, new Insets(100, 0, 0, 0));
   }
 
-  @FXML
-  protected void onSearchAction() {
-
-    // get input
-//    String newInput = searchbar.getText();
-    String newInput = "";
-    System.out.println("Searched: " + newInput);  // DEBUG
-    if (newInput == null || newInput.isEmpty()) return;
+  private void search(String query) {
+    System.out.println("Searched: " + query);  // DEBUG
+    if (query == null || query.isEmpty()) return;
 
 //    topSearchbar();
     booksResultsPage.setVisible(true);
 
     // if there is a new input, set it as the current search value
-    boolean newSearch = !newInput.equals(currentSearchInput);
+    boolean newSearch = !query.equals(currentSearch);
     if (newSearch) {
       setPrevControlVisibility(false);
       currentResultPageIndex = 0;
-      currentSearchInput = newInput;
+      currentSearch = query;
     }
 
     try {
-      Pair<List<Libro>, Integer> data = context.server().searchTitolo(newInput, currentResultPageIndex);
+      Pair<List<Libro>, Integer> data = context.server().searchTitolo(query, currentResultPageIndex);
       List<Libro> books = data.getKey();
       int totalResults = data.getValue();
 
@@ -122,9 +121,11 @@ public class SearchResultsController implements Routable {
     }
 
   }
+
   private void showNoResults() {
     setResultsFoundTitle(false);
     booksResultWrapper.setVisible(false);
+    // todo display searchbar when no book is found, to allow for another search (the one in the navbar should be fine)
   }
 
   private void setPrevControlVisibility(boolean visibility) {
@@ -153,7 +154,7 @@ public class SearchResultsController implements Routable {
    */
   private void loadResults(Pair<List<Libro>, Integer> data) {
 
-    // elimina eventuali elementi precedenti
+    // removal of previous results
     booksResultDisplay.getChildren().clear();
 
     List<Libro> results = data.getKey();
@@ -169,7 +170,7 @@ public class SearchResultsController implements Routable {
   }
 
   private void onPublicBookPage(Integer integer) {
-
+  // todo
   }
 
   private String formatIndexCounter() {
@@ -177,9 +178,6 @@ public class SearchResultsController implements Routable {
         "-" + Math.min(PAGE_SIZE*(1+currentResultPageIndex), bookResultCount) +
         " di " + bookResultCount + " risultati";
   }
-
-
-
 
   @FXML
   protected void onNextResults() {
@@ -195,7 +193,7 @@ public class SearchResultsController implements Routable {
     if (newIndex < 0 || newIndex * PAGE_SIZE >= bookResultCount) return;
 
     currentResultPageIndex = newIndex;
-    onSearchAction();
+    search(currentSearch);
 
     setPrevControlVisibility(currentResultPageIndex > 0);
     setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < bookResultCount);

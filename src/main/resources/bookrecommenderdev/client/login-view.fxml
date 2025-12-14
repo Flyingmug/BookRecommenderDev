@@ -10,7 +10,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bookrecommenderdev.client.controller.LoginController" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
    <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" spacing="20.0" style="-fx-border-color: #41a2e5; -fx-border-width: 3; -fx-border-radius: 15;" VBox.vgrow="NEVER">
-      <Label text="Login">
+      <Label text="Accedi">
          <font>
             <Font name="Arial" size="30.0" />
          </font>

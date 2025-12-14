@@ -51,7 +51,12 @@ public class NavbarController {
 
   @FXML public void onSearchAction() {
     String input = searchInput.getText();
-    Router.go("/");
-    System.err.println("Not Implemented.");
+    Router.go("/search/:" + input); // Parametro passato nel percorso
+//    System.out.println("Not Implemented."); fixme in progress
+  }
+
+
+  @FXML void testMethod() {
+    System.out.println("TEST: Click detected");
   }
 }

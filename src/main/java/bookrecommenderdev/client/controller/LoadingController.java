@@ -15,6 +15,10 @@ public class LoadingController {
 
   @FXML public StackPane loadingAnimationPane;
 
+  /**
+   * Carica il file contenente l'animazione in formato SVG tramite {@link WebView}.
+   * Al completamento dell'animazione, tramite il {@link Router} viene aperta la home page con animazione.
+   */
   @FXML
   public void initialize() {
 
@@ -37,14 +41,6 @@ public class LoadingController {
       );
       delay.play();
 
-
-//      // fade animation
-//      FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.0), webView);
-//
-//      fadeOut.setFromValue(1.0);
-//      fadeOut.setToValue(0.0);
-//
-//      fadeOut.play();
     }
 
   }

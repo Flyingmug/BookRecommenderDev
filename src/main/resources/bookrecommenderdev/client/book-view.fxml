@@ -8,7 +8,10 @@
 <VBox fx:id="bookPage" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bookrecommenderdev.client.controller.BookController" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
-   <VBox>
+   <VBox styleClass="book-information-section">
+      <padding>
+         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
       <Label fx:id="bookPageTitolo" wrapText="true">
          <font>
             <Font name="Arial" size="24.0" />
@@ -74,10 +77,13 @@
       </HBox>
    </VBox>
    <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
-      <HBox prefHeight="100.0" prefWidth="200.0" styleClass="scores-section">
+      <HBox prefHeight="100.0" prefWidth="200.0" styleClass="book-scores-section">
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
          <VBox spacing="5.0">
             <padding>
-               <Insets right="20.0" />
+               <Insets right="10.0" />
             </padding>
             <Label minHeight="-Infinity" prefHeight="24.0" text="Generale">
                <font>
@@ -115,9 +121,6 @@
                <Insets left="5.0" right="5.0" />
             </padding>
          </VBox>
-         <padding>
-            <Insets bottom="10.0" left="12.0" right="12.0" top="10.0" />
-         </padding>
       </HBox>
    </VBox>
    <StackPane.margin>

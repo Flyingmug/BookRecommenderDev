@@ -71,8 +71,12 @@
 }
 
 
-.scores-section {
-    -fx-background-color: #a7c9e480;
+.book-information-section {
+    -fx-background-color: #ffffff;
+}
+
+.book-scores-section {
+    -fx-background-color: #ffffff;
 }
 
 

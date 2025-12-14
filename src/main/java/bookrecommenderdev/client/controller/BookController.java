@@ -29,11 +29,16 @@ public class BookController implements Routable {
   public Label bookPageEditore;
   @FXML
   public Label bookPageCategorie;
-
   @FXML
   public VBox scoresContainer;
 
   AppContext context;
+
+  @Override
+  public void onRoute(Map<String, String> params, AppContext context) {
+    this.context = context;
+    loadPublicBookPage(Integer.parseInt(params.get("query")));
+  }
 
   @FXML
   public void initialize() {
@@ -49,8 +54,7 @@ public class BookController implements Routable {
    * Mostra il contenitore della pagina di un libro, nel quale vengono caricati i dati del libro selezionato.
    * @param idLibro id del libro selezionato
    */
-  @FXML
-  protected void onPublicBookPage(int idLibro) {
+  protected void loadPublicBookPage(int idLibro) {
     System.out.println("id: " + idLibro); // DEBUG
 
     resetBookPage();
@@ -94,8 +98,8 @@ public class BookController implements Routable {
   }
 
   /**
-   * Crea la rappresentazione dei punteggi e della media di essi
-   * @param valutazioni array contenente valutazioni
+   * Valuta e carica i punteggi con relative medie.
+   * @param valutazioni array contenente valutazioni del libro
    */
   private void showScores(double[] valutazioni) {
 
@@ -110,8 +114,9 @@ public class BookController implements Routable {
     }
   }
   /**
-   * Restituisce un contenitore di icone di stelle rappresentanti il valore dato come parametro
+   * Genera un contenitore di icone (stelle) rappresentanti il valore dato come parametro
    * @param score valore rappresentato
+   * @param size dimensione delle icone
    * @return contenitore di icone
    */
   private HBox buildStars(double score, int size) {
@@ -141,8 +146,4 @@ public class BookController implements Routable {
     return stars;
   }
 
-  @Override
-  public void onRoute(Map<String, String> params, AppContext context) {
-    this.context = context;
-  }
 }

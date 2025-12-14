@@ -4,6 +4,7 @@ import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Routable;
 import bookrecommenderdev.client.factory.BookDisplayFactory;
 import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -81,6 +82,11 @@ public class SearchResultsController implements Routable {
     HBox.setMargin(noResultsTitleWrapper, new Insets(100, 0, 0, 0));
   }
 
+  /**
+   * Effettua una ricerca utilizzando il parametro fornito come chiave.
+   * todo completare una volte implementati i criteri di ricerca
+   * @param query Chiave di ricerca.
+   */
   private void search(String query) {
     System.out.println("Searched: " + query);  // DEBUG
     if (query == null || query.isEmpty()) return;
@@ -169,8 +175,8 @@ public class SearchResultsController implements Routable {
 
   }
 
-  private void onPublicBookPage(Integer integer) {
-  // todo
+  private void onPublicBookPage(Integer idLibro) {
+    Router.go("/book/" + idLibro);
   }
 
   private String formatIndexCounter() {

@@ -17,7 +17,6 @@ public class NavbarController {
 
   @FXML private StackPane searchbar;
   @FXML private TextField searchInput;
-  @FXML public HBox breadcrumbsContainer;
 
   @FXML private Button loginButton;
   @FXML private Button registerButton;
@@ -28,12 +27,9 @@ public class NavbarController {
   @FXML private Button prevPage;
   @FXML private Button nextPage;
 
-  private List<Label> breadcrumbs; // fixme needs usage
-
   @FXML
   public void initialize() {
     setRandomBackgroundColor(profileButton);
-    breadcrumbs = new LinkedList<>(); // fixme needs usage
   }
 
   public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }

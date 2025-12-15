@@ -39,9 +39,6 @@
                </Button>
             </HBox>
          </StackPane>
-         <HBox fx:id="breadcrumbsContainer">
-            <!-- todo complete or remove entirely -->
-         </HBox>
       </VBox>
       <Region HBox.hgrow="ALWAYS" />
       <HBox alignment="CENTER" prefHeight="145.0" style="-fx-spacing: 20;">

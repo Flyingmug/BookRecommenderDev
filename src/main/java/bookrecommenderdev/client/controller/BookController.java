@@ -3,12 +3,18 @@ package bookrecommenderdev.client.controller;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Routable;
 import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.server.dto.PaginaLibro;
+import bookrecommenderdev.utils.LabelCustomizer;
+import bookrecommenderdev.utils.Size;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.rmi.RemoteException;
@@ -30,9 +36,14 @@ public class BookController implements Routable {
   @FXML
   public Label bookPageCategorie;
   @FXML
+  public VBox scoresSection;
+  @FXML
   public VBox scoresContainer;
+  @FXML
+  public VBox reviewsLinkContainer;
 
   AppContext context;
+  int idLibro;
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
@@ -51,11 +62,13 @@ public class BookController implements Routable {
 
 
   /**
-   * Mostra il contenitore della pagina di un libro, nel quale vengono caricati i dati del libro selezionato.
+   * Ottiene i dati relativi a un libro e li inserisce nei relativi campi
+   * della pagina.
    * @param idLibro id del libro selezionato
    */
   protected void loadPublicBookPage(int idLibro) {
-    System.out.println("id: " + idLibro); // DEBUG
+    System.out.println("BOOKPAGE id libro: " + idLibro); // DEBUG
+    this.idLibro = idLibro;
 
     resetBookPage();
     bookPage.setVisible(true);
@@ -63,7 +76,6 @@ public class BookController implements Routable {
     try {
 
       PaginaLibro pagina = context.server().getPaginaLibro(idLibro);
-
 
       if (pagina != null) {
 
@@ -80,6 +92,15 @@ public class BookController implements Routable {
         if (pagina.getValutazioniAggregate() != null) {
           double[] scores = pagina.getValutazioniAggregate();
           showScores(scores);
+        } else {
+          scoresSection.getChildren().clear();
+          scoresSection.getChildren().add(
+              LabelCustomizer.createLabel(
+                  "Nessuna valutazione presente",
+                  Size.LG,
+                  Color.BLACK
+              )
+          );
         }
 
       }
@@ -87,14 +108,13 @@ public class BookController implements Routable {
     } catch (RemoteException e) {
       e.printStackTrace();
 
-      //
-      //
-      //
-      // Add error display
-      //
-      //
-      //
+      // todo Add error display
     }
+  }
+
+
+  public void onReviews() {
+    Router.go("/book/:query/reviews" + idLibro);
   }
 
   /**

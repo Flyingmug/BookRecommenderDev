@@ -77,9 +77,12 @@
 
 .book-scores-section {
     -fx-background-color: #ffffff;
+    -fx-padding: 20;
 }
 
-
+.scores-section-reviews-link {
+    -fx-font-size: 14px;
+}
 
 
 

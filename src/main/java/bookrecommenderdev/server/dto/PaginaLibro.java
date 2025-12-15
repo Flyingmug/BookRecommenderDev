@@ -5,6 +5,9 @@ import bookrecommenderdev.model.Libro;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Classe contenente i dati completi di un libro.
+ */
 public class PaginaLibro implements Serializable {
   @Serial
   private final static long serialVersionUID = 1L;
@@ -13,7 +16,7 @@ public class PaginaLibro implements Serializable {
 //  private List<Integer> gruppoConsigli;
 
   /**
-   * Oggetto contenente i dati completi di un libro
+   * Costruttore della classe.
    * @param libro libro riferito
    * @param medie medie dei punteggi dalle valutazioni
    */

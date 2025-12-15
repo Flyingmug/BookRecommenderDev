@@ -52,6 +52,7 @@ public class LayoutController {
     routes.put("/", new Route("home-view.fxml"));
     routes.put("/search/:query", new Route("searchResults-view.fxml", RouteGroup.WITH_SEARCH));
     routes.put("/book/:query", new Route("book-view.fxml", RouteGroup.WITH_SEARCH));
+    routes.put("/book/:query/reviews", new Route("book-view.fxml", RouteGroup.WITH_SEARCH));
     routes.put("/login", new Route("login-view.fxml", RouteGroup.AUTH));
     routes.put("/registration", new Route("registration-view.fxml", RouteGroup.AUTH));
     routes.put("/profile", new Route("profile-view.fxml"));

@@ -23,24 +23,15 @@ import java.util.Map;
 
 public class BookController implements Routable {
 
-  @FXML
-  public VBox bookPage;
-  @FXML
-  public Label bookPageTitolo;
-  @FXML
-  public Label bookPageAutori;
-  @FXML
-  public Label bookPageAnnoPubblicazione;
-  @FXML
-  public Label bookPageEditore;
-  @FXML
-  public Label bookPageCategorie;
-  @FXML
-  public VBox scoresSection;
-  @FXML
-  public VBox scoresContainer;
-  @FXML
-  public VBox reviewsLinkContainer;
+  @FXML public VBox bookPage;
+  @FXML public Label bookPageTitolo;
+  @FXML public Label bookPageAutori;
+  @FXML public Label bookPageAnnoPubblicazione;
+  @FXML public Label bookPageEditore;
+  @FXML public Label bookPageCategorie;
+  @FXML public VBox scoresSection;
+  @FXML public VBox scoresContainer;
+  @FXML public VBox reviewsLinkContainer;
 
   AppContext context;
   int idLibro;
@@ -51,15 +42,9 @@ public class BookController implements Routable {
     loadPublicBookPage(Integer.parseInt(params.get("query")));
   }
 
-  @FXML
-  public void initialize() {
-
-  }
-
   private void resetBookPage() {
     scoresContainer.getChildren().clear();
   }
-
 
   /**
    * Ottiene i dati relativi a un libro e li inserisce nei relativi campi
@@ -111,7 +96,6 @@ public class BookController implements Routable {
       // todo Add error display
     }
   }
-
 
   public void onReviews() {
     Router.go("/book/:query/reviews" + idLibro);

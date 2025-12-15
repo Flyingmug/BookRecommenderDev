@@ -2,6 +2,9 @@ package bookrecommenderdev.routing;
 
 public enum TransitionAnimation {
   FADE_INTO,
-  SIDE_STACK,
+  TOP_SLIDE,
+  RIGHT_SLIDE,
+  BOTTOM_SLIDE,
+  LEFT_SLIDE,
   DEFAULT
 }

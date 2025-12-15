@@ -5,7 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 
@@ -13,6 +17,7 @@ public class NavbarController {
 
   @FXML private StackPane searchbar;
   @FXML private TextField searchInput;
+  @FXML public HBox breadcrumbsContainer;
 
   @FXML private Button loginButton;
   @FXML private Button registerButton;
@@ -23,9 +28,12 @@ public class NavbarController {
   @FXML private Button prevPage;
   @FXML private Button nextPage;
 
+  private List<Label> breadcrumbs; // fixme needs usage
+
   @FXML
   public void initialize() {
     setRandomBackgroundColor(profileButton);
+    breadcrumbs = new LinkedList<>(); // fixme needs usage
   }
 
   public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }
@@ -45,18 +53,15 @@ public class NavbarController {
 
   @FXML public void onProfile() { Router.go("/profile"); }
 
-  @FXML public void onPrevPage() { Router.goPrevious(); }
+  @FXML public void onPrevPage() { Router.goBack(); }
 
-  @FXML public void onNextPage() { Router.goNext(); }
+  @FXML public void onNextPage() { Router.goForward(); }
 
   @FXML public void onSearchAction() {
     String input = searchInput.getText();
     Router.go("/search/:" + input); // Parametro passato nel percorso
-//    System.out.println("Not Implemented."); fixme in progress
   }
 
+  @FXML void testMethod() { System.out.println("TEST: Click detected"); }
 
-  @FXML void testMethod() {
-    System.out.println("TEST: Click detected");
-  }
 }

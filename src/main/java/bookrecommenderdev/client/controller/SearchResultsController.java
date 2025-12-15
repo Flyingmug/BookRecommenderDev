@@ -5,6 +5,7 @@ import bookrecommenderdev.routing.Routable;
 import bookrecommenderdev.client.factory.BookDisplayFactory;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
+import bookrecommenderdev.routing.TransitionAnimation;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -176,7 +177,7 @@ public class SearchResultsController implements Routable {
   }
 
   private void onPublicBookPage(Integer idLibro) {
-    Router.go("/book/" + idLibro);
+    Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
   }
 
   private String formatIndexCounter() {

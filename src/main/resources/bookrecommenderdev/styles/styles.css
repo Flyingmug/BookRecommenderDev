@@ -22,9 +22,6 @@
     -fx-border-color: #41e5b1;
 }
 
-.searchbar-center {
-    -fx-pref-height: 60px;
-}
 
 .scroll-pane {
     -fx-background-color: transparent;
@@ -33,10 +30,24 @@
     -fx-background-color: transparent;
 }
 
+.navbar {
+    -fx-background-color: #f1f1f1;
+    -fx-padding: 0 40 0 40;
+    -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);
+    -fx-border-width: 0px 0px 3px 0px;
+    -fx-border-color: #79e6fd;
+}
 .searchbar-navbar {
+    -fx-background-color: white;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-color: lightgrey;
     -fx-pref-height: 45px;
 }
-
+.searchbar-center {
+    -fx-pref-height: 60px;
+}
 
 .result-book {
     -fx-underline: false;
@@ -51,7 +62,6 @@
     -fx-min-width: 0;
     -fx-min-height: 0;
 }
-
 .result-page-arrow {
     -fx-icon-color: black;
 }
@@ -65,7 +75,6 @@
     -fx-pref-width: 50;
     -fx-background-radius: 9999;
 }
-
 .profile-picture-text {
     -fx-font: bold 20px "Arial";
 }
@@ -74,17 +83,16 @@
 .book-information-section {
     -fx-background-color: #ffffff;
 }
-
 .book-scores-section {
     -fx-background-color: #ffffff;
     -fx-padding: 20;
 }
-
 .scores-section-reviews-link {
     -fx-font-size: 14px;
 }
-
-
+.reviews-page {
+    -fx-background-color: purple;
+}
 
 
 

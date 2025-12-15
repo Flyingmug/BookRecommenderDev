@@ -1,24 +1,23 @@
 package bookrecommenderdev.routing;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static bookrecommenderdev.routing.Animations.fadeTransition;
+import static bookrecommenderdev.routing.Animations.slideTransition;
 
 public class Router {
   private static StackPane rootContainer;
   private static Map<String, Route> routes;
   private static AppContext appContext;
 
-  private static List<Route> history;
+  private static final HistoryManager<Node> history = new HistoryManager<>(3);
   private static Route currentRoute;
 
   /**
@@ -35,11 +34,7 @@ public class Router {
     appContext = ctx;
     routes = routeList;
 
-    // history?
-    history = new LinkedList<>();
-
-    // error routes?
-
+    // todo error routes?
   }
 
 
@@ -51,6 +46,11 @@ public class Router {
     go(path, TransitionAnimation.DEFAULT);
   }
 
+  /**
+   * Metodo incaricato di gestire la navigazione tra pagine logiche.
+   * @param path Percorso della pagina interessata
+   * @param transition Tipologia di animazione da utilizzare
+   */
   public static void go(String path, TransitionAnimation transition) {
     for (Map.Entry<String, Route> entry: routes.entrySet()) {
       String routeName = entry.getKey();
@@ -60,9 +60,6 @@ public class Router {
       Map<String, String> params = matchRoute(routeName, path);
       if (params != null) {
         loadPage(fxml, params, transition);
-
-        // memorize page todo create a self-replacing list implementation
-        history.add(route);
 
         switch (route.group()) {
           case DEFAULT -> System.out.println("TestA");
@@ -77,7 +74,8 @@ public class Router {
   }
 
   /**
-   * Metodo helper per la gestione delle pagine.
+   * Metodo helper per la gestione delle pagine e degli eventuali parametri di percorso.
+   * todo chiarezza
    * @param route nome del percorso
    * @param path percorso richiesto
    */
@@ -111,21 +109,34 @@ public class Router {
       Parent newRoot = loader.load();
       Object controller = loader.getController();
 
+
+
+      //
+      // Work in progress.
+      //
+      history.visit(newRoot);
+
+
+
+
       // Assegnazione dei parametri alle pagine che li richiedono
       if (controller instanceof Routable routable) {
         routable.onRoute(params, appContext);
       }
 
-      // Handle Transition
+      // Gestione della transizione
       switch(transition) {
-        case FADE_INTO:
+        case FADE_INTO ->
           fadeTransition(rootContainer, newRoot, Duration.millis(115));
-          break;
-        case SIDE_STACK:
-          // todo implement side stacking
-          rootContainer.getChildren().add(newRoot);
-          break;
-        default:
+        case TOP_SLIDE ->
+          slideTransition(rootContainer, newRoot, Direction.TOP, Duration.millis(250));
+        case RIGHT_SLIDE ->
+            slideTransition(rootContainer, newRoot, Direction.RIGHT, Duration.millis(250));
+        case BOTTOM_SLIDE ->
+            slideTransition(rootContainer, newRoot, Direction.BOTTOM, Duration.millis(250));
+        case LEFT_SLIDE ->
+            slideTransition(rootContainer, newRoot, Direction.LEFT, Duration.millis(250));
+        default ->
           rootContainer.getChildren().setAll(newRoot);
 
       }
@@ -136,13 +147,24 @@ public class Router {
     }
   }
 
-  public static void goNext() {
-    int index = history.indexOf(currentRoute);
-
+  public static void goForward() {
+    Optional<Node> forward = history.forward();
+    if (forward.isEmpty()) return; // fixme do nothing?
+    slideTransition(
+        rootContainer,
+        forward.get(),
+        Direction.LEFT,
+        Duration.millis(500));
   }
 
-  public static void goPrevious() {
-
+  public static void goBack() {
+    Optional<Node> back = history.back();
+    if (back.isEmpty()) return; // fixme do nothing?
+    slideTransition(
+        rootContainer,
+        back.get(),
+        Direction.RIGHT,
+        Duration.millis(500));
   }
 
   private static void stackPage(String fxml, Map<String, String> params) {
@@ -163,6 +185,5 @@ public class Router {
       e.printStackTrace();
     }
   }
-
 
 }

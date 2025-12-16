@@ -56,8 +56,6 @@ public class SearchResultsController implements Routable {
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
-    System.out.println("Search query: " + params.get("query")); // debug
-
     this.context = context;
     currentSearch = params.get("query"); // set the current search query
     search(currentSearch);

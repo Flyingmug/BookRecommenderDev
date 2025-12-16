@@ -48,7 +48,7 @@ public class LayoutController {
     Map<String, Route> routes = new HashMap<>();
 
     // Registrazione delle pagine
-    routes.put("/loading", new Route("loading-view.fxml"));
+//    routes.put("/loading", new Route("loading-view.fxml"));
     routes.put("/", new Route("home-view.fxml"));
     routes.put("/search/:query", new Route("searchResults-view.fxml", RouteGroup.WITH_SEARCH));
     routes.put("/book/:query", new Route("book-view.fxml", RouteGroup.WITH_SEARCH));
@@ -64,7 +64,7 @@ public class LayoutController {
       context = new AppContext(bookRecommender, currentUser, navbarController);
       Router.init(centerStackContainer, context, routes);
 
-      Router.go("/loading"); // Go to loading page on initialization
+      Router.go("/");
       initVerifyLocalUserCredentials();
     }
 

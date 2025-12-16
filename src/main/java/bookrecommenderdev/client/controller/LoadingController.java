@@ -22,6 +22,8 @@ public class LoadingController {
   @FXML
   public void initialize() {
 
+    // Fixme currently decoupled from application
+
     WebView webView = new WebView();
     WebEngine webEngine = webView.getEngine();
 
@@ -36,9 +38,9 @@ public class LoadingController {
       Duration animDuration = Duration.seconds(3.3);
 
       PauseTransition delay = new PauseTransition(animDuration);
-      delay.setOnFinished(_ ->
-          Router.go("/", TransitionAnimation.FADE_INTO)
-      );
+      delay.setOnFinished(_ -> {
+        Router.go("/", TransitionAnimation.FADE_INTO);
+      });
       delay.play();
 
     }

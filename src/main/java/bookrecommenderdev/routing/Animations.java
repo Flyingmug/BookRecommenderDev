@@ -15,7 +15,7 @@ public class Animations {
    * @param newNode Nuovo elemento
    * @param duration Durata del'animazione
    */
-  public static void fadeTransition(StackPane rootNode, Node newNode, Duration duration) {
+  public static void fadeTransition(StackPane rootNode, Node newNode, Duration duration, Runnable onFinished) {
     Node oldNode = rootNode.getChildren().isEmpty()
         ? null
         : rootNode.getChildren().getFirst();
@@ -43,6 +43,7 @@ public class Animations {
     fadeOut.setOnFinished(_ -> {
       rootNode.getChildren().remove(oldNode);
       fadeIn.play();
+      if (onFinished != null) onFinished.run();
     });
 
     fadeOut.play();
@@ -56,7 +57,7 @@ public class Animations {
    * @param direction Direzione di scorrimento
    * @param duration Durata del'animazione
    */
-  public static void slideTransition(StackPane rootNode, Node newNode, Direction direction, Duration duration) {
+  public static void slideTransition(StackPane rootNode, Node newNode, Direction direction, Duration duration, Runnable onFinished) {
     Node oldNode = rootNode.getChildren().isEmpty()
         ? null
         : rootNode.getChildren().getFirst();
@@ -117,6 +118,7 @@ public class Animations {
     out.setOnFinished(_ -> {
       rootNode.getChildren().remove(oldNode);
       newNode.setMouseTransparent(false);
+      if (onFinished != null) onFinished.run();
     });
 
     in.play();

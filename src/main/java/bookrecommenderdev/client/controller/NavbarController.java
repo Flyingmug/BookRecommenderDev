@@ -7,13 +7,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-
-import java.util.LinkedList;
-import java.util.List;
+import javafx.scene.paint.Paint;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import static bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 
 public class NavbarController {
+
+  @FXML private HBox historyControls;
+  @FXML private FontIcon historyLeftIcon;
+  @FXML private FontIcon historyRightIcon;
 
   @FXML private StackPane searchbar;
   @FXML private TextField searchInput;
@@ -33,7 +36,7 @@ public class NavbarController {
   }
 
   public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }
-  public void showLoginButton(Boolean v) { loginButton.setManaged(v);  }
+  public void showLoginButton(Boolean v) { loginButton.setManaged(v); }
   public void showRegisterButton(Boolean v) { registerButton.setManaged(v); }
   public void showLibrariesButton(Boolean v) { librariesButton.setManaged(v);  }
   public void showProfilePicture(Boolean v) { profileButton.setManaged(v); }
@@ -49,9 +52,21 @@ public class NavbarController {
 
   @FXML public void onProfile() { Router.go("/profile"); }
 
-  @FXML public void onPrevPage() { Router.goBack(); }
+  @FXML public void onPrevPage() {
+    Router.goBack();
+  }
 
-  @FXML public void onNextPage() { Router.goForward(); }
+  @FXML public void onNextPage() {
+    Router.goForward();
+  }
+
+  public void enableLeftHistory(boolean v) {
+    historyLeftIcon.setIconColor(Paint.valueOf(v ? "#3a3a3a" : "#8c8c8c"));
+  }
+
+  public void enableRightHistory(boolean v) {
+    historyRightIcon.setIconColor(Paint.valueOf(v ? "#3a3a3a" : "#8c8c8c"));
+  }
 
   @FXML public void onSearchAction() {
     String input = searchInput.getText();

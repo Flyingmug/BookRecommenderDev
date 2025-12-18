@@ -1,12 +1,14 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.Router;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -15,8 +17,10 @@ import static bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 public class NavbarController {
 
   @FXML private HBox historyControls;
-  @FXML private FontIcon historyLeftIcon;
-  @FXML private FontIcon historyRightIcon;
+  @FXML private Button historyBackButton;
+  @FXML private Button historyForwardButton;
+  @FXML private FontIcon historyBackIcon;
+  @FXML private FontIcon historyForwardIcon;
 
   @FXML private StackPane searchbar;
   @FXML private TextField searchInput;
@@ -33,6 +37,25 @@ public class NavbarController {
   @FXML
   public void initialize() {
     setRandomBackgroundColor(profileButton);
+
+    historyBackButton.disableProperty().bind(
+        Router.canBack().not()
+    );
+    historyForwardButton.disableProperty().bind(
+        Router.canForward().not()
+    );
+
+    historyBackIcon.fillProperty().bind(
+        Bindings.when(Router.canBack())
+            .then(Color.valueOf("#272727"))
+            .otherwise(Color.valueOf("#c8c8c8"))
+    );
+    historyForwardIcon.fillProperty().bind(
+        Bindings.when(Router.canForward())
+            .then(Color.valueOf("#272727"))
+            .otherwise(Color.valueOf("#c8c8c8"))
+    );
+
   }
 
   public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }
@@ -58,14 +81,6 @@ public class NavbarController {
 
   @FXML public void onNextPage() {
     Router.goForward();
-  }
-
-  public void enableLeftHistory(boolean v) {
-    historyLeftIcon.setIconColor(Paint.valueOf(v ? "#3a3a3a" : "#8c8c8c"));
-  }
-
-  public void enableRightHistory(boolean v) {
-    historyRightIcon.setIconColor(Paint.valueOf(v ? "#3a3a3a" : "#8c8c8c"));
   }
 
   @FXML public void onSearchAction() {

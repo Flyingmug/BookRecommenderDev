@@ -1,6 +1,7 @@
 package bookrecommenderdev.routing;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,8 +20,11 @@ public class Router {
 
   private static final HistoryManager<RouteEntry> history = new HistoryManager<>(3);
   private static final BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
-  private static BooleanProperty canBack = new SimpleBooleanProperty(false);
-  private static BooleanProperty canForward = new SimpleBooleanProperty(false);
+  private static final BooleanProperty canBack = new SimpleBooleanProperty(false);
+  private static final BooleanProperty canForward = new SimpleBooleanProperty(false);
+
+  public static ReadOnlyBooleanProperty canBack() { return ReadOnlyBooleanProperty.readOnlyBooleanProperty(canBack); }
+  public static ReadOnlyBooleanProperty canForward() { return ReadOnlyBooleanProperty.readOnlyBooleanProperty(canForward); }
 
   /**
    * Metodo di inizializzazione per il router con il riferimento.
@@ -160,9 +164,9 @@ public class Router {
           rootContainer.getChildren().setAll(newRoot);
           onFinished.run();
         }
-
       }
 
+      updateHistoryState();
     } catch (IOException e) {
       System.err.println("Loading Page Error: Error in loading page.");
       navigationLocked.set(false);
@@ -199,5 +203,10 @@ public class Router {
     );
   }
 
+  /** Metodo helper per aggiornare i valori esposti. */
+  private static void updateHistoryState() {
+    canBack.set(history.canBack());
+    canForward.set(history.canForward());
+  }
 
 }

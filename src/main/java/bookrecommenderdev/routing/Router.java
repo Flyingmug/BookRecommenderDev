@@ -18,7 +18,7 @@ public class Router {
   private static AppContext appContext;
 
   private static final HistoryManager<RouteEntry> history = new HistoryManager<>(3);
-  private static BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
+  private static final BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
   private static BooleanProperty canBack = new SimpleBooleanProperty(false);
   private static BooleanProperty canForward = new SimpleBooleanProperty(false);
 
@@ -37,6 +37,8 @@ public class Router {
     routes = routeList;
 
     // todo error routes?
+
+    // todo loading screen linked to server loadings?
   }
 
 

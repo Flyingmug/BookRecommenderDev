@@ -34,4 +34,16 @@ public class LabelCustomizer {
     return createLabel(msg, s, FontWeight.NORMAL, color);
   }
 
+  /**
+   * Genera contenitori {@link Label} per mostrare dati dalla classe interessata.
+   * @param msg messaggio testuale
+   * @param s dimensione del testo
+   * @return testo dato in un contenitore formattato
+   */
+  public static Label createLabel(String msg, Size s) {
+    Label l = new Label(msg);
+    l.setFont(Font.font("Montserrat", s.getValue()));
+    return l;
+  }
+
 }

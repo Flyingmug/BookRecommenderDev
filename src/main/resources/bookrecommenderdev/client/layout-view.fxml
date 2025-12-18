@@ -5,13 +5,16 @@
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane maxWidth="1.7976931348623157E308" prefHeight="632.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookrecommenderdev.client.controller.LayoutController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="bookrecommenderdev.client.controller.LayoutController"
+            prefHeight="632.0" prefWidth="1000.0">
    <top>
       <fx:include source="components/navbar.fxml" fx:id="navbar" />
    </top>
    <center>
-      <StackPane fx:id="centerStackContainer" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <VBox fx:id="serverConnErrorWrapper" managed="false">
+      <StackPane fx:id="centerStackContainer" BorderPane.alignment="CENTER">
+         <VBox fx:id="serverConnErrorWrapper" alignment="CENTER" managed="false">
             <Label>
                <font>
                   <Font size="75" />

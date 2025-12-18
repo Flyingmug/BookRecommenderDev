@@ -8,8 +8,7 @@
 <VBox fx:id="bookPage" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bookrecommenderdev.client.controller.BookController"
-      alignment="CENTER"
-      spacing="25.0">
+      styleClass="book-page">
    <VBox styleClass="book-information-section">
       <Label fx:id="bookPageTitolo" styleClass="book-label-title" wrapText="true" />
       <GridPane styleClass="book-info-entries-container" prefHeight="100.0" prefWidth="200.0">

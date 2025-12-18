@@ -9,26 +9,16 @@
     -fx-padding: 0 15 0 15;
     -fx-pref-height: 36;
 }
-
 .libraries-button:hover {
     -fx-border-color: #23b6ed;
 }
-
 .login-button:hover {
     -fx-border-color: #06afb4;
 }
-
 .register-button:hover {
     -fx-border-color: #41e5b1;
 }
 
-
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
 
 .navbar {
     -fx-background-color: #f1f1f1;
@@ -39,7 +29,7 @@
 }
 .history-control-button {
     -fx-background-color: transparent;
-    -fx-padding: 0 0 0 0;
+    -fx-padding: 0;
 }
 .history-control-button:hover {
     -fx-dropshadow: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);
@@ -59,10 +49,52 @@
     -fx-pref-height: 60px;
 }
 
+
+.search-scroll-pane {
+    -fx-background-color: transparent;
+}
+.search-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.search-result-section {
+    -fx-alignment: center;
+    -fx-background-color: transparent;
+    -fx-padding: 0 120 0 120;
+}
+.search-title {
+    -fx-content-display: center;
+    -fx-font-family: "Monserrat Regular";
+    -fx-font-size: 24;
+    -fx-padding: 10;
+}
+.search-result-index-counter {
+    -fx-font-family: "Monserrat Regular";
+    -fx-font-size: 14;
+    -fx-padding: 5 10 5 10;
+}
+.search-results-container {
+    -fx-spacing: 10;
+    -fx-border-width: 1;
+    -fx-border-color: #7896db;
+    -fx-background-color: white;
+    -fx-padding: 10;
+}
+.search-controls-container {
+    -fx-padding: 10;
+}
+
+
+
 .result-book {
+    -fx-padding: 10;
+    -fx-border-color: #99b1e9;
+    -fx-border-width: 0 0 1 0;
+}
+.result-book-label {
+    -fx-text-color: #1e81c5;
     -fx-underline: false;
 }
-.result-book:hover {
+.result-book-label:hover {
     -fx-underline: true;
     -fx-cursor: hand;
 }
@@ -90,9 +122,12 @@
 }
 
 
+.book-page {
+    -fx-spacing: 25;
+}
 .book-information-section {
     -fx-background-color: #ffffff;
-    -fx-padding: 20 20 20 20;
+    -fx-padding: 20;
 }
 .book-label-title {
     -fx-font-family: "Montserrat Medium";

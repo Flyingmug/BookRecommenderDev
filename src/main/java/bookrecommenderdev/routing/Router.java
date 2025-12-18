@@ -187,7 +187,6 @@ public class Router {
       return;
     }
 
-    RouteEntry currentEntry = history.getCurrent().orElse(null);
     TransitionAnimation transition =
         history.getCurrent()
         .map(RouteEntry::transition)

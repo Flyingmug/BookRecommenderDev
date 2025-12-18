@@ -25,22 +25,6 @@ public class HomeController {
   @FXML
   private Region mainPageSpacer;
 
-  /**
-   * Ripristina gli elementi della pagina iniziale nelle loro posizioni originali.
-   */
-  private void resetHomepage() {
-
-//    if (!homePage.getChildren().contains(searchbarWrapper)) {
-//      searchbarWrapper.getStyleClass().remove("searchbar-navbar");
-//      searchbarWrapper.getStyleClass().add("searchbar-center");
-//      searchbar.setText("");
-//      homePage.getChildren().addAll(welcomeText, searchbarWrapper, mainPageSpacer);
-//    }
-
-    searchbar.setText("");
-
-  }
-
   public void onSearchAction() {
     String input = searchbar.getText();
     Router.go("/search/" + input); // Input relayed as a path parameter

@@ -6,6 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
+/**
+ * Gestisce tutte le animazioni utilizzate dal {@link Router} nelle transizioni di percorsi.
+ */
 public class Animations {
 
   /**
@@ -127,9 +130,9 @@ public class Animations {
 
 
   /**
-   * Inversione della direzione di transizione.
+   * Inverte la direzione di una transizione, se logicamente possibile.
    * @param transition Transizione
-   * @return Transizione logicamente opposta
+   * @return Transizione opposta
    */
   public static TransitionAnimation reverseTransition(TransitionAnimation transition) {
     return switch (transition) {

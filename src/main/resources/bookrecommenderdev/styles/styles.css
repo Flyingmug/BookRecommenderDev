@@ -134,6 +134,12 @@
 .scores-section-reviews-link {
     -fx-font-size: 14px;
 }
+.star {
+   -fx-icon-color: #174e97;
+}
+.star-empty {
+    -fx-icon-color: #3a76c650;
+}
 
 .reviews-page {
     -fx-background-color: purple;

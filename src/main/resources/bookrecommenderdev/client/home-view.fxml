@@ -8,9 +8,9 @@
 <VBox fx:id="homePage" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bookrecommenderdev.client.controller.HomeController" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-   <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="369.0" text="BookRecommender" textAlignment="CENTER">
+   <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="369.0" text="BookRecommender" textAlignment="CENTER" styleClass="home-welcome-label">
       <font>
-         <Font name="Constantia" size="32.0" />
+         <Font name="Montserrat Medium" size="34.0" />
       </font>
    </Label>
    <StackPane fx:id="homeSearchbarWrapper" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="500.0" prefHeight="60.0" prefWidth="640.0" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-width: 1; -fx-background-radius: 5; -fx-border-color: lightgrey;" styleClass="searchbar-center">

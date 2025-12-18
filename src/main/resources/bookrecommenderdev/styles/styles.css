@@ -45,7 +45,7 @@
     -fx-dropshadow: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);
 }
 .history-control-icon-disabled {
-    -fx-background-color:
+    -fx-background-color: #c8c8c8;
 }
 .searchbar-navbar {
     -fx-background-color: white;
@@ -92,14 +92,49 @@
 
 .book-information-section {
     -fx-background-color: #ffffff;
+    -fx-padding: 20 20 20 20;
 }
+.book-label-title {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 23;
+    -fx-padding: 0 0 5 0;
+}
+.book-info-entries-container {
+    -fx-vgap: 6;
+    -fx-hgap: 15;
+    -fx-border-color: #1b98ff30;
+    -fx-border-width: 0 0 0 15;
+    -fx-padding: 5 5 5 20;
+}
+    -fx-padding: 5 10 5 10;
+    -fx-alignment: centerleft;
+    -fx-spacing: 10;
+    -fx-padding: 0 0 0 20;
+}
+.book-info-key {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 18;
+}
+.book-info-value {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 17;
+}
+
 .book-scores-section {
     -fx-background-color: #ffffff;
-    -fx-padding: 20;
+    -fx-padding: 25;
+}
+.book-scores-container {
+    -fx-max-width: 650;
+    -fx-orientation: horizontal;
+    -fx-hgap: 35;
+    -fx-vgap: 5;
+    -fx-padding: 10;
 }
 .scores-section-reviews-link {
     -fx-font-size: 14px;
 }
+
 .reviews-page {
     -fx-background-color: purple;
 }

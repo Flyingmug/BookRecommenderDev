@@ -125,4 +125,21 @@ public class Animations {
     out.play();
   }
 
+
+  /**
+   * Inversione della direzione di transizione.
+   * @param transition Transizione
+   * @return Transizione logicamente opposta
+   */
+  public static TransitionAnimation reverseTransition(TransitionAnimation transition) {
+    return switch (transition) {
+      case FADE_INTO -> TransitionAnimation.FADE_INTO;
+      case TOP_SLIDE -> TransitionAnimation.BOTTOM_SLIDE;
+      case RIGHT_SLIDE -> TransitionAnimation.LEFT_SLIDE;
+      case BOTTOM_SLIDE -> TransitionAnimation.TOP_SLIDE;
+      case LEFT_SLIDE -> TransitionAnimation.RIGHT_SLIDE;
+      case DEFAULT -> TransitionAnimation.DEFAULT;
+    };
+  }
+
 }

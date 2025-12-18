@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.model.CampoValutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Routable;
 import bookrecommenderdev.model.Libro;
@@ -7,14 +8,14 @@ import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.server.dto.PaginaLibro;
 import bookrecommenderdev.utils.LabelCustomizer;
 import bookrecommenderdev.utils.Size;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.FontWeight;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.rmi.RemoteException;
@@ -30,8 +31,10 @@ public class BookController implements Routable {
   @FXML public Label bookPageEditore;
   @FXML public Label bookPageCategorie;
   @FXML public VBox scoresSection;
-  @FXML public VBox scoresContainer;
+  @FXML public TilePane scoresContainer;
   @FXML public VBox reviewsLinkContainer;
+
+  static final String[] ratings = {"Generale","Stile","Contenuto","Gradevolezza","Originalità","Edizione"};
 
   AppContext context;
   int idLibro;
@@ -40,10 +43,6 @@ public class BookController implements Routable {
   public void onRoute(Map<String, String> params, AppContext context) {
     this.context = context;
     loadPublicBookPage(Integer.parseInt(params.get("query")));
-  }
-
-  private void resetBookPage() {
-    scoresContainer.getChildren().clear();
   }
 
   /**
@@ -55,7 +54,6 @@ public class BookController implements Routable {
     System.out.println("BOOKPAGE id libro: " + idLibro); // DEBUG
     this.idLibro = idLibro;
 
-    resetBookPage();
     bookPage.setVisible(true);
 
     try {
@@ -74,12 +72,12 @@ public class BookController implements Routable {
           bookPageEditore.setText(l.getEditore());
         }
 
-        if (pagina.getValutazioniAggregate() != null) {
+        if (pagina.getValutazioniAggregate() != null && scoresPresent(pagina.getValutazioniAggregate())) {
           double[] scores = pagina.getValutazioniAggregate();
           showScores(scores);
         } else {
-          scoresSection.getChildren().clear();
-          scoresSection.getChildren().add(
+          reviewsLinkContainer.setVisible(false);
+          scoresContainer.getChildren().add(
               LabelCustomizer.createLabel(
                   "Nessuna valutazione presente",
                   Size.LG,
@@ -98,12 +96,19 @@ public class BookController implements Routable {
   }
 
   public void onReviews() {
-    Router.go("/book/:query/reviews" + idLibro);
+    Router.go("/book/"+idLibro+"/reviews");
   }
 
+
   /**
-   * Valuta e carica i punteggi con relative medie.
-   * @param valutazioni array contenente valutazioni del libro
+   * Verifica il numero dei campi di valutazione nel vettore dato (verificandone la dimensione).
+   */
+  private boolean scoresPresent(double[] scores) {
+    return scores != null && scores.length == CampoValutazione.values().length - 1;
+  }
+  /**
+   * Valuta la media dei punteggi e li inserisce nella grafica.
+   * @param valutazioni Vettore contenente valutazioni del libro
    */
   private void showScores(double[] valutazioni) {
 
@@ -111,19 +116,48 @@ public class BookController implements Routable {
         .filter(v -> v > 0)
         .average()
         .orElse(0.0);
-    scoresContainer.getChildren().add(buildStars(totalScore, 24));
 
-    for (double score: valutazioni) {
-      scoresContainer.getChildren().add(buildStars(score, 20));
+    scoresContainer.getChildren().add(
+        buildScoreItem(CampoValutazione.GENERALE.label(), totalScore)
+    );
+
+    CampoValutazione[] campi = CampoValutazione.values();
+    for (int i = 1; i < campi.length; i++) {
+      scoresContainer.getChildren().add(
+          buildScoreItem(campi[i].label(), valutazioni[i - 1])
+      );
     }
+  }
+
+  /**
+   * Organizza le informazioni date e rappresenta il valore {@code score} tramite icone.
+   *
+   * @param name  Nome del campo
+   * @param score Punteggio
+   * @return {@link VBox} contenente le informazioni organizzate
+   */
+  private VBox buildScoreItem(String name, double score) {
+    HBox header = new HBox(
+        LabelCustomizer.createLabel(name.toUpperCase(), Size.SM, FontWeight.MEDIUM, Color.BLACK),
+        LabelCustomizer.createLabel(String.format("%.1f", score), Size.MD, Color.BLACK)
+    );
+    header.setSpacing(3);
+    header.setPadding(new Insets(0, 0, 0, 5));
+    header.setAlignment(Pos.BASELINE_LEFT);
+    header.setCache(false);
+
+    return new VBox(
+        header,
+        buildStars(score)
+    );
   }
   /**
    * Genera un contenitore di icone (stelle) rappresentanti il valore dato come parametro
+   *
    * @param score valore rappresentato
-   * @param size dimensione delle icone
    * @return contenitore di icone
    */
-  private HBox buildStars(double score, int size) {
+  private HBox buildStars(double score) {
     HBox stars = new HBox(2);
 
     int fullStars = (int) score;                 // whole number part
@@ -143,7 +177,7 @@ public class BookController implements Routable {
         star.setIconColor(Paint.valueOf("gray"));
       }
 
-      star.setIconSize(size);
+      star.setIconSize(25);
       stars.getChildren().add(star);
     }
 

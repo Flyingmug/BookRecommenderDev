@@ -10,15 +10,14 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 
-import static bookrecommenderdev.routing.Animations.fadeTransition;
-import static bookrecommenderdev.routing.Animations.slideTransition;
+import static bookrecommenderdev.routing.Animations.*;
 
 public class Router {
   private static StackPane rootContainer;
   private static Map<String, Route> routes;
   private static AppContext appContext;
 
-  private static final HistoryManager<String> history = new HistoryManager<>(3);
+  private static final HistoryManager<RouteEntry> history = new HistoryManager<>(3);
   private static BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
   private static BooleanProperty canBack = new SimpleBooleanProperty(false);
   private static BooleanProperty canForward = new SimpleBooleanProperty(false);
@@ -82,7 +81,7 @@ public class Router {
             params,
             transition,
             () -> {
-              if(pushHistory) history.visit(path);
+              if(pushHistory) history.visit(new RouteEntry(path, transition));
               navigationLocked.set(false);
             }
         );
@@ -175,8 +174,9 @@ public class Router {
       System.out.println("DEBUG Animation locked");
       return;
     }
+
     history.forward().ifPresent(entry ->
-      resolve(entry, TransitionAnimation.LEFT_SLIDE, false)
+        resolve(entry.path(), entry.transition(), false)
     );
   }
 
@@ -186,9 +186,17 @@ public class Router {
       System.out.println("DEBUG Animation locked");
       return;
     }
+
+    RouteEntry currentEntry = history.getCurrent().orElse(null);
+    TransitionAnimation transition =
+        history.getCurrent()
+        .map(RouteEntry::transition)
+        .orElse(TransitionAnimation.DEFAULT);
+
     history.back().ifPresent(entry ->
-      resolve(entry, TransitionAnimation.RIGHT_SLIDE, false)
+        resolve(entry.path(), reverseTransition(transition), false)
     );
   }
+
 
 }

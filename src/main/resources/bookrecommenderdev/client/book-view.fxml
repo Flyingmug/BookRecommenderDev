@@ -4,125 +4,27 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox fx:id="bookPage" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bookrecommenderdev.client.controller.BookController" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
+      fx:controller="bookrecommenderdev.client.controller.BookController"
+      alignment="CENTER"
+      spacing="25.0">
    <VBox styleClass="book-information-section">
-      <padding>
-         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-      </padding>
-      <Label fx:id="bookPageTitolo" wrapText="true">
-         <font>
-            <Font name="Arial" size="24.0" />
-         </font>
-         <padding>
-            <Insets bottom="5.0" top="5.0" />
-         </padding>
-      </Label>
-      <HBox prefHeight="100.0" prefWidth="200.0">
-         <VBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-border-color: #004176; -fx-border-width: 0 0 0 10;">
-            <Label layoutX="10.0" layoutY="10.0" minHeight="-Infinity" prefHeight="22.0" text="Autori" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="26.0" minHeight="-Infinity" prefHeight="22.0" text="Anno di pubblicazione" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="42.0" minHeight="-Infinity" prefHeight="22.0" text="Categorie" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="58.0" minHeight="-Infinity" prefHeight="22.0" text="Editore" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-            </Label>
-            <padding>
-               <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-            </padding>
-         </VBox>
-         <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-            <Label fx:id="bookPageAutori" layoutX="30.0" layoutY="70.0" minHeight="-Infinity" prefHeight="20.0">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="bookPageAnnoPubblicazione" layoutX="30.0" layoutY="55.0" minHeight="-Infinity" prefHeight="20.0">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="bookPageCategorie" layoutX="30.0" layoutY="70.0" minHeight="-Infinity" prefHeight="20.0">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="bookPageEditore" layoutX="30.0" layoutY="55.0" minHeight="-Infinity" prefHeight="20.0">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <padding>
-               <Insets left="20.0" />
-            </padding>
-         </VBox>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </HBox>
+      <Label fx:id="bookPageTitolo" styleClass="book-label-title" wrapText="true" />
+      <GridPane styleClass="book-info-entries-container" prefHeight="100.0" prefWidth="200.0">
+            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="0" minHeight="-Infinity" prefHeight="22.0" text="Autori" wrapText="true" />
+            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="1" minHeight="-Infinity" prefHeight="22.0" text="Anno di pubblicazione" wrapText="true" />
+            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="2" minHeight="-Infinity" prefHeight="22.0" text="Categorie" wrapText="true" />
+            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="3" minHeight="-Infinity" prefHeight="22.0" text="Editore" wrapText="true" />
+            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="bookPageAutori" minHeight="-Infinity" prefHeight="20.0" />
+            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="bookPageAnnoPubblicazione" minHeight="-Infinity" prefHeight="20.0" />
+            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="bookPageCategorie" minHeight="-Infinity" prefHeight="20.0" />
+            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="bookPageEditore" minHeight="-Infinity" prefHeight="20.0" />
+      </GridPane>
    </VBox>
-   <VBox fx:id="scoresSection" prefHeight="50.0" prefWidth="100.0" styleClass="book-scores-section">
-      <HBox prefHeight="100.0" prefWidth="200.0">
-         <padding>
-            <Insets bottom="15.0"/>
-         </padding>
-         <VBox spacing="5.0">
-            <padding>
-               <Insets right="10.0" />
-            </padding>
-            <Label minHeight="-Infinity" prefHeight="24.0" text="Generale">
-               <font>
-                  <Font name="Arial" size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="10.0" minHeight="-Infinity" prefHeight="20.0" text="Stile">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="36.0" minHeight="-Infinity" prefHeight="20.0" text="Contenuto">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="62.0" minHeight="-Infinity" prefHeight="20.0" text="Gradevolezza">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="88.0" minHeight="-Infinity" prefHeight="20.0" text="Originalita">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="94.0" minHeight="-Infinity" prefHeight="20.0" text="Edizione">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-         </VBox>
-         <VBox fx:id="scoresContainer" layoutX="10.0" layoutY="10.0" spacing="5.0">
-            <padding>
-               <Insets left="5.0" right="5.0" />
-            </padding>
-         </VBox>
-      </HBox>
+   <VBox fx:id="scoresSection" styleClass="book-scores-section" prefHeight="50.0" prefWidth="100.0">
+      <TilePane fx:id="scoresContainer" styleClass="book-scores-container" />
       <VBox fx:id="reviewsLinkContainer">
          <Button alignment="CENTER" onAction="#onReviews">
             <graphic>

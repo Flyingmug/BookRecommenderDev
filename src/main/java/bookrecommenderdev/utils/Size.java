@@ -1,13 +1,14 @@
 package bookrecommenderdev.utils;
 
 public enum Size {
+  DXS(12),
   XS(14),
-  SM(18),
-  MD(24),
-  LG(30),
-  XL(36),
-  DXL(42),
-  TXL(50);
+  SM(16),
+  MD(20),
+  LG(24),
+  XL(32),
+  DXL(40),
+  TXL(48);
 
   private final int value;
 

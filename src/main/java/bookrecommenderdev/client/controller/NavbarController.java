@@ -1,26 +1,18 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.Router;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import static bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 
 public class NavbarController {
 
-  @FXML private HBox historyControls;
   @FXML private Button historyBackButton;
   @FXML private Button historyForwardButton;
-  @FXML private FontIcon historyBackIcon;
-  @FXML private FontIcon historyForwardIcon;
 
   @FXML private StackPane searchbar;
   @FXML private TextField searchInput;
@@ -30,9 +22,6 @@ public class NavbarController {
   @FXML private Button librariesButton;
   @FXML private Button profileButton;
   @FXML private Label profileText;
-
-  @FXML private Button prevPage;
-  @FXML private Button nextPage;
 
   @FXML
   public void initialize() {
@@ -44,18 +33,6 @@ public class NavbarController {
     historyForwardButton.disableProperty().bind(
         Router.canForward().not()
     );
-
-    historyBackIcon.fillProperty().bind(
-        Bindings.when(Router.canBack())
-            .then(Color.valueOf("#272727"))
-            .otherwise(Color.valueOf("#c8c8c8"))
-    );
-    historyForwardIcon.fillProperty().bind(
-        Bindings.when(Router.canForward())
-            .then(Color.valueOf("#272727"))
-            .otherwise(Color.valueOf("#c8c8c8"))
-    );
-
   }
 
   public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }

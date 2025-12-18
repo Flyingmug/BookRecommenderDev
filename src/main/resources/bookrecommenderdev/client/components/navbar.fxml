@@ -13,21 +13,21 @@
       prefHeight="90.0" prefWidth="1000.0"
       styleClass="navbar" BorderPane.alignment="CENTER"
 >
-   <HBox fx:id="historyControls" alignment="CENTER">
-      <Button fx:id="historyBackButton" onAction="#onPrevPage" styleClass="history-control-button-disabled">
+   <HBox alignment="CENTER">
+      <Button fx:id="historyBackButton" id="historyBackButton" onAction="#onPrevPage" styleClass="history-control-button">
          <tooltip>
             <Tooltip text="Indietro" />
           </tooltip>
          <graphic>
-            <FontIcon fx:id="historyBackIcon" iconLiteral="mdi2c-chevron-left" iconSize="40" />
+            <FontIcon iconLiteral="mdi2c-chevron-left" iconSize="40" />
          </graphic>
       </Button>
-      <Button fx:id="historyForwardButton" onAction="#onNextPage" styleClass="history-control-button-disabled">
+      <Button fx:id="historyForwardButton" id="historyForwardButton" onAction="#onNextPage" styleClass="history-control-button">
          <tooltip>
             <Tooltip text="Avanti" />
          </tooltip>
          <graphic>
-            <FontIcon fx:id="historyForwardIcon" iconLiteral="mdi2c-chevron-right" iconSize="40" />
+            <FontIcon iconLiteral="mdi2c-chevron-right" iconSize="40" />
          </graphic>
       </Button>
    </HBox>

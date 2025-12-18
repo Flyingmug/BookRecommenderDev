@@ -18,7 +18,8 @@ public class Router {
   private static Map<String, Route> routes;
   private static AppContext appContext;
 
-  private static final HistoryManager<RouteEntry> history = new HistoryManager<>(3);
+  private static RouteEntry loadedEntry = null;
+  private static final HistoryManager<RouteEntry> history = new HistoryManager<>(5);
   private static final BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
   private static final BooleanProperty canBack = new SimpleBooleanProperty(false);
   private static final BooleanProperty canForward = new SimpleBooleanProperty(false);
@@ -68,9 +69,14 @@ public class Router {
    * @param pushHistory Salvataggio della visita alla pagina su memoria
    */
   private static void resolve(String path, TransitionAnimation transition, boolean pushHistory) {
-    System.out.println("DEBUG resolve request received");
+    System.out.println("ROUTER resolve request received");
     if(navigationLocked.get()) {
-      System.out.println("DEBUG Animation locked");
+      System.out.println("ROUTER Animation locked");
+      return;
+    }
+
+    // verifica se il percorso è caricato
+    if (loadedEntry != null && loadedEntry.path().equals(path)) {
       return;
     }
 
@@ -82,12 +88,18 @@ public class Router {
       Map<String, String> params = matchRoute(routeName, path);
 
       if (params != null) {
+        navigationLocked.set(true);
+
         loadPage(
             fxml,
             params,
             transition,
             () -> {
-              if(pushHistory) history.visit(new RouteEntry(path, transition));
+              RouteEntry newEntry = new RouteEntry(path, transition);
+
+              if(pushHistory) history.visit(newEntry);
+              loadedEntry = newEntry;
+
               navigationLocked.set(false);
             }
         );
@@ -145,8 +157,6 @@ public class Router {
         routable.onRoute(params, appContext);
       }
 
-      navigationLocked.set(true);
-
       // Gestione della transizione
       switch(transition) {
         case FADE_INTO ->
@@ -160,7 +170,6 @@ public class Router {
         case LEFT_SLIDE ->
             slideTransition(rootContainer, newRoot, Direction.LEFT, Duration.millis(150), onFinished);
         default -> {
-          System.out.println("DEBUG default transition");
           rootContainer.getChildren().setAll(newRoot);
           onFinished.run();
         }
@@ -176,10 +185,7 @@ public class Router {
 
   /** Torna alla pagina successiva con transizione a scorrimento verso sinistra. */
   public static void goForward() {
-    if(navigationLocked.get()) {
-      System.out.println("DEBUG Animation locked");
-      return;
-    }
+    if(navigationLocked.get()) return;
 
     history.forward().ifPresent(entry ->
         resolve(entry.path(), entry.transition(), false)
@@ -188,10 +194,7 @@ public class Router {
 
   /** Torna alla pagina precedente con transizione a scorrimento verso destra. */
   public static void goBack() {
-    if(navigationLocked.get()) {
-      System.out.println("DEBUG Animation locked");
-      return;
-    }
+    if(navigationLocked.get()) return;
 
     TransitionAnimation transition =
         history.getCurrent()

@@ -1,12 +1,12 @@
-package bookrecommenderdev.routing;
+package bookrecommenderdev.routing.layout;
 
 import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 
 /**
  * Layout utilizzabile nella definizione di un percorso.
  */
 public interface LayoutController {
-  Parent getRoot();
-  Parent getContent();
+  Pane getContent();
   void setContent(Parent page);
 }

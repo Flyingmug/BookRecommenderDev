@@ -2,7 +2,7 @@ package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.model.CampoValutazione;
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Routable;
+import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.server.dto.PaginaLibro;

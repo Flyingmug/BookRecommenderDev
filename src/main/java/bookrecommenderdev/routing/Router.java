@@ -1,5 +1,16 @@
 package bookrecommenderdev.routing;
 
+import bookrecommenderdev.routing.animation.Direction;
+import bookrecommenderdev.routing.animation.TransitionAnimation;
+import bookrecommenderdev.routing.history.HistoryManager;
+import bookrecommenderdev.routing.history.RouteEntry;
+import bookrecommenderdev.routing.layout.LayoutController;
+import bookrecommenderdev.routing.layout.LayoutHandle;
+import bookrecommenderdev.routing.layout.LayoutRegistry;
+import bookrecommenderdev.routing.layout.LayoutType;
+import bookrecommenderdev.routing.route.Routable;
+import bookrecommenderdev.routing.route.Route;
+import bookrecommenderdev.routing.route.RouteMatch;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,11 +24,16 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 
-import static bookrecommenderdev.routing.Animations.*;
+import static bookrecommenderdev.routing.animation.Animations.*;
 
+/**
+ * todo Serve una descrizione approfondita del funzionamento.
+ * todo descrivere anche il contesto
+ */
 public class Router {
   private static StackPane rootContainer;
-  private static Map<String, Route> routes;
+  private static List<Route> routes;
+  private static LayoutRegistry layouts;
   private static AppContext appContext;
 
   private static LayoutType currentLayout;
@@ -32,19 +48,21 @@ public class Router {
   public static ReadOnlyBooleanProperty canForward() { return ReadOnlyBooleanProperty.readOnlyBooleanProperty(canForward); }
 
   /**
-   * Metodo di inizializzazione per il router con il riferimento.
+   * <p>Metodo di inizializzazione per il router con il riferimento.
    * La lista di percorsi è un hashmap contenente coppie del tipo ("/nome-percorso", r: Route);
-   * Il nomi dei percorsi saranno utilizzati dal metodo {@link #go(String) go} durante la ricerca della
+   *
+   * <p>Il nomi dei percorsi saranno utilizzati dal metodo {@link #resolve resolve()} durante la ricerca della
    * presenza del percorso richiesto.
    * @param container Stack interessato.
    * @param ctx Contesto dell'applicazione.
-   * @param routeList Hashmap di percorsi.
+   * @param routeList Lista di percorsi.
+   * @param layoutRegistry Registry di layout.
    */
-  public static void init(StackPane container, AppContext ctx, Map<String, Route> routeList) {
+  public static void init(StackPane container, AppContext ctx, List<Route> routeList, LayoutRegistry layoutRegistry) {
     rootContainer = container;
     appContext = ctx;
     routes = routeList;
-
+    layouts = layoutRegistry;
     // todo error routes?
 
     // todo loading screen linked to server loadings?
@@ -55,7 +73,7 @@ public class Router {
    * Consente la navigazione tra pagine.
    * @param path Percorso della pagina interessata
    */
-  public static void go(String path) { resolveTest(path, TransitionAnimation.DEFAULT, true); }
+  public static void go(String path) { resolve(path, TransitionAnimation.DEFAULT, true); }
 
   /**
    * Consente la navigazione tra pagine e la selezione del tipo di transizione da utilizzare.
@@ -63,123 +81,7 @@ public class Router {
    * @param transition Tipologia di animazione da utilizzare
    */
   public static void go(String path, TransitionAnimation transition) {
-    resolveTest(path, transition, true);
-  }
-
-  /**
-   * Metodo incaricato di gestire la navigazione tra pagine logiche.
-   * @param path Percorso della pagina interessata
-   * @param transition Tipologia di animazione da utilizzare
-   * @param pushHistory Salvataggio della visita alla pagina su memoria
-   */
-  private static void resolve(String path, TransitionAnimation transition, boolean pushHistory) {
-    System.out.println("ROUTER resolve request received");
-    if(navigationLocked.get()) {
-      System.out.println("ROUTER Animation locked");
-      return;
-    }
-
-    // verifica se il percorso è caricato
-    if (loadedEntry != null && loadedEntry.path().equals(path)) {
-      return;
-    }
-
-    for (Map.Entry<String, Route> entry: routes.entrySet()) {
-      String routeName = entry.getKey();
-      Route route = entry.getValue();
-      String fxml = route.fxml();
-
-      Map<String, String> params = matchRoute(routeName, path);
-
-      if (params != null) {
-        navigationLocked.set(true);
-
-        loadPage(
-            fxml,
-            params,
-            transition,
-            () -> {
-              RouteEntry newEntry = new RouteEntry(path, transition);
-
-              if(pushHistory) history.visit(newEntry);
-              loadedEntry = newEntry;
-
-              navigationLocked.set(false);
-            }
-        );
-
-        return;
-      }
-    }
-    System.err.println("No route found for " + path);
-    throw new RuntimeException();
-  }
-
-  /**
-   * Metodo helper per la gestione delle pagine e degli eventuali parametri di percorso.
-   * todo chiarezza
-   * @param route nome del percorso
-   * @param path percorso richiesto
-   */
-  private static Map<String, String> matchRoute(String route, String path) {
-    String[] routeParts = route.split("/");
-    String[] pathParts = path.split("/");
-
-    if (routeParts.length != pathParts.length) return null;
-
-    Map<String, String> params = new HashMap<>();
-    for (int i = 0; i < routeParts.length; i++) {
-      if (routeParts[i].startsWith(":")) {
-        params.put(routeParts[i].substring(1), pathParts[i]);
-      } else if (!routeParts[i].equals(pathParts[i])) {
-        return null;
-      }
-    }
-
-    return params;
-  }
-
-  /**
-   * Metodo helper per caricare una pagina utilizzando il nome del file corrispondente
-   * al percorso, come specificato nei percorsi durante l'inizializzazione.
-   * @param fxml Nome del file .fxml
-   * @param params Parametri di percorso da passare alla pagina
-   */
-  private static void loadPage(String fxml, Map<String, String> params, TransitionAnimation transition, Runnable onFinished) {
-    try {
-      FXMLLoader loader = new FXMLLoader(Router.class.getResource("/bookrecommenderdev/client/" + fxml)); // "/com/example/bookrecommenderdev/client" + fxml
-      Parent newRoot = loader.load();
-      Object controller = loader.getController();
-
-      // Assegnazione dei parametri alle pagine che li richiedono
-      if (controller instanceof Routable routable) {
-        routable.onRoute(params, appContext);
-      }
-
-      // Gestione della transizione
-      switch(transition) {
-        case FADE_INTO ->
-          fadeTransition(rootContainer, newRoot, Duration.millis(115), onFinished);
-        case TOP_SLIDE ->
-          slideTransition(rootContainer, newRoot, Direction.TOP, Duration.millis(150), onFinished);
-        case RIGHT_SLIDE ->
-            slideTransition(rootContainer, newRoot, Direction.RIGHT, Duration.millis(150), onFinished);
-        case BOTTOM_SLIDE ->
-            slideTransition(rootContainer, newRoot, Direction.BOTTOM, Duration.millis(150), onFinished);
-        case LEFT_SLIDE ->
-            slideTransition(rootContainer, newRoot, Direction.LEFT, Duration.millis(150), onFinished);
-        default -> {
-          rootContainer.getChildren().setAll(newRoot);
-          onFinished.run();
-        }
-      }
-
-      updateHistoryState();
-    } catch (IOException e) {
-      System.err.println("Loading Page Error: Error in loading page.");
-      navigationLocked.set(false);
-      e.printStackTrace();
-    }
+    resolve(path, transition, true);
   }
 
   /** Torna alla pagina successiva con transizione a scorrimento verso sinistra. */
@@ -187,7 +89,7 @@ public class Router {
     if(navigationLocked.get()) return;
 
     history.forward().ifPresent(entry ->
-        resolveTest(entry.path(), entry.transition(), false)
+        resolve(entry.path(), entry.transition(), false)
     );
   }
 
@@ -201,124 +103,201 @@ public class Router {
         .orElse(TransitionAnimation.DEFAULT);
 
     history.back().ifPresent(entry ->
-        resolveTest(entry.path(), reverseTransition(transition), false)
+        resolve(entry.path(), reverseTransition(transition), false)
     );
   }
 
-  /** Metodo helper per aggiornare i valori esposti. */
-  private static void updateHistoryState() {
-    canBack.set(history.canBack());
-    canForward.set(history.canForward());
+
+
+  /**
+   * <p>Risolve le richieste di navigazione ai percorsi.
+   * <p>Dal percorso viene ricercato un {@link Route} corrispondente nel registry locale,
+   * e vengono estratti eventuali parametri di percorso.
+   * <p>Nota: una richiesta ad un percorso
+   * che definisce lo stesso layout eseguirà un aggiornamento solo del contenuto del layout.
+   * In caso di layout diverso, sia layout che il contenuto saranno aggiornati.
+   * @param path Percorso della pagina
+   * @param transition Animazione di transizione da utilizzare
+   * @param pushHistory Memorizzazione della visita al percorso
+   */
+  private static void resolve(String path, TransitionAnimation transition, boolean pushHistory) {
+
+    if (navigationLocked.get()) return;
+    if (loadedEntry != null && loadedEntry.path().equals(path)) return;
+
+    RouteMatch match = routes.stream()
+        .map(r -> matchRoute(r.pathPattern(), path)
+            .map(params -> new RouteMatch(r, params)))
+        .flatMap(Optional::stream)
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("No route for " + path));
+
+    navigationLocked.set(true);
+
+    try {
+      Parent page = loadPage(match.route().fxml(), match.params());
+
+      if (match.route().layout() != currentLayout) {
+        switchLayout(match.route().layout(), page, transition, path, pushHistory);
+      } else {
+        switchPage(page, transition, path, pushHistory);
+      }
+    } catch (IOException ex) {
+      navigationLocked.set(false);
+      throw new RuntimeException(ex);
+      // todo pagina d'errore nel percorso richiesto
+    }
   }
 
+  /**
+   * <p>Esegue un match tra il percorso dato e i route definiti.
+   * <p>Se viene trovato un match valido, i parametri di percorso sono estratti e restituiti come {@link Map}.
+   * <p>Nota: i parametri di percorso sono definiti tramite la sintassi {@code /:nome_parametro}
+   * @param pattern Nome del percorso
+   * @param path Percorso richiesto
+   * @return Map contenente eventuali parametri di percorso
+   */
+  private static Optional<Map<String, String>> matchRoute(String pattern, String path) {
+    String[] routeParts = pattern.split("/");
+    String[] pathParts = path.split("/");
 
+    if (routeParts.length != pathParts.length) return Optional.empty();
 
-  // TEST
-  //
-  //
+    Map<String, String> params = new HashMap<>();
 
-  private static void resolveTest(String path, TransitionAnimation transition, boolean pushHistory) {
-    System.out.println("ROUTER resolve request received");
-    if(navigationLocked.get()) {
-      System.out.println("ROUTER Animation locked");
-      return;
-    }
+    for (int i = 0; i < routeParts.length; i++) {
+      String r = routeParts[i];
+      String p = pathParts[i];
 
-    // verifica se il percorso è caricato
-    if (loadedEntry != null && loadedEntry.path().equals(path)) {
-      return;
-    }
-
-    for (Map.Entry<String, Route> entry: routes.entrySet()) {
-      String routeName = entry.getKey();
-      Route route = entry.getValue();
-      String fxml = route.fxml();
-
-      Map<String, String> params = matchRoute(routeName, path);
-
-      if (params != null) {
-        navigationLocked.set(true);
-
-        // START OF TESTING AREA;
-        try {
-
-          Parent newPage = loadPageTest(fxml, params);
-
-          if (!route.layout().equals(currentLayout)) {
-            System.out.println("ROUTING 2.0: layout change");
-              LayoutHandle newLayout = loadLayoutTest(route.layout().fxml(), params);
-              newLayout.controller().setContent(newPage);
-              transition(
-                  rootContainer,
-                  newLayout.controller().getRoot(),
-                  transition,
-                  () -> {
-                    RouteEntry newEntry = new RouteEntry(path, transition);
-
-                    if (pushHistory) history.visit(newEntry);
-                    loadedEntry = newEntry;
-                    currentLayoutHandle = newLayout;
-                    currentLayout = route.layout();
-
-                    navigationLocked.set(false);
-                  });
-          } else {
-            System.out.println("ROUTING 2.0: page change only");
-            transition(
-                (Pane) currentLayoutHandle.controller().getContent(),
-                newPage,
-                transition,
-                () -> {
-                  RouteEntry newEntry = new RouteEntry(path, transition);
-
-                  if (pushHistory) history.visit(newEntry);
-                  loadedEntry = newEntry;
-
-                  navigationLocked.set(false);
-                });
-          }
-
-        } catch (IOException e) {
-          System.err.println("Loading Page Error: Error in loading page.");
-          navigationLocked.set(false);
-          e.printStackTrace();
-        }
-
-        return; // terminazione del ciclo
-
-        // END OF TESTING AREA;
+      if (r.startsWith(":")) {
+        params.put(r.substring(1), p);
+      } else if (!r.equals(p)) {
+        return Optional.empty();
       }
     }
-    System.err.println("No route found for " + path);
-    throw new RuntimeException();
+    return Optional.of(params);
   }
 
-  private static Parent loadPageTest(String fxml, Map<String, String> params) throws IOException {
-      FXMLLoader loader = new FXMLLoader(Router.class.getResource("/bookrecommenderdev/client/" + fxml));
-      Parent node = loader.load();
-      Object controller = loader.getController();
+  /**
+   * Carica un layout e una pagina riferiti nella grafica. Consente la scelta di una transizione animata.
+   * Gestisce il caricamento di un layout e di una pagina con transizione specificata.
+   * @param layout Layout contenitore
+   * @param page Pagina contenuta
+   * @param transition Transizione da utilizzare
+   * @param path Percorso richiesto
+   * @param pushHistory Memorizzazione della visita al percorso
+   * @throws IOException Errore nel caricamento degli elementi grafici
+   */
+  private static void switchLayout(
+      LayoutType layout,
+      Parent page,
+      TransitionAnimation transition,
+      String path,
+      boolean pushHistory
+  ) throws IOException {
 
-      // Assegnazione dei parametri alle pagine che li richiedono
-      if (controller instanceof Routable routable) {
-        routable.onRoute(params, appContext);
-      }
+    FXMLLoader loader =
+        new FXMLLoader(Router.class.getResource(
+            "/bookrecommenderdev/client/layouts/" +
+                layouts.fxml(layout)
+        ));
 
-      return node;
-  }
-  private static LayoutHandle loadLayoutTest(String fxml, Map<String, String> params) throws IOException {
-    System.out.println(fxml);
-    FXMLLoader loader = new FXMLLoader(Router.class.getResource("/bookrecommenderdev/client/layouts/" + fxml));
-    Parent node = loader.load();
+    Parent layoutRoot = loader.load();
     LayoutController controller = loader.getController();
 
-    // Assegnazione dei parametri alle pagine che li richiedono
-    if (controller instanceof Routable routable) {
-      routable.onRoute(params, appContext);
-    }
+    controller.setContent(page);
 
-    return new LayoutHandle(controller, node);
+    transition(
+        rootContainer,
+        layoutRoot,
+        transition,
+        () -> finalizeNavigation(path, transition, pushHistory, layout, controller)
+    );
   }
 
+  /**
+   * Carica una pagina nel layout corrente. Consente la scelta di una transizione animata.
+   * @param page Pagina
+   * @param transition Transizione da utilizzare
+   * @param path Percorso
+   * @param pushHistory Memorizzazione della visita al percorso
+   */
+  private static void switchPage(
+      Parent page,
+      TransitionAnimation transition,
+      String path,
+      boolean pushHistory
+  ) {
+    transition(
+        currentLayoutHandle.controller().getContent(),
+        page,
+        transition,
+        () -> finalizeNavigation(path, transition, pushHistory, currentLayout, currentLayoutHandle.controller())
+    );
+  }
+
+  /**
+   * Svolge le operazioni conclusive del caricamento di una pagina.
+   * <p>Se {@code pushHistory} è {@code true}, la visita alla pagina viene memorizzata con la relativa transizione utilizzata.
+   * <p>Aggiorna i campi referenti layout e pagina correntemente caricati.
+   * @param path Percorso
+   * @param transition Transizione da utilizzare
+   * @param pushHistory Memorizzazione della visita al percorso
+   * @param layout Layout da utilizzare
+   * @param controller Controller del layout
+   */
+  private static void finalizeNavigation(
+      String path,
+      TransitionAnimation transition,
+      boolean pushHistory,
+      LayoutType layout,
+      LayoutController controller
+  ) {
+    RouteEntry entry = new RouteEntry(path, transition);
+
+    if (pushHistory) history.visit(entry);
+
+    loadedEntry = entry;
+    currentLayout = layout;
+    currentLayoutHandle = new LayoutHandle(controller);
+
+    updateHistoryState(); // note: not redundant.
+    navigationLocked.set(false);
+  }
+
+  /**
+   * Restituisce il nodo corrispondente a una pagina definita da path e parametri dati.
+   * @param fxml Percorso corrispondente alla pagina
+   * @param params Parametri della pagina
+   * @return Nodo caricato
+   * @throws IOException Errore nel reperimento del file
+   */
+  private static Parent loadPage(String fxml, Map<String, String> params)
+      throws IOException {
+
+    FXMLLoader loader =
+        new FXMLLoader(Router.class.getResource(
+            "/bookrecommenderdev/client/" + fxml
+        ));
+
+    Parent page = loader.load();
+
+    Object controller = loader.getController();
+    if (controller instanceof Routable r) {
+      r.onRoute(params, appContext);
+    }
+
+    return page;
+  }
+
+  /**
+   * Effettua i cambiamenti grafici utilizzando una {@link TransitionAnimation transizione} specificata.
+   * Causa l'aggiornamento dello stato esposto.
+   * @param container Nodo radice
+   * @param content Noto figlio
+   * @param transition Transizione da utilizzare
+   * @param onFinished Operazioni finali
+   */
   private static void transition(Pane container, Node content, TransitionAnimation transition, Runnable onFinished) {
     // Gestione della transizione
     switch(transition) {
@@ -341,4 +320,9 @@ public class Router {
     updateHistoryState();
   }
 
+  /** Metodo helper per aggiornare i valori di stato esposti. */
+  private static void updateHistoryState() {
+    canBack.set(history.canBack());
+    canForward.set(history.canForward());
+  }
 }

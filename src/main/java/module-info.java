@@ -30,4 +30,12 @@ module com.example.bookrecommenderdev {
   opens bookrecommenderdev to javafx.fxml;
   exports bookrecommenderdev.routing;
   opens bookrecommenderdev.routing to javafx.fxml;
+  exports bookrecommenderdev.routing.history;
+  opens bookrecommenderdev.routing.history to javafx.fxml;
+  exports bookrecommenderdev.routing.route;
+  opens bookrecommenderdev.routing.route to javafx.fxml;
+  exports bookrecommenderdev.routing.layout;
+  opens bookrecommenderdev.routing.layout to javafx.fxml;
+  exports bookrecommenderdev.routing.animation;
+  opens bookrecommenderdev.routing.animation to javafx.fxml;
 }

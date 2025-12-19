@@ -4,6 +4,9 @@ import bookrecommenderdev.client.controller.NavbarController;
 import bookrecommenderdev.model.Utente;
 import bookrecommenderdev.server.ServerInterface;
 
+/**
+ * todo sServe descrizione
+ */
 public class AppContext {
   private final ServerInterface server;
 //  private final NavbarController navbar;

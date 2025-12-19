@@ -2,7 +2,7 @@ package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.Constants;
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Routable;
+import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.model.AuthStatus;
 import bookrecommenderdev.model.Utente;

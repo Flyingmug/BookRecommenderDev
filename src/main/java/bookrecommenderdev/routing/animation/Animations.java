@@ -1,5 +1,6 @@
-package bookrecommenderdev.routing;
+package bookrecommenderdev.routing.animation;
 
+import bookrecommenderdev.routing.Router;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
@@ -68,8 +69,6 @@ public class Animations {
     double width  = rootNode.getWidth();
     double height = rootNode.getHeight();
 
-    System.out.println("ANIMATIONS:slide: width: " + width + " height: " + height);
-
     // Fallback se il layout non è carico
     if (width <= 0 || height <= 0) {
       rootNode.applyCss();
@@ -129,7 +128,6 @@ public class Animations {
     in.play();
     out.play();
   }
-
 
   /**
    * Inverte la direzione di una transizione, se logicamente possibile.

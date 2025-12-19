@@ -1,10 +1,10 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.model.Utente;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Route;
-import bookrecommenderdev.routing.LayoutType;
-import bookrecommenderdev.routing.Router;
+import bookrecommenderdev.routing.*;
+import bookrecommenderdev.routing.layout.LayoutRegistry;
+import bookrecommenderdev.routing.layout.LayoutType;
+import bookrecommenderdev.routing.route.Route;
 import bookrecommenderdev.server.ServerInterface;
 import bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;
@@ -16,8 +16,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import static bookrecommenderdev.Constants.LOCAL_CREDENTIALS;
 
@@ -36,24 +36,30 @@ public class RootController {
 
   @FXML
   public void initialize() {
-    Map<String, Route> routes = new HashMap<>();
+    List<Route> routes = new LinkedList<>();
+    LayoutRegistry layouts = new LayoutRegistry()
+        .register(LayoutType.DEFAULT, "default-layout.fxml")
+        .register(LayoutType.INTEGRATED, "integrated-layout.fxml")
+        .register(LayoutType.EMPTY, "empty-layout.fxml");
+
+
 
     // Registrazione delle pagine
 //    routes.put("/loading", new Route("loading-view.fxml"));
-    routes.put("/", new Route("home-view.fxml"));
-    routes.put("/search/:query", new Route("searchResults-view.fxml", LayoutType.INTEGRATED));
-    routes.put("/book/:query", new Route("book-view.fxml", LayoutType.INTEGRATED));
-    routes.put("/book/:query/reviews", new Route("book-view.fxml", LayoutType.INTEGRATED));
-    routes.put("/login", new Route("login-view.fxml", LayoutType.EMPTY));
-    routes.put("/registration", new Route("registration-view.fxml", LayoutType.EMPTY));
-    routes.put("/profile", new Route("profile-view.fxml"));
-    routes.put("/libraries", new Route("libraries-view.fxml"));
-    routes.put("/libraries/:query", new Route("library-view.fxml"));
+    routes.add(new Route("/", "home-view.fxml"));
+    routes.add(new Route("/search/:query", "searchResults-view.fxml", LayoutType.INTEGRATED));
+    routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED));
+    routes.add(new Route("/book/:query/reviews", "book-view.fxml", LayoutType.INTEGRATED));
+    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY));
+    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY));
+    routes.add(new Route("/profile", "profile-view.fxml"));
+    routes.add(new Route("/libraries", "libraries-view.fxml"));
+    routes.add(new Route("/libraries/:query", "library-view.fxml"));
 
     initRegistry();
     if (bookRecommender != null) {
       context = new AppContext(bookRecommender, currentUser);
-      Router.init(content, context, routes);  // fixme not completed
+      Router.init(content, context, routes, layouts);
 
       Router.go("/");
       initVerifyLocalUserCredentials();

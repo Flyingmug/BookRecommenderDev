@@ -1,4 +1,4 @@
-package bookrecommenderdev.routing;
+package bookrecommenderdev.routing.animation;
 
 public enum TransitionAnimation {
   FADE_INTO,

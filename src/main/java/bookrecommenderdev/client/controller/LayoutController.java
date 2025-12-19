@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import java.net.URL;
 
 // todo scrap class
+// todo retrieve background loading
 public class LayoutController {
 
   @FXML private StackPane centerStackContainer;

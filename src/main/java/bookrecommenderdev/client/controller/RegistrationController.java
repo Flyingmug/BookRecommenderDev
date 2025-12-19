@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Routable;
+import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Utente;
 import bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;

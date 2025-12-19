@@ -1,11 +1,11 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Routable;
+import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.client.factory.BookDisplayFactory;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.TransitionAnimation;
+import bookrecommenderdev.routing.animation.TransitionAnimation;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,9 +22,10 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
+import static bookrecommenderdev.Constants.PAGE_SIZE;
+
 
 public class SearchResultsController implements Routable {
-  final static int PAGE_SIZE = 50;
   static BookDisplayFactory bookDisplayCreator = new BookDisplayFactory();
 
   // searchPage

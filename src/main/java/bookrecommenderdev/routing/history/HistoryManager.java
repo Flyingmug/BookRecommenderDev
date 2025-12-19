@@ -1,4 +1,4 @@
-package bookrecommenderdev.routing;
+package bookrecommenderdev.routing.history;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

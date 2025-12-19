@@ -1,14 +1,13 @@
 package bookrecommenderdev.client.controller.layouts;
 
-import bookrecommenderdev.routing.LayoutController;
+import bookrecommenderdev.routing.layout.LayoutController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 public class DefaultLayout implements LayoutController {
 
-  @FXML private BorderPane root;
   @FXML private StackPane content;
 
   public DefaultLayout() {
@@ -31,12 +30,7 @@ public class DefaultLayout implements LayoutController {
   }
 
   @Override
-  public Parent getRoot() {
-    return root;
-  }
-
-  @Override
-  public Parent getContent() { return content; }
+  public Pane getContent() { return content; }
 
   @Override
   public void setContent(Parent contentNode) {

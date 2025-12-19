@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Routable;
+import bookrecommenderdev.routing.route.Routable;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 

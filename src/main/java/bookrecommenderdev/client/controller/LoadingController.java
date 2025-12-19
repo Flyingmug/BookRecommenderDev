@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.TransitionAnimation;
+import bookrecommenderdev.routing.animation.TransitionAnimation;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
@@ -38,9 +38,7 @@ public class LoadingController {
       Duration animDuration = Duration.seconds(3.3);
 
       PauseTransition delay = new PauseTransition(animDuration);
-      delay.setOnFinished(_ -> {
-        Router.go("/", TransitionAnimation.FADE_INTO);
-      });
+      delay.setOnFinished(_ -> Router.go("/", TransitionAnimation.FADE_INTO));
       delay.play();
 
     }

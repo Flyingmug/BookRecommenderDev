@@ -1,22 +1,12 @@
 package bookrecommenderdev.routing;
 
-public class Route {
-  private final String fxml;
-  private final RouteGroup group;
-
-  // todo covert to record class if rest is standard
-
-  // Constructor with explicit group
-  public Route(String fxml, RouteGroup group) {
-    this.fxml = fxml;
-    this.group = group;
-  }
+public record Route(
+    String fxml,
+    LayoutType layout)
+{
 
   // Constructor with default group
   public Route(String fxml) {
-    this(fxml, RouteGroup.DEFAULT);
+    this(fxml, LayoutType.DEFAULT);
   }
-
-  public String fxml() { return fxml; }
-  public RouteGroup group() { return group; }
 }

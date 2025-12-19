@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="bookrecommenderdev.client.controller.layouts.DefaultLayout"
+            prefHeight="632.0" prefWidth="1000.0"
+            fx:id="root" style="-fx-background-color: green;">
+   <top>
+      <fx:include source="../components/navbar.fxml" fx:id="navbar" />
+   </top>
+   <center>
+      <StackPane fx:id="content" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

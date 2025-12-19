@@ -12,11 +12,12 @@ module com.example.bookrecommenderdev {
   requires javafx.graphics;
   requires javafx.base;
 
-
-  opens bookrecommenderdev.client to javafx.fxml;
   exports bookrecommenderdev.client;
+  opens bookrecommenderdev.client to javafx.fxml;
   exports bookrecommenderdev.client.controller;
   opens bookrecommenderdev.client.controller to javafx.fxml;
+  exports bookrecommenderdev.client.controller.layouts;
+  opens bookrecommenderdev.client.controller.layouts to javafx.fxml;
 
   opens bookrecommenderdev.server to javafx.fxml;
   exports bookrecommenderdev.server;

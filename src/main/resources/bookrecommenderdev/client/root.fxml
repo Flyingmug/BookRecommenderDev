@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.text.Font?>
+<StackPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.RootController"
+           fx:id="content">
+   <VBox fx:id="serverConnErrorWrapper" alignment="CENTER" managed="false">
+      <Label>
+         <font>
+            <Font size="75" />
+         </font>
+         <graphic>
+            <FontIcon iconLiteral="mdi2a-alert-outline" />
+         </graphic>
+      </Label>
+      <Label fx:id="serverErrorTitle" styleClass="error-label connection-error-title" />
+      <Label fx:id="serverErrorLabel" styleClass="error-label connection-error-title" />
+   </VBox>
+</StackPane>

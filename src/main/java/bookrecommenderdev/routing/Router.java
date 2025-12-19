@@ -4,7 +4,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -18,7 +20,9 @@ public class Router {
   private static Map<String, Route> routes;
   private static AppContext appContext;
 
-  private static RouteEntry loadedEntry = null;
+  private static LayoutType currentLayout;
+  private static LayoutHandle currentLayoutHandle;
+  private static RouteEntry loadedEntry;
   private static final HistoryManager<RouteEntry> history = new HistoryManager<>(5);
   private static final BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
   private static final BooleanProperty canBack = new SimpleBooleanProperty(false);
@@ -51,7 +55,7 @@ public class Router {
    * Consente la navigazione tra pagine.
    * @param path Percorso della pagina interessata
    */
-  public static void go(String path) { resolve(path, TransitionAnimation.DEFAULT, true); }
+  public static void go(String path) { resolveTest(path, TransitionAnimation.DEFAULT, true); }
 
   /**
    * Consente la navigazione tra pagine e la selezione del tipo di transizione da utilizzare.
@@ -59,7 +63,7 @@ public class Router {
    * @param transition Tipologia di animazione da utilizzare
    */
   public static void go(String path, TransitionAnimation transition) {
-    resolve(path, transition, true);
+    resolveTest(path, transition, true);
   }
 
   /**
@@ -104,11 +108,6 @@ public class Router {
             }
         );
 
-//        switch (route.group()) {
-//          case DEFAULT -> System.out.println("TestRouteGroupA");
-//          case WITH_SEARCH -> System.out.println("TestRouteGroupB");
-//          case AUTH -> System.out.println("TestRouteGroupC");
-//        }
         return;
       }
     }
@@ -188,7 +187,7 @@ public class Router {
     if(navigationLocked.get()) return;
 
     history.forward().ifPresent(entry ->
-        resolve(entry.path(), entry.transition(), false)
+        resolveTest(entry.path(), entry.transition(), false)
     );
   }
 
@@ -202,7 +201,7 @@ public class Router {
         .orElse(TransitionAnimation.DEFAULT);
 
     history.back().ifPresent(entry ->
-        resolve(entry.path(), reverseTransition(transition), false)
+        resolveTest(entry.path(), reverseTransition(transition), false)
     );
   }
 
@@ -210,6 +209,136 @@ public class Router {
   private static void updateHistoryState() {
     canBack.set(history.canBack());
     canForward.set(history.canForward());
+  }
+
+
+
+  // TEST
+  //
+  //
+
+  private static void resolveTest(String path, TransitionAnimation transition, boolean pushHistory) {
+    System.out.println("ROUTER resolve request received");
+    if(navigationLocked.get()) {
+      System.out.println("ROUTER Animation locked");
+      return;
+    }
+
+    // verifica se il percorso è caricato
+    if (loadedEntry != null && loadedEntry.path().equals(path)) {
+      return;
+    }
+
+    for (Map.Entry<String, Route> entry: routes.entrySet()) {
+      String routeName = entry.getKey();
+      Route route = entry.getValue();
+      String fxml = route.fxml();
+
+      Map<String, String> params = matchRoute(routeName, path);
+
+      if (params != null) {
+        navigationLocked.set(true);
+
+        // START OF TESTING AREA;
+        try {
+
+          Parent newPage = loadPageTest(fxml, params);
+
+          if (!route.layout().equals(currentLayout)) {
+            System.out.println("ROUTING 2.0: layout change");
+              LayoutHandle newLayout = loadLayoutTest(route.layout().fxml(), params);
+              newLayout.controller().setContent(newPage);
+              transition(
+                  rootContainer,
+                  newLayout.controller().getRoot(),
+                  transition,
+                  () -> {
+                    RouteEntry newEntry = new RouteEntry(path, transition);
+
+                    if (pushHistory) history.visit(newEntry);
+                    loadedEntry = newEntry;
+                    currentLayoutHandle = newLayout;
+                    currentLayout = route.layout();
+
+                    navigationLocked.set(false);
+                  });
+          } else {
+            System.out.println("ROUTING 2.0: page change only");
+            transition(
+                (Pane) currentLayoutHandle.controller().getContent(),
+                newPage,
+                transition,
+                () -> {
+                  RouteEntry newEntry = new RouteEntry(path, transition);
+
+                  if (pushHistory) history.visit(newEntry);
+                  loadedEntry = newEntry;
+
+                  navigationLocked.set(false);
+                });
+          }
+
+        } catch (IOException e) {
+          System.err.println("Loading Page Error: Error in loading page.");
+          navigationLocked.set(false);
+          e.printStackTrace();
+        }
+
+        return; // terminazione del ciclo
+
+        // END OF TESTING AREA;
+      }
+    }
+    System.err.println("No route found for " + path);
+    throw new RuntimeException();
+  }
+
+  private static Parent loadPageTest(String fxml, Map<String, String> params) throws IOException {
+      FXMLLoader loader = new FXMLLoader(Router.class.getResource("/bookrecommenderdev/client/" + fxml));
+      Parent node = loader.load();
+      Object controller = loader.getController();
+
+      // Assegnazione dei parametri alle pagine che li richiedono
+      if (controller instanceof Routable routable) {
+        routable.onRoute(params, appContext);
+      }
+
+      return node;
+  }
+  private static LayoutHandle loadLayoutTest(String fxml, Map<String, String> params) throws IOException {
+    System.out.println(fxml);
+    FXMLLoader loader = new FXMLLoader(Router.class.getResource("/bookrecommenderdev/client/layouts/" + fxml));
+    Parent node = loader.load();
+    LayoutController controller = loader.getController();
+
+    // Assegnazione dei parametri alle pagine che li richiedono
+    if (controller instanceof Routable routable) {
+      routable.onRoute(params, appContext);
+    }
+
+    return new LayoutHandle(controller, node);
+  }
+
+  private static void transition(Pane container, Node content, TransitionAnimation transition, Runnable onFinished) {
+    // Gestione della transizione
+    switch(transition) {
+      case FADE_INTO ->
+          fadeTransition(container, content, Duration.millis(115), onFinished);
+      case TOP_SLIDE ->
+          slideTransition(container, content, Direction.TOP, Duration.millis(150), onFinished);
+      case RIGHT_SLIDE ->
+          slideTransition(container, content, Direction.RIGHT, Duration.millis(150), onFinished);
+      case BOTTOM_SLIDE ->
+          slideTransition(container, content, Direction.BOTTOM, Duration.millis(150), onFinished);
+      case LEFT_SLIDE ->
+          slideTransition(container, content, Direction.LEFT, Duration.millis(150), onFinished);
+      default -> {
+        container.getChildren().setAll(content);
+        onFinished.run();
+      }
+    }
+
+    updateHistoryState();
   }
 
 }

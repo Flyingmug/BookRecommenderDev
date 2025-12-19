@@ -138,12 +138,13 @@ public class LoginController implements Routable {
    *
    */
   private void setUserAccessed() {
-    context.navbar().showLoginButton(false);
-    context.navbar().showRegisterButton(false);
-    context.navbar().showLibrariesButton(true);
-    context.navbar().showProfilePicture(true);
-    Utente u = context.user();
-    context.navbar().setProfileInitials(("" + u.getNome().charAt(0) + u.getCognome().charAt(0)).toUpperCase());
+    // fixme decoupled
+//    context.navbar().showLoginButton(false);
+//    context.navbar().showRegisterButton(false);
+//    context.navbar().showLibrariesButton(true);
+//    context.navbar().showProfilePicture(true);
+//    Utente u = context.user();
+//    context.navbar().setProfileInitials(("" + u.getNome().charAt(0) + u.getCognome().charAt(0)).toUpperCase());
   }
 
   private void setLoginFeedback(String message) {

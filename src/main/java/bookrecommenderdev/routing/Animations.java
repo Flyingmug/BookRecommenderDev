@@ -3,7 +3,7 @@ package bookrecommenderdev.routing;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 /**
@@ -18,7 +18,7 @@ public class Animations {
    * @param newNode Nuovo elemento
    * @param duration Durata del'animazione
    */
-  public static void fadeTransition(StackPane rootNode, Node newNode, Duration duration, Runnable onFinished) {
+  public static void fadeTransition(Pane rootNode, Node newNode, Duration duration, Runnable onFinished) {
     Node oldNode = rootNode.getChildren().isEmpty()
         ? null
         : rootNode.getChildren().getFirst();
@@ -60,13 +60,15 @@ public class Animations {
    * @param direction Direzione di scorrimento
    * @param duration Durata del'animazione
    */
-  public static void slideTransition(StackPane rootNode, Node newNode, Direction direction, Duration duration, Runnable onFinished) {
+  public static void slideTransition(Pane rootNode, Node newNode, Direction direction, Duration duration, Runnable onFinished) {
     Node oldNode = rootNode.getChildren().isEmpty()
         ? null
         : rootNode.getChildren().getFirst();
 
     double width  = rootNode.getWidth();
     double height = rootNode.getHeight();
+
+    System.out.println("ANIMATIONS:slide: width: " + width + " height: " + height);
 
     // Fallback se il layout non è carico
     if (width <= 0 || height <= 0) {

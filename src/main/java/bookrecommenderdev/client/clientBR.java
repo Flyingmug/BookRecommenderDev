@@ -19,7 +19,7 @@ public class clientBR extends Application {
     Font.loadFont(getClass().getResourceAsStream("/bookrecommenderdev/fonts/Montserrat/static/Montserrat-Bold.ttf"), 16);
     Font.loadFont(getClass().getResourceAsStream("/bookrecommenderdev/fonts/Montserrat/static/Montserrat-Black.ttf"), 16);
 
-    FXMLLoader fxmlLoader = new FXMLLoader(clientBR.class.getResource("layout-view.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(clientBR.class.getResource("root.fxml"));
     Scene scene = new Scene(fxmlLoader.load(), 1100, 680);
     stage.setTitle("BookRecommender");
 

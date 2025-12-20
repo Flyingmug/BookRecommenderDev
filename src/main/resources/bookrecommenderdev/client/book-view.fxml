@@ -5,6 +5,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+
 <VBox fx:id="bookPage" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bookrecommenderdev.client.controller.BookController"

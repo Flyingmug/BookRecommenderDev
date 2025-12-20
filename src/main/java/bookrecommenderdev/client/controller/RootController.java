@@ -49,7 +49,6 @@ public class RootController {
     routes.add(new Route("/", "home-view.fxml"));
     routes.add(new Route("/search/:query", "searchResults-view.fxml", LayoutType.INTEGRATED));
     routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED));
-    routes.add(new Route("/book/:query/reviews", "book-view.fxml", LayoutType.INTEGRATED));
     routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY));
     routes.add(new Route("/profile", "profile-view.fxml"));

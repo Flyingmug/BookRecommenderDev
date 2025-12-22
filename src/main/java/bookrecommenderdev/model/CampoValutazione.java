@@ -1,7 +1,7 @@
 package bookrecommenderdev.model;
 
 /**
- * Possibili campi di valutazione di un libro
+ * Possibili valutazioni per un libro.
  */
 public enum CampoValutazione {
   GENERALE("Generale"),

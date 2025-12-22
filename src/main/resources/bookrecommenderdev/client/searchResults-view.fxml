@@ -5,43 +5,61 @@
 
 <?import javafx.geometry.Insets?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+
 <ScrollPane fx:id="booksResultsPage"
-            xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="bookrecommenderdev.client.controller.SearchResultsController"
-            fitToWidth="true" hbarPolicy="NEVER"
-            styleClass="search-scroll-pane">
-   <VBox styleClass="search-result-section" focusTraversable="true">
-      <HBox fx:id="resultTitleWrapper" alignment="CENTER">
-         <Label fx:id="resultTitle" styleClass="search-title" text="Risultati" />
-         <VBox.margin>
-            <Insets bottom="10.0" top="10.0" />
-         </VBox.margin>
-      </HBox>
-      <VBox fx:id="booksResultWrapper">
-         <HBox alignment="BOTTOM_LEFT">
-            <Label fx:id="resultIndexCounter" styleClass="search-result-index-counter" prefHeight="20.0" text="/-/ di / risultati" />
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+            styleClass="scrollable-pane">
+
+   <HBox styleClass="search-page-container">
+      <VBox styleClass="search-page">
+         <HBox fx:id="resultTitleContainer" styleClass="result-title-container" alignment="CENTER">
+            <Label fx:id="resultTitle" text="Risultati" />
+            <HBox fx:id="resultNotFoundTitle" managed="false" visible="false">
+               <Label styleClass="" text="Nessun risultato trovato" />
+               <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="38" />
+            </HBox>
+            <HBox.margin>
+               <Insets bottom="10.0" top="10.0" />
+            </HBox.margin>
          </HBox>
-         <VBox fx:id="booksResultDisplay" styleClass="search-results-container" VBox.vgrow="ALWAYS" />
-         <BorderPane styleClass="search-controls-container" VBox.vgrow="NEVER">
-            <left>
-               <Button fx:id="previousPageButton" alignment="CENTER" maxHeight="-Infinity" mnemonicParsing="false" onAction="#onPreviousResults" prefHeight="40.0" prefWidth="105.0" text="Precedente" BorderPane.alignment="CENTER">
-                  <graphic>
-                     <FontIcon iconLiteral="mdi2a-arrow-left" iconSize="38" styleClass="result-page-arrow" />
-                  </graphic>
-               </Button>
-            </left>
-            <right>
-               <Button fx:id="nextPageButton" alignment="CENTER" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onNextResults" prefHeight="40.0" prefWidth="105.0" text="Successivo" BorderPane.alignment="CENTER">
-                  <graphic>
-                     <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="38" styleClass="result-page-arrow" />
-                  </graphic>
-               </Button>
-            </right>
-            <VBox.margin>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </VBox.margin>
-         </BorderPane>
+         <VBox fx:id="booksResultSection">
+
+            <HBox alignment="BOTTOM_LEFT">
+               <Label fx:id="resultIndexCounter" styleClass="results-index-counter"
+                      text="/-/ di / risultati" />
+            </HBox>
+
+            <VBox fx:id="booksResultsContainer" styleClass="search-results-container" VBox.vgrow="ALWAYS" />
+
+            <BorderPane styleClass="search-controls-container">
+               <left>
+                  <Button fx:id="previousPageButton" styleClass="control-button"
+                          BorderPane.alignment="CENTER"
+                          onAction="#onPreviousResults"
+                          visible="false"
+                          text="Precedente">
+                     <graphic>
+                        <FontIcon iconLiteral="mdi2a-arrow-left" styleClass="result-page-arrow" />
+                     </graphic>
+                  </Button>
+               </left>
+               <right>
+                  <Button fx:id="nextPageButton" styleClass="control-button"
+                          BorderPane.alignment="CENTER"
+                          onAction="#onNextResults"
+                          visible="false"
+                          text="Successivo">
+                     <graphic>
+                        <FontIcon iconLiteral="mdi2a-arrow-right" styleClass="result-page-arrow" />
+                     </graphic>
+                  </Button>
+               </right>
+            </BorderPane>
+         </VBox>
       </VBox>
-   </VBox>
+   </HBox>
+
+
 </ScrollPane>

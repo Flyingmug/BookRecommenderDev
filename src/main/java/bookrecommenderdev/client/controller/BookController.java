@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.components.ReviewsSectionController;
 import bookrecommenderdev.model.CampoValutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,15 +26,18 @@ import java.util.Map;
 
 public class BookController implements Routable {
 
-  @FXML public VBox bookPage;
-  @FXML public Label bookPageTitolo;
-  @FXML public Label bookPageAutori;
-  @FXML public Label bookPageAnnoPubblicazione;
-  @FXML public Label bookPageEditore;
-  @FXML public Label bookPageCategorie;
+  @FXML public ScrollPane bookPage; // fixme removable if unused
+  @FXML public Label bookTitolo;
+  @FXML public Label bookAutori;
+  @FXML public Label bookAnnoPubblicazione;
+  @FXML public Label bookEditore;
+  @FXML public Label bookCategorie;
   @FXML public VBox scoresSection;
   @FXML public TilePane scoresContainer;
-  @FXML public VBox reviewsLinkContainer;
+  @FXML public VBox reviewsLinkContainer; // fixme kept for testing purposes
+  @FXML public VBox reviewsSection;
+  @FXML private ReviewsSectionController reviewsSectionController;  // assegnazione automatica tramite fx:include
+
 
   AppContext context;
   int idLibro;
@@ -41,6 +46,11 @@ public class BookController implements Routable {
   public void onRoute(Map<String, String> params, AppContext context) {
     this.context = context;
     loadPublicBookPage(Integer.parseInt(params.get("query")));
+  }
+
+  @FXML
+  public void initialize() {
+
   }
 
   /**
@@ -52,10 +62,7 @@ public class BookController implements Routable {
     System.out.println("BOOKPAGE id libro: " + idLibro); // DEBUG
     this.idLibro = idLibro;
 
-    bookPage.setVisible(true);
-
     try {
-
       PaginaLibro pagina = context.server().getPaginaLibro(idLibro);
 
       if (pagina != null) {
@@ -63,16 +70,18 @@ public class BookController implements Routable {
         if (pagina.getLibro() != null) {
           Libro l = pagina.getLibro();
 
-          bookPageTitolo.setText(l.getTitolo());
-          bookPageAutori.setText(l.getAutori());
-          bookPageAnnoPubblicazione.setText(Integer.toString(l.getAnnoPubblicazione()));
-          bookPageCategorie.setText(l.getCategorie());
-          bookPageEditore.setText(l.getEditore());
+          bookTitolo.setText(l.getTitolo());
+          bookAutori.setText(l.getAutori());
+          bookAnnoPubblicazione.setText(Integer.toString(l.getAnnoPubblicazione()));
+          bookCategorie.setText(l.getCategorie());
+          bookEditore.setText(l.getEditore());
         }
 
         if (pagina.getValutazioniAggregate() != null && scoresPresent(pagina.getValutazioniAggregate())) {
           double[] scores = pagina.getValutazioniAggregate();
-          showScores(scores);
+
+          showReviews();  // mostra la sezione delle recensioni
+          showScores(scores); // mostra le medie delle valutazioni
         } else {
           reviewsLinkContainer.setVisible(false);
           scoresContainer.getChildren().add(
@@ -82,6 +91,7 @@ public class BookController implements Routable {
                   Color.BLACK
               )
           );
+          setReviewsVisible(false);
         }
 
       }
@@ -93,13 +103,24 @@ public class BookController implements Routable {
     }
   }
 
+  private void showReviews() {
+    // caricamento delle review
+    reviewsSectionController.initializeForBook(idLibro, context);
+  }
+
+  private void setReviewsVisible(boolean b) {
+    reviewsSection.setVisible(b);
+    reviewsSection.setManaged(b);
+  }
+
+  // fixme kept for testing purposes.
   public void onReviews() {
     Router.go("/book/"+idLibro+"/reviews");
   }
 
 
   /**
-   * Verifica il numero dei campi di valutazione nel vettore dato (verificandone la dimensione).
+   * Verifica che il numero dei campi di valutazione nel vettore dato rispetti la dimensione dei campi definiti in {@link CampoValutazione}.
    */
   private boolean scoresPresent(double[] scores) {
     return scores != null && scores.length == CampoValutazione.values().length - 1;

@@ -2,11 +2,11 @@ package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.server.dao.*;
-import bookrecommenderdev.model.*;
-import bookrecommenderdev.server.dao.*;
 import bookrecommenderdev.server.db.DatabaseConfig;
+import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 import bookrecommenderdev.server.dto.PaginaLibro;
 import bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
+import bookrecommenderdev.server.dto.PaginaValutazioni;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
@@ -46,8 +46,8 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // libri
   //
 
-  public Pair<List<Libro>, Integer> searchTitolo(String titolo, int indicePagina) throws RemoteException {
-    Pair<List<Libro>, Integer> elenco = null;
+  public PaginaLibriRisultati searchTitolo(String titolo, int indicePagina) throws RemoteException {
+    PaginaLibriRisultati elenco;
     try {
       elenco = libri.getPage(indicePagina, titolo);
       return elenco;
@@ -55,6 +55,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return null;
     }
   }
+
   public List<Libro> searchAutore(String autore) throws RemoteException {
       return List.of();
   }
@@ -69,23 +70,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       Libro l = libri.get(idLibro);
       double[] v = valutazioni.getAverage(idLibro);
 
-//      List<ConsigliLettura> listaConsigli = consigli.getAll(idLibro, true);
-//      List<Integer> elencoIdLibri = new LinkedList<>();
-//      for (ConsigliLettura c: listaConsigli) {
-//        elencoIdLibri.add( c.getIdconsiglio1());
-//        elencoIdLibri.add( c.getIdconsiglio2());
-//        elencoIdLibri.add( c.getIdconsiglio3());
-//        System.out.println(c.getIdconsiglio1());
-//        System.out.println(c.getIdconsiglio2());
-//        System.out.println(c.getIdconsiglio3());
-//      }
-
       return new PaginaLibro(l, v);
 
     } catch(SQLException e) {
-      System.out.println("test");
       e.printStackTrace();
-      System.out.println(e.getMessage());
       return null;
     }
 
@@ -133,9 +121,20 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // Valutazioni
   //
 
-  public List<Valutazione> getValutazioni(long idLibro) throws RemoteException {
+  public PaginaValutazioni getValutazioni(long idLibro, int indicePagina) throws RemoteException {
+    PaginaValutazioni elenco;
+    try {
+      elenco = valutazioni.getPage(indicePagina, idLibro);
+      return elenco;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-    return List.of();
+  public String ping() throws RemoteException {
+    System.out.println("PING RECEIVED");
+    return "pong";
   }
 
   //

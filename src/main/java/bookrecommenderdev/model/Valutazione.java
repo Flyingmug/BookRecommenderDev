@@ -1,5 +1,8 @@
 package bookrecommenderdev.model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Classe utilizzata per definire le caratteristiche delle valutazioni,
  * in termini di stile, contenuto, gradevolezza, originalita' ed edizione.
@@ -7,7 +10,9 @@ package bookrecommenderdev.model;
  * della dimensione massima di 256 caratteri
  * @author Selimi Sebian
  * @author Moscatelli Alexander*/
-public class Valutazione {
+public class Valutazione implements Serializable {
+  @Serial
+  private static final long serialVersionUID = 1L;
   final static int MAX_SIZE_RECENSIONE = 256;
 
   int id_libro;
@@ -32,18 +37,18 @@ public class Valutazione {
   /**
    * Costruttore.
    * I parametri passati vengono utilizzati per creare un'istanza.
-   * @param id_libro String
-   * @param id_utente String
-   * @param stile int punteggio
-   * @param contenuto int punteggio
-   * @param gradevolezza int punteggio
-   * @param originalita int punteggio
-   * @param edizione int punteggio
-   * @param recStile String recensione testuale
-   * @param recContenuto String recensione testuale
-   * @param recGradevolezza String recensione testuale
-   * @param recOriginalita String recensione testuale
-   * @param recEdizione String recensione testuale
+   * @param id_libro id libro riferito
+   * @param id_utente id utente riferito
+   * @param stile punteggio
+   * @param contenuto punteggio
+   * @param gradevolezza punteggio
+   * @param originalita punteggio
+   * @param edizione punteggio
+   * @param recStile recensione testuale
+   * @param recContenuto recensione testuale
+   * @param recGradevolezza recensione testuale
+   * @param recOriginalita recensione testuale
+   * @param recEdizione recensione testuale
    */
   public Valutazione(int id_libro, int id_utente, int stile, int contenuto, int gradevolezza, int originalita,
                      int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,

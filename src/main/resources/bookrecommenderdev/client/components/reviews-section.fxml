@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.components.ReviewsSectionController"
+      spacing="10"
+      styleClass="reviews-section"
+      fx:id="reviewsSectionContainer">
+
+   <HBox alignment="BOTTOM_LEFT">
+      <Label fx:id="resultReviewIndexCounter" styleClass="results-index-counter" text="/ risultati" />
+   </HBox>
+
+   <HBox fx:id="reviewsTopSeparator" styleClass="reviews-section-separator" managed="false" visible="false" >
+      <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
+      <Button fx:id="previousReviewsButton" styleClass="control-button, control-button-border" onAction="#onPrevReviews">
+         <graphic>
+            <Label style="-fx-opacity: 1;" text="Recensioni precedenti" />
+         </graphic>
+      </Button>
+      <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
+   </HBox>
+
+   <VBox fx:id="reviewsContainer" />
+
+   <HBox fx:id="reviewsBottomSeparator" styleClass="reviews-section-separator" managed="false" visible="false" >
+      <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
+      <Button fx:id="nextReviewsButton" styleClass="control-button, control-button-border" onAction="#onNextReviews">
+         <graphic>
+            <Label style="-fx-opacity: 1;" text="Altre recensioni" />
+         </graphic>
+      </Button>
+      <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
+   </HBox>
+</VBox>

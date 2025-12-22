@@ -60,7 +60,10 @@ public class RootController {
       context = new AppContext(bookRecommender, currentUser);
       Router.init(content, context, routes, layouts);
 
-      Router.go("/");
+      // fixme TEST
+      //Router.go("/");
+      Router.go("/book/1");
+
       initVerifyLocalUserCredentials();
     }
 

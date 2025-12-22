@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox spacing="6" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.components.ReviewItemController">
+   <Label fx:id="authorLabel" wrapText="true" styleClass="review-author"/>
+   <Label fx:id="contentLabel" wrapText="true"/>
+   <HBox fx:id="starsContainer" spacing="2"/>
+</VBox>

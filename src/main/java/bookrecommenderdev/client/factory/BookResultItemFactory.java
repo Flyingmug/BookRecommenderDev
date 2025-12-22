@@ -7,15 +7,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 
 import java.util.function.Consumer;
 
-public class BookDisplayFactory extends VBoxFactory {
+public class BookResultItemFactory {
 
-  public VBox createVBox(Libro l, Consumer<Integer> onClick) {
-    VBox row = new VBox(5);
+  public static VBox createBookResultItem(Libro l, Consumer<Integer> onAction) {
+    VBox row = new VBox(4);
     row.getStyleClass().add("result-book");
 
     Label titolo = LabelCustomizer.createLabel(l.getTitolo(), Size.SM, Color.valueOf("#1e81c5"));
@@ -26,7 +24,7 @@ public class BookDisplayFactory extends VBoxFactory {
     Button titoloButton = new Button();
     titoloButton.setGraphic(titolo);
     titoloButton.getStyleClass().add("result-book-button");
-    titoloButton.setOnAction(_ ->  onClick.accept(l.getIdLibro()));
+    titoloButton.setOnAction(_ ->  onAction.accept(l.getIdLibro()));
 
     Label autori = LabelCustomizer.createLabel(l.getAutori(), Size.XS);
     autori.setMaxWidth(750);

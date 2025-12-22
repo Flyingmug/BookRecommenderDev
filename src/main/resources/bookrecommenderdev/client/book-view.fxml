@@ -3,40 +3,53 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox fx:id="bookPage" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bookrecommenderdev.client.controller.BookController"
-      styleClass="book-page">
-   <VBox styleClass="book-information-section">
-      <Label fx:id="bookPageTitolo" styleClass="book-label-title" wrapText="true" />
-      <GridPane styleClass="book-info-entries-container" prefHeight="100.0" prefWidth="200.0">
-            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="0" minHeight="-Infinity" prefHeight="22.0" text="Autori" wrapText="true" />
-            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="1" minHeight="-Infinity" prefHeight="22.0" text="Anno di pubblicazione" wrapText="true" />
-            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="2" minHeight="-Infinity" prefHeight="22.0" text="Categorie" wrapText="true" />
-            <Label styleClass="book-info-key" GridPane.columnIndex="0" GridPane.rowIndex="3" minHeight="-Infinity" prefHeight="22.0" text="Editore" wrapText="true" />
-            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="bookPageAutori" minHeight="-Infinity" prefHeight="20.0" />
-            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="bookPageAnnoPubblicazione" minHeight="-Infinity" prefHeight="20.0" />
-            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="bookPageCategorie" minHeight="-Infinity" prefHeight="20.0" />
-            <Label styleClass="book-info-value" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="bookPageEditore" minHeight="-Infinity" prefHeight="20.0" />
-      </GridPane>
-   </VBox>
-   <VBox fx:id="scoresSection" styleClass="book-scores-section" prefHeight="50.0" prefWidth="100.0">
-      <TilePane fx:id="scoresContainer" styleClass="book-scores-container" />
-      <VBox fx:id="reviewsLinkContainer">
-         <Button alignment="CENTER" onAction="#onReviews">
-            <graphic>
-               <HBox alignment="CENTER">
-                  <Label text="Vedi tutte le valutazioni" styleClass="scores-section-reviews-link" />
-                  <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="16" styleClass="result-page-arrow" />
-               </HBox>
-            </graphic>
-         </Button>
+<ScrollPane fx:id="bookPage"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.BookController"
+            fitToWidth="true" fitToHeight="true"
+            styleClass="scrollable-pane">
+
+   <VBox styleClass="book-page-container">
+      <VBox styleClass="book-page">
+
+         <VBox styleClass="book-data-section">
+            <Label fx:id="bookTitolo" styleClass="book-label-title" wrapText="true" />
+            <HBox styleClass="book-label-subtitle">
+               <Label text="By" />
+               <Label fx:id="bookAutori" />
+            </HBox>
+            <GridPane styleClass="book-data-entries-container" >
+               <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="0" text="ANNO" wrapText="true" />
+               <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="1" text="CATEGORIE" wrapText="true" />
+               <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="2" text="EDITORE" wrapText="true" />
+               <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="bookAnnoPubblicazione" />
+               <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="bookCategorie" />
+               <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="bookEditore" />
+            </GridPane>
+         </VBox>
+
+         <VBox fx:id="scoresSection" styleClass="scores-section">
+            <TilePane fx:id="scoresContainer" styleClass="scores-container" />
+            <VBox managed="false" visible="false" fx:id="reviewsLinkContainer">
+               <Button alignment="CENTER" onAction="#onReviews" styleClass="scores-section-reviews-link">
+                  <graphic>
+                     <HBox alignment="CENTER">
+                        <Label text="Vedi tutte le valutazioni" />
+                        <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="16" styleClass="result-page-arrow" />
+                     </HBox>
+                  </graphic>
+               </Button>
+            </VBox>
+         </VBox>
+
+         <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
+
       </VBox>
+
+<!--      <fx:include source="components/footer.fxml" />-->
    </VBox>
-   <StackPane.margin>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </StackPane.margin>
-</VBox>
+
+
+</ScrollPane>

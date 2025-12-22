@@ -2,21 +2,18 @@ package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
-import bookrecommenderdev.client.factory.BookDisplayFactory;
+import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
+import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.util.Pair;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -26,32 +23,20 @@ import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 
 public class SearchResultsController implements Routable {
-  static BookDisplayFactory bookDisplayCreator = new BookDisplayFactory();
 
   // searchPage
-  @FXML
-  private Label resultTitle;
-  @FXML
-  private HBox resultTitleWrapper;
-  @FXML
-  private VBox booksResultDisplay;
-  @FXML
-  private VBox booksResultWrapper;
-
-  @FXML
-  private HBox noResultsTitleWrapper;
-  @FXML
-  private Label resultIndexCounter;
-  @FXML
-  private Button previousPageButton;
-  @FXML
-  private Button nextPageButton;
-  @FXML
-  private ScrollPane booksResultsPage;
+  @FXML private Label resultTitle;
+  @FXML private HBox resultNotFoundTitle;
+  @FXML private VBox booksResultSection;
+  @FXML private VBox booksResultsContainer;
+  @FXML private Label resultIndexCounter;
+  @FXML private Button previousPageButton;
+  @FXML private Button nextPageButton;
+  @FXML private ScrollPane booksResultsPage;
 
   private AppContext context;
   int currentResultPageIndex;
-  int bookResultCount;
+  int totalResultCount;
   String currentSearch;
 
 
@@ -63,160 +48,178 @@ public class SearchResultsController implements Routable {
   }
 
   @FXML
-  public void initialize() {
-
-    currentResultPageIndex = 0;
-    bookResultCount = 0;
-    currentSearch = "";
-
-    // icona di ricerca
-    FontIcon noBooksIcon = new FontIcon("mdi2b-book-alert-outline");
-    noBooksIcon.setIconSize(38);
-    // titolo ricerca fallita
-    Label noResultsTitle = new Label("Nessun risultato trovato");
-    noResultsTitle.setFont(new Font("Arial", 30));
-    noResultsTitle.setPadding(new Insets(5, 10, 5, 10));
-    noResultsTitleWrapper = new HBox(noResultsTitle, noBooksIcon);
-    noResultsTitleWrapper.setAlignment(Pos.CENTER);
-
-    HBox.setMargin(noResultsTitleWrapper, new Insets(100, 0, 0, 0));
+  private void onPublicBookPage(Integer idLibro) {
+    Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
   }
 
   /**
-   * Effettua una ricerca utilizzando il parametro fornito come chiave.
-   * todo completare una volte implementati i criteri di ricerca
+   * Effettua una richiesta di ricerca tramite la chiave fornita.
    * @param query Chiave di ricerca.
    */
   private void search(String query) {
-    System.out.println("Searched: " + query);  // DEBUG
+    System.out.println("SEARCH Searched: " + query);  // DEBUG
     if (query == null || query.isEmpty()) return;
 
-//    topSearchbar();
-    booksResultsPage.setVisible(true);
+    // reset
+    currentResultPageIndex = 0;
+    totalResultCount = 0;
+    currentSearch = query;
 
-    // if there is a new input, set it as the current search value
-    boolean newSearch = !query.equals(currentSearch);
-    if (newSearch) {
-      setPrevControlVisibility(false);
-      currentResultPageIndex = 0;
-      currentSearch = query;
-    }
+    resolveSearch(query, currentResultPageIndex);
+  }
+
+  /** <p>Gestisce la richiesta al server utilizzando la chiave data {@code query}.
+   * <p>L'indice di pagina {@code pageIndex} viene utilizzato per avere un <i>offset</i> sui risultati,
+   * questi <i>limitati</i> a una quantità fissa.
+   * <p>todo completare una volte implementati i criteri di ricerca
+   * @param query Chiave di ricerca.
+   * @param pageIndex Indice di offset.
+   */
+  private void resolveSearch(String query, int pageIndex) {
 
     try {
-      Pair<List<Libro>, Integer> data = context.server().searchTitolo(query, currentResultPageIndex);
-      List<Libro> books = data.getKey();
-      int totalResults = data.getValue();
+      PaginaLibriRisultati data = context.server().searchTitolo(query, pageIndex);
+      if (data == null) throw new RemoteException();  // temp fixme
+
+      List<Libro> books = data.results();
+      int totalResults = data.totalCount();
 
       if (books.isEmpty() || totalResults == 0) {
         System.out.println("Empty result set."); // DEBUG
+        booksResultSection.setVisible(false);
         showNoResults();
         return;
       }
 
+      totalResultCount = totalResults;
+
       System.out.println("Numero di risultati: " + totalResults); // DEBUG
 
-      if (newSearch) setNextControlVisibility(totalResults > PAGE_SIZE);
 
-      setResultsFoundTitle(true);
-      booksResultWrapper.setVisible(true);
-      loadResults(data);
+      loadResults(books);
 
     } catch(RemoteException e) {
-      System.out.println("Error while fetching data");
+      System.out.println("SEARCHERR Error while fetching data");
       e.printStackTrace();
     }
 
   }
 
-  private void showNoResults() {
-    setResultsFoundTitle(false);
-    booksResultWrapper.setVisible(false);
-    // todo display searchbar when no book is found, to allow for another search (the one in the navbar should be fine)
+  /**
+   * <p>Costruisce dinamicamente dei nodi per mostrare i dati di ciascun Libro.
+   * <p>Ciascun nodo è separato da un {@link Separator}.
+   * <p>Riabilita l'uso dei pulsanti di controllo dei risultati.
+   * @param results lista di dati risultanti
+   */
+  private void loadResults(List<Libro> results) {
+
+    // Rimozione di eventuali elementi precedenti
+    booksResultsContainer.getChildren().clear();
+
+    resultIndexCounter.setText(formatIndexCounter());
+
+    for (Libro l: results) {
+      VBox row = BookResultItemFactory.createBookResultItem(l, this::onPublicBookPage);
+      booksResultsContainer.getChildren().add(row);
+
+      if (results.indexOf(l) < results.size() - 1) {
+        Separator line = new Separator();
+        line.setStyle("-fx-border-colo: #99b1e9");
+        booksResultsContainer.getChildren().add(line);
+      }
+    }
+
+    setControls();
   }
 
+  /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
+  private void setControls() {
+    setPrevControlVisibility(currentResultPageIndex > 0);
+    setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < totalResultCount);
+    setResultsControlsDisabled(false);
+    showDisabled(previousPageButton, false);
+    showDisabled(nextPageButton, false);
+  }
+
+
+  /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
+   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+  @FXML
+  private void onPreviousResults() {
+    if (currentSearch == null || currentSearch.isEmpty()) return;
+    if (currentResultPageIndex <= 0) return;
+
+    showDisabled(previousPageButton, true);
+
+    goToPage(currentResultPageIndex - 1);
+    booksResultsPage.setVvalue(1);  // vai a fondo pagina
+  }
+
+  /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
+   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+  @FXML
+  private void onNextResults() {
+    if (currentSearch == null || currentSearch.isEmpty()) return;
+    if ((currentResultPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
+
+    showDisabled(nextPageButton, true);
+
+    goToPage(currentResultPageIndex + 1);
+    booksResultsPage.setVvalue(0);  // vai a inizio pagina
+  }
+
+  /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
+  private void goToPage(int newIndex) {
+    // if (newIndex < 0 || newIndex * PAGE_SIZE >= totalResultCount) return;
+    // fixme verification divided in two separate methods, but shouldn't be any problem
+
+    setResultsControlsDisabled(true);
+
+    currentResultPageIndex = newIndex;
+    resolveSearch(currentSearch, newIndex);
+  }
+
+
+
+  /** Disabilita i comandi di controlli dei risultati. */
+  private void setResultsControlsDisabled(boolean disable) {
+    previousPageButton.setDisable(disable);
+    nextPageButton.setDisable(disable);
+  }
+
+  /** Controlla la visibilità del pulsante di pagina precedente. */
   private void setPrevControlVisibility(boolean visibility) {
     previousPageButton.setVisible(visibility);
   }
+
+  /** Controlla la visibilità del pulsante di pagina successiva. */
   private void setNextControlVisibility(boolean visibility) {
     nextPageButton.setVisible(visibility);
   }
 
-  /**
-   * Rimpiazza i children del contenitore del titolo a seconda del risultato della ricerca.
-   * @param success risultati trovati o meno
-   */
-  private void setResultsFoundTitle(boolean success) {
-    resultTitleWrapper.getChildren().clear();
-    if (success) {
-      resultTitleWrapper.getChildren().add(resultTitle);
+  /** Mostra la selezione del pulsante sulla grafica, aggiungendovi la classe rispettiva. */
+  private void showDisabled(Button controlButton, boolean b) {
+    if (b) {
+      controlButton.getStyleClass().add("control-button-customdisabled");
     } else {
-      resultTitleWrapper.getChildren().addAll(noResultsTitleWrapper);
+      controlButton.getStyleClass().remove("control-button-customdisabled");
     }
   }
 
-  /**
-   * Attraverso data costruisce degli oggetti di tipo VBox per mostrare i dati di ciascun Libro
-   * @param data dati ricevuti
-   */
-  private void loadResults(Pair<List<Libro>, Integer> data) {
-
-    // removal of previous results
-    booksResultDisplay.getChildren().clear();
-
-    List<Libro> results = data.getKey();
-
-    bookResultCount = data.getValue();
-    resultIndexCounter.setText(formatIndexCounter());
-
-    for (Libro l: results) {
-      VBox row = bookDisplayCreator.createVBox(l, this::onPublicBookPage);
-      booksResultDisplay.getChildren().add(row);
-    }
-
-  }
-
-  private void onPublicBookPage(Integer idLibro) {
-    Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
-  }
-
+  /** Genera una stringa di testo per mostrare il numero di risultati visualizzati contro il totale. */
   private String formatIndexCounter() {
-    return Math.min(PAGE_SIZE*currentResultPageIndex+1, bookResultCount) +
-        "-" + Math.min(PAGE_SIZE*(1+currentResultPageIndex), bookResultCount) +
-        " di " + bookResultCount + " risultati";
+    return Math.min(
+        PAGE_SIZE*currentResultPageIndex+1, totalResultCount) +"-"+
+        Math.min(PAGE_SIZE*(1+currentResultPageIndex), totalResultCount) +" di "+
+        totalResultCount + " risultati";
   }
 
-  @FXML
-  protected void onNextResults() {
-    goToPage(currentResultPageIndex + 1);
-    booksResultsPage.setVvalue(0);
-  }
-  @FXML
-  protected void onPreviousResults() {
-    goToPage(currentResultPageIndex - 1);
-    booksResultsPage.setVvalue(1);
-  }
-  private void goToPage(int newIndex) {
-    if (newIndex < 0 || newIndex * PAGE_SIZE >= bookResultCount) return;
-
-    currentResultPageIndex = newIndex;
-    search(currentSearch);
-
-    setPrevControlVisibility(currentResultPageIndex > 0);
-    setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < bookResultCount);
+  /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
+  private void showNoResults() {
+    resultTitle.setVisible(false);
+    resultTitle.setManaged(false);
+    resultNotFoundTitle.setVisible(true);
+    resultNotFoundTitle.setManaged(true);
   }
 
-
-
-  //
-  //
-  //
-  //
-  // test methods
-
-//  private void testBooksearchpage() {
-//    // simulate input insertion
-//    searchbar.setText("Goat Brothers");
-//    // simulate search icon click
-//    onSearchAction();
-//  }
 }

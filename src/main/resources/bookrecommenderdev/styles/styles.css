@@ -20,6 +20,67 @@
 }
 
 
+
+/* Control button standard class */
+.control-button {
+    -fx-background-color: white;
+    -fx-background-radius: 9999;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-radius: 9999;
+    -fx-border-width: 2;
+    -fx-pref-width: 250;
+    -fx-pref-height: 45;
+    -fx-alignment: center;
+    -fx-padding: 4;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 17;
+}
+.control-button:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #668bc1;
+}
+.control-button:disabled {
+    -fx-opacity: 1;
+}
+.control-button-customdisabled {
+    -fx-background-color: #f2f2f2;
+    -fx-border-width: 2;
+    -fx-border-color: #668bc1;
+}
+
+/* Control button specializations */
+
+.control-button-border {
+    -fx-border-width: 2;
+    -fx-border-color: #668bc1;
+}
+
+
+
+/* ScrollPane standard class */
+.scrollable-pane {
+    -fx-background-color: transparent;
+}
+.scrollable-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Result index text standard class */
+
+.results-index-counter {
+    -fx-pref-height: 20;
+    -fx-font-family: "Monserrat Regular";
+    -fx-font-size: 14;
+    -fx-padding: 5 10 5 10;
+}
+
+
+
+
+/* Navbar */
+
 .navbar {
     -fx-background-color: #f1f1f1;
     -fx-padding: 0 40 0 10;
@@ -40,6 +101,12 @@
 #historyBackButton:disabled {
     -fx-icon-color: #c8c8c8;
 }
+#historyForwardButton {
+    -fx-icon-color: #272727;
+}
+#historyForwardButton:disabled {
+    -fx-icon-color: #c8c8c8;
+}
 .searchbar-navbar {
     -fx-background-color: white;
     -fx-border-radius: 5;
@@ -53,49 +120,43 @@
 }
 
 
-.search-scroll-pane {
-    -fx-background-color: transparent;
+/* Search page */
+
+.search-page-container {
+    -fx-alignment: top-center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
-.search-scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
-.search-result-section {
+.search-page {
+    -fx-background-color: white;
+    -fx-max-width: 1000;
+    -fx-pref-width: 1000;
     -fx-alignment: center;
-    -fx-background-color: transparent;
-    -fx-padding: 0 120 0 120;
+    -fx-padding: 0 20 0 20;
 }
-.search-title {
+.result-title-container {
     -fx-content-display: center;
-    -fx-font-family: "Monserrat Regular";
-    -fx-font-size: 24;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 30;
     -fx-padding: 10;
-}
-.search-result-index-counter {
-    -fx-font-family: "Monserrat Regular";
-    -fx-font-size: 14;
-    -fx-padding: 5 10 5 10;
 }
 .search-results-container {
     -fx-spacing: 10;
-    -fx-border-width: 1;
-    -fx-border-color: #7896db;
     -fx-background-color: white;
-    -fx-padding: 10;
+    -fx-border-width: 2 0 2 0;
+    -fx-border-color: #99b1e9;
+    -fx-padding: 10 10 0 10;
 }
 .search-controls-container {
     -fx-padding: 10;
 }
 
-
+/* Search results */
 
 .result-book {
     -fx-padding: 10;
-    -fx-border-color: #99b1e9;
-    -fx-border-width: 0 0 1 0;
 }
 .result-book-label {
     -fx-text-color: #1e81c5;
-    -fx-underline: false;
 }
 .result-book-label:hover {
     -fx-underline: true;
@@ -104,11 +165,10 @@
 .result-book-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
-    -fx-min-width: 0;
-    -fx-min-height: 0;
 }
-.result-page-arrow {
+.result-page-arrow {    /* What are these for? */
     -fx-icon-color: black;
+    -fx-icon-size: 38;
 }
 
 .login-feedback-label {
@@ -125,52 +185,58 @@
 }
 
 
-.book-page {
-    -fx-spacing: 25;
+
+/* Book Page */
+
+.book-page-container {
+    -fx-alignment: top-center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
-.book-information-section {
-    -fx-background-color: #ffffff;
+.book-page {
+    -fx-background-color: white;
+    -fx-max-width: 1000;
+    -fx-pref-width: 1000;
+    -fx-spacing: 20;
     -fx-padding: 20;
+}
+.book-data-section {
 }
 .book-label-title {
     -fx-font-family: "Montserrat Medium";
-    -fx-font-size: 23;
-    -fx-padding: 0 0 5 0;
+    -fx-font-size: 34;
 }
-.book-info-entries-container {
-    -fx-vgap: 6;
+.book-label-subtitle {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 24;
+    -fx-spacing: 5;
+}
+.book-data-entries-container {
     -fx-hgap: 15;
-    -fx-border-color: #1b98ff30;
-    -fx-border-width: 0 0 0 15;
-    -fx-padding: 5 5 5 20;
+    -fx-padding: 5 0 0 0;
 }
-    -fx-padding: 5 10 5 10;
-    -fx-alignment: centerleft;
-    -fx-spacing: 10;
-    -fx-padding: 0 0 0 20;
+.book-data-key {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 16;
 }
-.book-info-key {
-    -fx-font-family: "Montserrat Medium";
+.book-data-value {
+    -fx-font-family: "Montserrat Regular";
     -fx-font-size: 18;
 }
-.book-info-value {
-    -fx-font-family: "Montserrat Regular";
-    -fx-font-size: 17;
-}
 
-.book-scores-section {
-    -fx-background-color: #ffffff;
-    -fx-padding: 25;
+/* Scores */
+
+.scores-section {
+    -fx-background-color: #FFFFFF;
 }
-.book-scores-container {
+.scores-container {
     -fx-max-width: 650;
     -fx-orientation: horizontal;
     -fx-hgap: 35;
     -fx-vgap: 5;
-    -fx-padding: 10;
 }
 .scores-section-reviews-link {
     -fx-font-size: 14px;
+    -fx-background-color: lightgrey;
 }
 .star {
    -fx-icon-color: #174e97;
@@ -179,12 +245,30 @@
     -fx-icon-color: #3a76c650;
 }
 
+/* Reviews Subpage */
 
-.reviews-page {
-    -fx-background-color: purple;
+.reviews-section {
+    -fx-spacing: 15;
+}
+.reviews-section-separator {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+.review-separator .line {
+    -fx-border-color: #668bc1;
+    -fx-border-width: 1;
+}
+.review-item {
+    -fx-background-color: lightgrey;
 }
 
 
+
+
+
+
+
+/* Temporary */
 
 .error-label {
     -fx-text-fill: #f22828;
@@ -197,4 +281,9 @@
 
 .connection-error-title {
     -fx-font: bold 32px "Arial";
+}
+
+.footer {
+    -fx-background-color: aquamarine;
+    -fx-pref-height: 300;
 }

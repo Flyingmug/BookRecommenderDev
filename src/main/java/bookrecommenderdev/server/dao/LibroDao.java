@@ -1,6 +1,7 @@
 package bookrecommenderdev.server.dao;
 
 import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
@@ -8,9 +9,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static bookrecommenderdev.Constants.PAGE_SIZE;
+
 public class LibroDao {
 
-  private final int PAGE_SIZE = 50;
   private final DataSource datasource;
   public LibroDao(DataSource ds) {
     this.datasource = ds;
@@ -52,7 +54,7 @@ public class LibroDao {
     return libro;
   }
 
-  public Pair<List<Libro>, Integer> getPage(int pageNumber, String title) throws SQLException {
+  public PaginaLibriRisultati getPage(int pageNumber, String title) throws SQLException {
     System.out.println("Chiave ricevuta: " + title);
     List<Libro> libri = new ArrayList<>();
     int totalCount = 0;
@@ -82,7 +84,7 @@ public class LibroDao {
       }
     }
     System.out.println("Numero risultati QUERY: " + libri.size());
-    return new Pair<>(libri, totalCount);
+    return new PaginaLibriRisultati(libri, totalCount);
   }
 
   public List<Libro> getFrom(List<Integer> elenco_id) throws SQLException {

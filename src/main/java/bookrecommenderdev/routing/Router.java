@@ -39,7 +39,7 @@ public class Router {
   private static LayoutType currentLayout;
   private static LayoutHandle currentLayoutHandle;
   private static RouteEntry loadedEntry;
-  private static final HistoryManager<RouteEntry> history = new HistoryManager<>(5);
+  private static final HistoryManager<RouteEntry> history = new HistoryManager<>(10);
   private static final BooleanProperty navigationLocked = new SimpleBooleanProperty(false);
   private static final BooleanProperty canBack = new SimpleBooleanProperty(false);
   private static final BooleanProperty canForward = new SimpleBooleanProperty(false);

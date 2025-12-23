@@ -42,4 +42,6 @@ module com.example.bookrecommenderdev {
   exports bookrecommenderdev.routing.animation;
   opens bookrecommenderdev.routing.animation to javafx.fxml;
   exports bookrecommenderdev.model.auth;
+  exports bookrecommenderdev.client.controller.components.controls;
+  opens bookrecommenderdev.client.controller.components.controls to javafx.fxml;
 }

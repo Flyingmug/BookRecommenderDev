@@ -17,9 +17,17 @@
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 17;
 }
+.regular-19 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 19;
+}
 .regular-30 {
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 30;
+}
+.regular-34 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 34;
 }
 
 
@@ -86,10 +94,11 @@
 
 .navbar {
     -fx-background-color: #f1f1f1;
-    -fx-padding: 0 40 0 10;
     -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);
     -fx-border-width: 0px 0px 3px 0px;
     -fx-border-color: #79e6fd;
+    -fx-spacing: 10;
+    -fx-padding: 0 40 0 10;
 }
 .history-control-button {
     -fx-background-color: transparent;
@@ -109,17 +118,6 @@
 }
 #historyForwardButton:disabled {
     -fx-icon-color: #c8c8c8;
-}
-.searchbar-navbar {
-    -fx-background-color: white;
-    -fx-border-radius: 5;
-    -fx-border-width: 1;
-    -fx-background-radius: 5;
-    -fx-border-color: lightgrey;
-    -fx-pref-height: 45px;
-}
-.searchbar-center {
-    -fx-pref-height: 60px;
 }
 .navbar-button {
     -fx-border-color: transparent;
@@ -142,11 +140,80 @@
 .register-button:hover {
     -fx-border-color: #6cf3c9;
 }
+.homepage-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 48;
+    -fx-pref-width: 48;
+    -fx-cursor: hand;
+}
+.homepage-button:hover {
+    -fx-background-color: rgba(78, 84, 152, 0.1); /* Very light tint of your icon color */
+}
+.homepage-button .ikonli-font-icon {
+     -fx-icon-color: #4e5498;
+}
+.homepage-button:hover .ikonli-font-icon {
+    -fx-icon-color: #545bad;
+}
 .navbar-buttons-container {
+    -fx-alignment: center;
     -fx-pref-height: 145;
     -fx-spacing: 20;
 }
 
+
+
+/* Searchbar */
+
+.searchbar-navbar {
+    -fx-background-color: white;
+    -fx-border-radius: 9999;
+    -fx-background-radius: 9999;
+    -fx-min-width: 200;
+    -fx-pref-width: 640;
+    -fx-pref-height: 50;
+}
+.searchbar-input {
+    -fx-padding: 10;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+.searchbar-control {
+    -fx-pref-height: 48;
+    -fx-pref-width: 48;
+    -fx-background-color: transparent;
+    -fx-content-display: center;
+    -fx-icon-color: black;
+    -fx-cursor: hand;
+}
+.searchbar-control:hover .ikonli-font-icon {
+    -fx-icon-color: #5c62ab;
+    -fx-effect: dropshadow(three-pass-box, rgba(92, 98, 171, 0.3), 5, 0, 0, 2);
+}
+
+
+.navbar-searchbar-container {
+    -fx-alignment: center;
+}
+.home-searchbar-container {
+    -fx-alignment: center;
+}
+.home-searchbar-container .searchbar-navbar {
+    -fx-pref-height: 60;
+    -fx-border-width: 1;
+    -fx-border-color: lightgrey;
+}
+
+
+
+/* Home page */
+
+.welcome-title-container {
+    -fx-min-width: 600;
+    -fx-max-width: 600;
+    -fx-min-height: 200;
+    -fx-max-height: 200;
+}
 
 
 /* Search page */
@@ -213,8 +280,8 @@
 /* MOVE ELSEWHERE? */
 
 .profile-picture-button {
-    -fx-pref-height: 50;
-    -fx-pref-width: 50;
+    -fx-pref-height: 35;
+    -fx-pref-width: 35;
     -fx-background-radius: 9999;
 }
 .profile-picture-text {

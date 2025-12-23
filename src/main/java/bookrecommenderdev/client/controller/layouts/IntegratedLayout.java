@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller.layouts;
 
+import bookrecommenderdev.client.controller.components.NavbarController;
 import bookrecommenderdev.routing.layout.LayoutController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -10,12 +11,16 @@ import java.net.URL;
 
 public class IntegratedLayout implements LayoutController {
 
-  @FXML
-  private StackPane content;
+  @FXML private StackPane content;
+  @FXML private NavbarController navbarController;
+  @FXML private Parent navbar;  // needed
 
   @FXML
   void initialize() {
     setCenterBackground();
+    if (navbarController != null) {
+      navbarController.setSearchbarVisible(true);
+    }
   }
 
   @Override

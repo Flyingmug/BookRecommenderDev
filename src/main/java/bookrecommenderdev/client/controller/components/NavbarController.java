@@ -7,16 +7,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import static bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
 
 public class NavbarController {
 
-  @FXML private Button historyBackButton;
-  @FXML private Button historyForwardButton;
 
-  @FXML private StackPane searchbar;
-  @FXML private TextField searchInput;
+  @FXML private VBox searchbar;
 
   @FXML private Button loginButton;
   @FXML private Button registerButton;
@@ -24,16 +22,14 @@ public class NavbarController {
   @FXML private Button profileButton;
   @FXML private Label profileText;
 
+  public void setSearchbarVisible(boolean visible) {
+    searchbar.setVisible(visible);
+    searchbar.setVisible(visible);
+  }
+
   @FXML
   public void initialize() {
     setRandomBackgroundColor(profileButton);
-
-    historyBackButton.disableProperty().bind(
-        Router.canBack().not()
-    );
-    historyForwardButton.disableProperty().bind(
-        Router.canForward().not()
-    );
 
     loginButton.visibleProperty().bind(
         AuthContext.userProperty().isNull()
@@ -76,32 +72,15 @@ public class NavbarController {
     );
   }
 
-  public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }
+  // fixme unused
   public void setProfileInitials(String s) { profileText.setText(s.substring(0,2)); }
 
   @FXML public void onRegister() { Router.go("/registration"); }
-
-  @FXML public void onHomepage() { Router.go("/"); }
 
   @FXML public void onLogin() { Router.go("/login"); }
 
   @FXML public void onLibraries() {  }
 
   @FXML public void onProfile() { Router.go("/profile"); }
-
-  @FXML public void onPrevPage() {
-    Router.goBack();
-  }
-
-  @FXML public void onNextPage() {
-    Router.goForward();
-  }
-
-  @FXML public void onSearchAction() {
-    String input = searchInput.getText();
-    Router.go("/search/:" + input); // Parametro passato nel percorso
-  }
-
-  @FXML void testMethod() { System.out.println("TEST: Click detected"); }
 
 }

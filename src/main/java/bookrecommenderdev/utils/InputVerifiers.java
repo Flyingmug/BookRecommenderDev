@@ -15,18 +15,33 @@ public class InputVerifiers {
     return codf != null && codf.matches(FISCAL_REGEX);
   }
 
+
+  /**
+   * todo documentation
+   * */
   public static boolean verifyName(String name) {
     return name != null && !name.isEmpty() && name.length() <= 64;
   }
 
+
+  /**
+   * todo documentation
+   * */
   public static boolean verifyPassword(String password) {
     return password != null && password.length() >= 8 && password.length() <= 64;
   }
 
+
+  /**
+   * todo documentation
+   * */
   public static boolean verifyEmail(String email) {
     return email != null && !email.isEmpty() && email.length() <= 255;
   }
 
+  /**
+   * todo documentation
+   * */
   public static void preventMultipleSpacesAndLimit(TextField textField, int maxLength) {
     TextFormatter<String> formatter = new TextFormatter<>(change -> {
       String newText = change.getControlNewText();

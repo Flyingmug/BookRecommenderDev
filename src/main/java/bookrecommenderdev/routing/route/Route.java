@@ -12,9 +12,7 @@ import bookrecommenderdev.routing.Router;
 public record Route(
     String pathPattern,
     String fxml,
-    LayoutType layout
+    LayoutType layout,
+    boolean requiresAuth
 ) {
-  public Route(String pathPattern, String fxml) {
-    this(pathPattern, fxml, LayoutType.DEFAULT);
-  }
 }

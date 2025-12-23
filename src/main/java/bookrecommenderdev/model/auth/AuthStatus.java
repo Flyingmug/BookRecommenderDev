@@ -1,4 +1,4 @@
-package bookrecommenderdev.model;
+package bookrecommenderdev.model.auth;
 
 public enum AuthStatus {
   SUCCESS,

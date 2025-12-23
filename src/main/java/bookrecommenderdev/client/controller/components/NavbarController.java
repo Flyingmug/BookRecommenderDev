@@ -1,5 +1,6 @@
-package bookrecommenderdev.client.controller;
+package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.model.auth.AuthContext;
 import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,6 +33,20 @@ public class NavbarController {
     );
     historyForwardButton.disableProperty().bind(
         Router.canForward().not()
+    );
+
+    loginButton.visibleProperty().bind(
+        AuthContext.userProperty().isNull()
+    );
+    loginButton.disableProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
+
+    registerButton.visibleProperty().bind(
+        AuthContext.userProperty().isNull()
+    );
+    registerButton.disableProperty().bind(
+        AuthContext.userProperty().isNotNull()
     );
   }
 

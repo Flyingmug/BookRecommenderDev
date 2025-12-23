@@ -1,21 +1,22 @@
 package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
+import bookrecommenderdev.model.auth.RegisterStatus;
 import bookrecommenderdev.server.dao.*;
 import bookrecommenderdev.server.db.DatabaseConfig;
-import bookrecommenderdev.server.dto.PaginaLibriRisultati;
-import bookrecommenderdev.server.dto.PaginaLibro;
-import bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
-import bookrecommenderdev.server.dto.PaginaValutazioni;
+import bookrecommenderdev.server.dto.*;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
+import javax.swing.text.html.Option;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-import static bookrecommenderdev.model.AuthStatus.*;
+import static bookrecommenderdev.model.auth.AuthStatus.*;
+import static bookrecommenderdev.model.auth.RegisterStatus.FISCAL_CODE_ALREADY_USED;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
@@ -151,42 +152,46 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   //
 
   /**
-   * Utilizza nome e password per controllare la presenza della coppia nel database
-   *
-   * @param email    nome utente
-   * @param password password utente
-   * @return token di sessione............
+   * Utilizza nome e password per verificare la presenza della coppia nel database.
+   * @param email Nome utente.
+   * @param password Password utente.
+   * @return Risultato dell'operazione
    */
-  public Pair<Utente, AuthStatus> login(String email, String password) throws RemoteException {
-
+  public AuthResult login(String email, String password) throws RemoteException {
     try {
-      List<Utente> lista = utenti.get(email, password, false);
-      System.out.println("Size: " + lista.size());
+      System.out.println("SERVER login request.");
+      Optional<Utente> user = utenti.findByEmailAndPassword(email, password);
 
-      if (lista.isEmpty()) return new Pair<>(null, NO_SUCH_USER);
+      return user
+          .map(u -> new AuthResult(u, SUCCESS))      // If user exists, wrap in AuthResult
+          .orElseGet(() -> new AuthResult(null, NO_SUCH_USER));
 
-      return new Pair<>(lista.getFirst(), SUCCESS);
     } catch (SQLException e) {
-      return new Pair<>(null, DB_ERROR);
+      e.printStackTrace();
+      return new AuthResult(null, DB_ERROR);
     }
   }
 
-  public String registrazione(Utente u) throws RemoteException, InsertDBException {
-
+  /**
+   * todo documentation
+   * */
+  public RegisterStatus registrazione(Utente u) throws RemoteException {
     try {
-      List<Utente> lista = utenti.get(u.getEmail(), u.getCodiceFiscale(), true);
+//      if (utenti.findByEmail(u.getEmail()).isPresent()) {
+//        return EMAIL_ALREADY_USED;
+//      }
 
-      System.out.println("utenti: " + lista.size());
-
-      if(lista.contains(u)) return "user-exists";
+      if (utenti.findByFiscalCode(u.getCodiceFiscale()).isPresent()) {
+        return FISCAL_CODE_ALREADY_USED;
+      }
 
       u.setUserId();
-      boolean outcome = utenti.save(u);
+      utenti.save(u);
 
-      return outcome ? "success":"insert-error";
+      return RegisterStatus.SUCCESS;
     } catch (SQLException e) {
       e.printStackTrace();
-      return "db-error";
+      return RegisterStatus.DB_ERROR;
     }
   }
 

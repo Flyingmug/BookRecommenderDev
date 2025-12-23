@@ -1,12 +1,14 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.model.auth.AuthContext;
+import bookrecommenderdev.model.auth.AuthStatus;
+import bookrecommenderdev.model.auth.AuthStorage;
 import bookrecommenderdev.routing.*;
 import bookrecommenderdev.routing.layout.LayoutRegistry;
 import bookrecommenderdev.routing.layout.LayoutType;
 import bookrecommenderdev.routing.route.Route;
 import bookrecommenderdev.server.ServerInterface;
-import bookrecommenderdev.utils.FileManager;
+import bookrecommenderdev.server.dto.AuthResult;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -19,17 +21,12 @@ import java.rmi.registry.Registry;
 import java.util.LinkedList;
 import java.util.List;
 
-import static bookrecommenderdev.Constants.LOCAL_CREDENTIALS;
-
 public class RootController {
 
   @FXML public StackPane content;
   @FXML private VBox serverConnErrorWrapper;
   @FXML private Label serverErrorTitle;
   @FXML private Label serverErrorLabel;
-
-  // utente corrente
-  Utente currentUser;
 
   ServerInterface bookRecommender;
   AppContext context;
@@ -46,25 +43,25 @@ public class RootController {
 
     // Registrazione delle pagine
 //    routes.put("/loading", new Route("loading-view.fxml"));
-    routes.add(new Route("/", "home-view.fxml"));
-    routes.add(new Route("/search/:query", "searchResults-view.fxml", LayoutType.INTEGRATED));
-    routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED));
-    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY));
-    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY));
-    routes.add(new Route("/profile", "profile-view.fxml"));
-    routes.add(new Route("/libraries", "libraries-view.fxml"));
-    routes.add(new Route("/libraries/:query", "library-view.fxml"));
+    routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, false));
+    routes.add(new Route("/search/:query", "searchResults-view.fxml", LayoutType.INTEGRATED, false));
+    routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED, false));
+    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY, false));
+    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY, false));
+    routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, true));
+    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, true));
+    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, true));
 
     initRegistry();
     if (bookRecommender != null) {
-      context = new AppContext(bookRecommender, currentUser);
+      context = new AppContext(bookRecommender);
       Router.init(content, context, routes, layouts);
 
       // fixme TEST
       //Router.go("/");
       Router.go("/book/1");
 
-      initVerifyLocalUserCredentials();
+      attemptAutoLogin();
     }
 
   }
@@ -86,26 +83,24 @@ public class RootController {
   /**
    * DDD
    */
-  private void initVerifyLocalUserCredentials() {
-//    System.out.println("TMP message: local info verification"); // debug
+  private void attemptAutoLogin() {
 
-    String str = FileManager.read(LOCAL_CREDENTIALS);
-    if (str != null && !str.isEmpty()) {
-      String[] split = str.split(",");
-      String email = split[0];
-      String password = split[1];
-//      loginEmailloginEmail.setText(email);
-//      loginPassword.setText(password);
-//      onConfirmLogin();
-    }
+    AuthStorage.load().ifPresent(credentials -> {
+      try {
 
-    // todo separate string manipulation from logic
+        AuthResult result = context.server().login(
+            credentials.email(), credentials.password()
+        );
 
-//    try {
-//      // todo implementation
-//    } catch (Error e) {
-//
-//    }
+        if (result.authStatus() == AuthStatus.SUCCESS) {
+          System.out.println("Auto Login successful");  // DEBUG
+          AuthContext.login(result.user());
+        }
+
+      } catch(RemoteException e) {
+        e.printStackTrace();  // fixme perhaps leave nothing? does it influence anything relevant?
+      }
+    });
   }
 
   private void notifyServerError(String originalMessage, String titleMessage) {

@@ -1,43 +1,32 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.Constants;
+import bookrecommenderdev.model.auth.AuthContext;
+import bookrecommenderdev.model.auth.AuthStorage;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.model.AuthStatus;
-import bookrecommenderdev.model.Utente;
-import bookrecommenderdev.utils.FileManager;
+import bookrecommenderdev.server.dto.AuthResult;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 
 import java.rmi.RemoteException;
 import java.util.Map;
 
-import static bookrecommenderdev.Constants.LOCAL_CREDENTIALS;
 import static bookrecommenderdev.utils.InputVerifiers.*;
 
 public class LoginController implements Routable {
 
-  // login
-  @FXML
-  private VBox loginPage;
-  @FXML
-  private Label loginFeedback;
-  @FXML
-  private TextField loginEmail;
-  @FXML
-  private TextField loginPassword;
-  @FXML
-  private Button loginButton;
-  @FXML
-  private Button confirmLoginButton;
-  @FXML
-  private CheckBox loginRicordaCredenziali;
+  @FXML private VBox loginPage;
+  @FXML private Label loginFeedback;
+  @FXML private TextField loginEmail;
+  @FXML private TextField loginPassword;
+  @FXML private Button loginButton;
+  @FXML private Button confirmLoginButton;
+  @FXML private CheckBox loginRicordaCredenziali;
 
   private AppContext context;
 
@@ -46,18 +35,15 @@ public class LoginController implements Routable {
 
   @FXML
   public void initialize() {
-// login fields
+    // login fields
     preventMultipleSpacesAndLimit(loginEmail, 255);
     preventMultipleSpacesAndLimit(loginPassword, 64);
   }
 
-  private void resetLoginPage() {
-    loginFeedback.setText("");
-    loginEmail.setText("");
-    loginPassword.setText("");
-    loginRicordaCredenziali.setSelected(false);
-  }
 
+  /**
+   * todo documentation
+   * */
   @FXML
   protected void onLogin() {
 
@@ -69,8 +55,8 @@ public class LoginController implements Routable {
       return;
 
     try {
-      Pair<Utente, AuthStatus> res = context.server().login(email, password);
-      handleLoginResult(res);
+      AuthResult res = context.server().login(email, password);
+      handleLoginResult(res, email, password);
 
     } catch(RemoteException e) {
       setLoginFeedback("Errore nella connessione al server");
@@ -83,27 +69,22 @@ public class LoginController implements Routable {
    * richiesta di autenticazione.
    * @param res Risposta dal server.
    */
-  private void handleLoginResult(Pair<Utente, AuthStatus> res) {
-    switch(res.getValue()) {
-      case SUCCESS:
-        context.setUser(res.getKey());
+  private void handleLoginResult(AuthResult res, String email, String password) {
+
+    switch(res.authStatus()) {
+      case SUCCESS -> {
+        AuthContext.login(res.user());
 
         if (loginRicordaCredenziali.isSelected())
-          saveCredentials();
+          AuthStorage.save(email, password);
 
         setLoginFeedback("Login avvenuto con successo");
-        setUserAccessed();
+
         Router.go("/");
-        break;
-      case NO_SUCH_USER:
-        setLoginFeedback("Credenziali errate");
-        break;
-      case DB_ERROR:
-        setLoginFeedback("Errore nel reperimento dei dati");
-        break;
-      default:
-        setLoginFeedback("Response parsing error");
-        break;
+      }
+      case NO_SUCH_USER -> setLoginFeedback("Credenziali errate");
+      case DB_ERROR -> setLoginFeedback("Errore nel reperimento dei dati");
+      case UNKNOWN -> setLoginFeedback("Response parsing error");
     }
   }
 
@@ -124,27 +105,6 @@ public class LoginController implements Routable {
       return false;
     }
     return true;
-  }
-
-  /**
-   * Utilizza la classe utilitaria {@link FileManager} per salvare la coppia (email, password) su un file locale.
-   * Il nome del file è definito in {@link Constants}
-    */
-  private void saveCredentials() {
-    FileManager.write(LOCAL_CREDENTIALS, context.user().getEmail() + "," + context.user().getPassword());
-  }
-
-  /**
-   *
-   */
-  private void setUserAccessed() {
-    // fixme decoupled
-//    context.navbar().showLoginButton(false);
-//    context.navbar().showRegisterButton(false);
-//    context.navbar().showLibrariesButton(true);
-//    context.navbar().showProfilePicture(true);
-//    Utente u = context.user();
-//    context.navbar().setProfileInitials(("" + u.getNome().charAt(0) + u.getCognome().charAt(0)).toUpperCase());
   }
 
   private void setLoginFeedback(String message) {

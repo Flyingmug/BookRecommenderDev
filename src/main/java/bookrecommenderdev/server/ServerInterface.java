@@ -1,10 +1,8 @@
 package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
-import bookrecommenderdev.server.dto.PaginaLibriRisultati;
-import bookrecommenderdev.server.dto.PaginaLibro;
-import bookrecommenderdev.server.dto.LibroPaginaPersonaleDTO;
-import bookrecommenderdev.server.dto.PaginaValutazioni;
+import bookrecommenderdev.model.auth.RegisterStatus;
+import bookrecommenderdev.server.dto.*;
 import javafx.util.Pair;
 
 import java.rmi.Remote;
@@ -28,7 +26,7 @@ public interface ServerInterface extends Remote {
   void deleteLibreria(String nome, long idUtente) throws RemoteException;
   PaginaValutazioni getValutazioni(long idLibro, int indicePagina) throws RemoteException;
   List<Libro> getConsigli(long idLibro) throws RemoteException;
-  Pair<Utente, AuthStatus> login(String nome, String password) throws RemoteException;
-  String registrazione(Utente u) throws RemoteException, InsertDBException;
+  AuthResult login(String nome, String password) throws RemoteException;
+  RegisterStatus registrazione(Utente u) throws RemoteException, InsertDBException;
   String ping() throws RemoteException;
 }

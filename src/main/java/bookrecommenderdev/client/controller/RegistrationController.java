@@ -1,6 +1,10 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.model.auth.AuthContext;
+import bookrecommenderdev.model.auth.AuthStorage;
+import bookrecommenderdev.model.auth.RegisterStatus;
 import bookrecommenderdev.routing.AppContext;
+import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Utente;
 import bookrecommenderdev.utils.FileManager;
@@ -23,34 +27,27 @@ import static bookrecommenderdev.utils.InputVerifiers.verifyPassword;
 
 public class RegistrationController implements Routable {
 
-
-  // registrazione
-  @FXML
-  private VBox registerPage;
-  @FXML
-  private Label registerFeedback;
-  @FXML
-  private TextField registerName;
-  @FXML
-  private TextField registerSurname;
-  @FXML
-  private TextField registerEmail;
-  @FXML
-  private TextField registerPassword;
-  @FXML
-  private TextField registerCodiceFiscale;
-  @FXML
-  private Button registerButton;
+  @FXML private VBox registerPage;
+  @FXML private Label registerFeedback;
+  @FXML private TextField registerName;
+  @FXML private TextField registerSurname;
+  @FXML private TextField registerEmail;
+  @FXML private TextField registerPassword;
+  @FXML private TextField registerCodiceFiscale;
+  @FXML private Button registerButton;
 //  @FXML
 //  private Button confirmRegistrationButton;
-  @FXML
-  private CheckBox saveCredentialsCheck;
+  @FXML private CheckBox saveCredentialsCheck;
 
   private AppContext context;
 
+
+  @Override
+  public void onRoute(Map<String, String> params, AppContext context) { this.context = context; }
+
   @FXML
   public void initialize() {
-// registration fields
+    // registration fields
     preventMultipleSpacesAndLimit(registerName, 64);
     preventMultipleSpacesAndLimit(registerSurname, 64);
     preventMultipleSpacesAndLimit(registerEmail, 255);
@@ -59,22 +56,9 @@ public class RegistrationController implements Routable {
   }
 
 
-  @Override
-  public void onRoute(Map<String, String> params, AppContext context) { this.context = context; }
-
-
-
-  private void resetRegisterPage() {
-    registerFeedback.setText("");
-    registerName.setText("");
-    registerName.setText("");
-    registerSurname.setText("");
-    registerEmail.setText("");
-    registerPassword.setText("");
-    registerCodiceFiscale.setText("");
-    saveCredentialsCheck.setSelected(false);
-  }
-
+  /**
+   * todo documentation
+   * */
   @FXML
   protected void onRegister() {
     String name = registerName.getText();
@@ -95,7 +79,7 @@ public class RegistrationController implements Routable {
           codiceFiscale,
           password
       );
-      String res = context.server().registrazione(u);
+      RegisterStatus res = context.server().registrazione(u);
       handleRegistrationResult(res, u);
 
     } catch(RemoteException e) {
@@ -109,26 +93,20 @@ public class RegistrationController implements Routable {
    * @param res Risposta dal server.
    * @param u Utente creato.
    */
-  private void handleRegistrationResult(String res, Utente u) {
+  private void handleRegistrationResult(RegisterStatus res, Utente u) {
     switch(res) {
-      case "success":
+      case SUCCESS -> {
+        AuthContext.login(u);
+
         setRegistrationFeedback("Registrazione avvenuta con successo");
-          context.setUser(u);
+
         if (saveCredentialsCheck.isSelected())
-          saveCredentials();
-        break;
-      case "user-exists":
-        setRegistrationFeedback("L'utente specificato esiste");
-        break;
-      case "insert-error":
-        setRegistrationFeedback("Errore nell'inserimento dei dati");
-        break;
-      case "db-error":
-        setRegistrationFeedback("Errore nel reperimento dei dati");
-        break;
-      default:
-        setRegistrationFeedback("Response parsing error");
-        break;
+          AuthStorage.save(u.getEmail(), u.getPassword());
+
+        Router.go("/");
+      }
+      case FISCAL_CODE_ALREADY_USED -> setRegistrationFeedback("L'utente specificato esiste");
+      case DB_ERROR -> setRegistrationFeedback("Errore nel reperimento dei dati");
     }
   }
 
@@ -169,10 +147,6 @@ public class RegistrationController implements Routable {
     }
 
     return true;
-  }
-
-  private void saveCredentials() {
-    FileManager.write(LOCAL_CREDENTIALS, context.user().getEmail() + "," + context.user().getPassword());
   }
 
   private void setRegistrationFeedback(String message) {

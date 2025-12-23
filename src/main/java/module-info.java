@@ -11,6 +11,7 @@ module com.example.bookrecommenderdev {
   requires javafx.web;
   requires javafx.graphics;
   requires javafx.base;
+  requires java.prefs;
 
   exports bookrecommenderdev.client;
   opens bookrecommenderdev.client to javafx.fxml;
@@ -40,4 +41,5 @@ module com.example.bookrecommenderdev {
   opens bookrecommenderdev.routing.layout to javafx.fxml;
   exports bookrecommenderdev.routing.animation;
   opens bookrecommenderdev.routing.animation to javafx.fxml;
+  exports bookrecommenderdev.model.auth;
 }

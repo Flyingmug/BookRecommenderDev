@@ -1,6 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.controller.components.ReviewsSectionController;
+import bookrecommenderdev.client.factory.StarIconFactory;
 import bookrecommenderdev.model.CampoValutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
@@ -16,9 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -167,57 +166,8 @@ public class BookController implements Routable {
 
     return new VBox(
         header,
-        buildStars(score)
+        StarIconFactory.buildStars(score)
     );
-  }
-  /**
-   * Genera un contenitore di icone (stelle) rappresentanti il valore dato come parametro
-   * I valori decimali di resto superiore a 0.5 avranno un icona di mezza stella come ultima.
-   * @param score valore rappresentato
-   * @return contenitore di icone
-   */
-  private HBox buildStars(double score) {
-    HBox stars = new HBox(2);
-
-    int fullStars = (int) score;                  // punteggio troncato
-    boolean hasHalf = (score - fullStars) >= 0.5; // mezza icona se il resto del punteggio è >= a 0.5
-
-    for (int i = 1; i <= 5; i++) {
-      stars.getChildren().add(buildStarSlot(i, fullStars, hasHalf));
-    }
-
-    return stars;
-  }
-  /** Metodo helper per la costruzione delle icone */
-  private StackPane buildStarSlot(int index, int fullStars, boolean hasHalf) {
-    StackPane slot = new StackPane();
-
-    FontIcon empty = new FontIcon("mdi2s-star");
-    empty.getStyleClass().add("star-empty");
-    empty.setIconSize(25);
-
-    slot.getChildren().add(empty);
-
-    if (index <= fullStars) {
-      FontIcon full = new FontIcon("mdi2s-star");
-      full.getStyleClass().add("star");
-      full.setIconSize(25);
-      slot.getChildren().add(full);
-
-    } else if (index == fullStars + 1 && hasHalf) {
-      FontIcon half = new FontIcon("mdi2s-star");
-      half.getStyleClass().add("star");
-      half.setIconSize(25);
-
-      // taglio icona superiore
-      double size = 25;
-      half.setIconSize((int)size);
-      half.setClip(new Rectangle(size / 2, size));
-
-      slot.getChildren().add(half);
-    }
-
-    return slot;
   }
 
 }

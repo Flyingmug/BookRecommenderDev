@@ -8,6 +8,7 @@ import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
 import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -119,7 +120,7 @@ public class SearchResultsController implements Routable {
     resultIndexCounter.setText(formatIndexCounter());
 
     for (Libro l: results) {
-      VBox row = BookResultItemFactory.createBookResultItem(l, this::onPublicBookPage);
+      Parent row = BookResultItemFactory.createBookResultItem(l, this::onPublicBookPage);
       booksResultsContainer.getChildren().add(row);
 
       if (results.indexOf(l) < results.size() - 1) {

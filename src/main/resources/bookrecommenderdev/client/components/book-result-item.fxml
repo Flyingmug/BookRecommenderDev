@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+    fx:controller="bookrecommenderdev.client.controller.components.BookResultItemController"
+    styleClass="book-item">
+
+   <Button fx:id="linkButton" styleClass="book-item-button">
+      <graphic>
+         <Label fx:id="titleLabel" styleClass="book-item-link" />
+      </graphic>
+   </Button>
+   <Label fx:id="authorLabel" styleClass="book-item-label" />
+   <Label fx:id="yearLabel" styleClass="book-item-label" />
+
+</VBox>

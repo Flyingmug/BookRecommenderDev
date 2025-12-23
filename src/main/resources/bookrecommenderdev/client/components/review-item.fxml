@@ -3,12 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.text.Font?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<GridPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+   fx:controller="bookrecommenderdev.client.controller.components.ReviewItemController"
+   fx:id="reviewContainer"
+   minHeight="-Infinity"
+   styleClass="review-item">
 
-<VBox spacing="6" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bookrecommenderdev.client.controller.components.ReviewItemController">
-   <Label fx:id="authorLabel" wrapText="true" styleClass="review-author"/>
-   <Label fx:id="contentLabel" wrapText="true"/>
-   <HBox fx:id="starsContainer" spacing="2"/>
-</VBox>
+   <columnConstraints>
+      <ColumnConstraints percentWidth="20" hgrow="NEVER"/>
+      <ColumnConstraints percentWidth="80" hgrow="NEVER"/>
+   </columnConstraints>
+
+   <VBox styleClass="review-header"
+         GridPane.columnSpan="2" GridPane.rowIndex="0"
+         GridPane.hgrow="ALWAYS" fillWidth="true">
+      <HBox fx:id="reviewHeaderScoreContainer" styleClass="review-header-score" />
+      <Label fx:id="reviewGenerale" styleClass="review-header-text"
+             maxWidth="Infinity" wrapText="true" />
+      <Region VBox.vgrow="ALWAYS"/>
+   </VBox>
+
+</GridPane>

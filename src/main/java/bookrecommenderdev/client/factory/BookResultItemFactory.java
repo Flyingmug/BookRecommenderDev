@@ -1,41 +1,41 @@
 package bookrecommenderdev.client.factory;
 
+import bookrecommenderdev.client.controller.components.BookResultItemController;
+import bookrecommenderdev.client.controller.components.ReviewItemController;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.utils.LabelCustomizer;
 import bookrecommenderdev.utils.Size;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 public class BookResultItemFactory {
 
-  public static VBox createBookResultItem(Libro l, Consumer<Integer> onAction) {
-    VBox row = new VBox(4);
-    row.getStyleClass().add("result-book");
-
-    Label titolo = LabelCustomizer.createLabel(l.getTitolo(), Size.SM, Color.valueOf("#1e81c5"));
-    titolo.getStyleClass().add("result-book-label");
-    titolo.setMaxWidth(750);
-    titolo.setEllipsisString("...");
-
-    Button titoloButton = new Button();
-    titoloButton.setGraphic(titolo);
-    titoloButton.getStyleClass().add("result-book-button");
-    titoloButton.setOnAction(_ ->  onAction.accept(l.getIdLibro()));
-
-    Label autori = LabelCustomizer.createLabel(l.getAutori(), Size.XS);
-    autori.setMaxWidth(750);
-    autori.setEllipsisString("...");
-
-    Label anno = LabelCustomizer.createLabel(
-        l.getAnnoPubblicazione() > 0 ? Integer.toString(l.getAnnoPubblicazione()) : "",
-        Size.XS);
-
-    row.getChildren().addAll(titoloButton, autori, anno);
-    return row;
+  public static Parent createBookResultItem(Libro l, Consumer<Integer> onClick) {
+    try {
+      FXMLLoader loader = new FXMLLoader(
+          ReviewItemFactory.class.getResource("/bookrecommenderdev/client/components/book-result-item.fxml")
+      );
+      Parent node = loader.load();
+      BookResultItemController controller = loader.getController();
+      controller.setBook(l, onClick);
+      return node;
+    } catch (IOException e) {
+      VBox node = new VBox();
+      node.getChildren().add(
+          LabelCustomizer.createLabel("Unable to load content", Size.SM, Color.RED)
+      );
+      e.printStackTrace();
+      return node;
+    }
   }
+
+
 
 }

@@ -43,8 +43,10 @@ public class ReviewsSectionController {
   }
 
 
+  /** <p>Gestisce una richiesta a una pagina logica di recensioni per un libro.
+   * La richiesta viene fatta utilizzando il campo assegnato nel metodo {@link #initializeForBook(long, AppContext)}.
+   * */
   private void resolveReviews(int pageIndex) {
-    System.out.println("Resolving reviews for " + pageIndex);
     try {
       PaginaValutazioni data = context.server().getValutazioni(idLibro, pageIndex);
       if (data == null) throw new RemoteException();  // temp fixme
@@ -61,7 +63,6 @@ public class ReviewsSectionController {
       totalResultCount = totalResults;
 
       System.out.println("Numero di risultati: " + totalResults); // DEBUG
-
 
       loadResults(reviews);
 
@@ -91,8 +92,8 @@ public class ReviewsSectionController {
 
       if (results.indexOf(v) < results.size() - 1) {
         Separator line = new Separator();
-        line.setStyle("-fx-border-colo: #99b1e9");
         reviewsContainer.getChildren().add(line);
+        line.getStyleClass().add("review-separator");
       }
     }
 

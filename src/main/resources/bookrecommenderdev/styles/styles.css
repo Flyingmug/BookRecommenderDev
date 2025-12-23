@@ -72,8 +72,9 @@
 .results-index-counter {
     -fx-pref-height: 20;
     -fx-font-family: "Monserrat Regular";
+    -fx-text-fill: #393939;
     -fx-font-size: 14;
-    -fx-padding: 5 10 5 10;
+    -fx-padding: 5 0 5 0;
 }
 
 
@@ -152,19 +153,28 @@
 
 /* Search results */
 
-.result-book {
+.book-item {
+    -fx-spacing: 4;
     -fx-padding: 10;
 }
-.result-book-label {
-    -fx-text-color: #1e81c5;
-}
-.result-book-label:hover {
-    -fx-underline: true;
-    -fx-cursor: hand;
-}
-.result-book-button {
+.book-item-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
+}
+.book-item-label {
+    -fx-max-width: 750;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+}
+.book-item-link {
+    -fx-text-fill: #1e81c5;
+    -fx-max-width: 750;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 16;
+}
+.book-item-link:hover {
+    -fx-underline: true;
+    -fx-cursor: hand;
 }
 .result-page-arrow {    /* What are these for? */
     -fx-icon-color: black;
@@ -247,6 +257,10 @@
 
 /* Reviews Subpage */
 
+.reviews-section-title {
+    -fx-font-family: "Montserrat Italic";
+    -fx-font-size: 26;
+}
 .reviews-section {
     -fx-spacing: 15;
 }
@@ -259,11 +273,35 @@
     -fx-border-width: 1;
 }
 .review-item {
-    -fx-background-color: lightgrey;
+    -fx-hgap: 5;
+    -fx-padding: 15 10 15 10;
 }
-
-
-
+.review-key {
+    -fx-alignment: baseline-left;
+    -fx-spacing: 5;
+    -fx-min-height: 23;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+}
+.review-key-score {
+    -fx-font-size: 17;
+}
+.review-value {
+    -fx-wrap-text: true;
+    -fx-font-family: "Montserrat Light";
+    -fx-font-size: 16;
+}
+.review-header {
+    -fx-padding: 0 0 5 0;
+}
+.review-header-score {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 30;
+}
+.review-header-text {
+    -fx-font-family: "Montserrat Light";
+    -fx-font-size: 18;
+}
 
 
 

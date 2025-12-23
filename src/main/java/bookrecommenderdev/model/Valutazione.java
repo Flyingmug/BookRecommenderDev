@@ -27,6 +27,7 @@ public class Valutazione implements Serializable {
   String recensione_gradevolezza;
   String recensione_originalita;
   String recensione_edizione;
+  String recensione_generale;
 
   /**
    * Costruttore.
@@ -108,7 +109,7 @@ public class Valutazione implements Serializable {
   public int getEdizione() { return edizione; }
   /**
    * @return punteggio finale */
-  public int getVotoFinale() { return (stile+contenuto+gradevolezza+originalita+edizione)/5; }
+  public double getVotoFinale() { return (stile+contenuto+gradevolezza+originalita+edizione)/5.0; }
   /**
    * @return recensione testuale*/
   public String getRecensioneStile() { return recensione_stile; }
@@ -120,10 +121,11 @@ public class Valutazione implements Serializable {
   public String getRecensioneGradevolezzo() { return recensione_gradevolezza; }
   /**
    * @return recensione testuale*/
-  public String getRecensioneOriginalita() { return recensione_originalita; }/**
-   * @return recensione testuale*/
+  public String getRecensioneOriginalita() { return recensione_originalita; }
+  /** @return recensione testuale*/
   public String getRecensioneEdizione() { return recensione_edizione; }
-
+  /** @return recensione restuale */
+  public String getRecensioneGenerale() { return recensione_generale; }
 
   /**
    * @param stile punteggio stile */
@@ -179,5 +181,5 @@ public class Valutazione implements Serializable {
    * @param idUtente int*/
   public void setIdUtente(int idUtente) { this.id_utente = idUtente; }
 
-    /** aaaaaaaaa */
+  /** aaaaaaaaa */
 }

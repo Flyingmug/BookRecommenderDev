@@ -1,6 +1,8 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.model.auth.AuthContext;
+import bookrecommenderdev.model.auth.AuthStorage;
+import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -23,12 +25,8 @@ public class ProfileController {
 
   @FXML
   protected void onLogout() {
-    // delete file
-//    currentUser = null;
-//    navbarControls.getChildren().removeAll(librariesButton, profileButton);
-//    navbarControls.getChildren().addFirst(loginButton);
-//    navbarControls.getChildren().addFirst(registerButton);
-//    FileManager.delete(LOCAL_CREDENTIALS);
-//    onHomepage();
+    AuthContext.logout();
+    AuthStorage.clear();
+    Router.go("/");
   }
 }

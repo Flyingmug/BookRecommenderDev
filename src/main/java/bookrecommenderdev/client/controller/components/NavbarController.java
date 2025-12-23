@@ -48,13 +48,29 @@ public class NavbarController {
     registerButton.disableProperty().bind(
         AuthContext.userProperty().isNotNull()
     );
+
+    librariesButton.visibleProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
+    librariesButton.managedProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
+    librariesButton.disableProperty().bind(
+        AuthContext.userProperty().isNull()
+    );
+
+    profileButton.visibleProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
+    profileButton.managedProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
+    profileButton.disableProperty().bind(
+        AuthContext.userProperty().isNull()
+    );
   }
 
   public void setSearchbarVisible(Boolean v) { searchbar.setVisible(v); }
-  public void showLoginButton(Boolean v) { loginButton.setManaged(v); }
-  public void showRegisterButton(Boolean v) { registerButton.setManaged(v); }
-  public void showLibrariesButton(Boolean v) { librariesButton.setManaged(v);  }
-  public void showProfilePicture(Boolean v) { profileButton.setManaged(v); }
   public void setProfileInitials(String s) { profileText.setText(s.substring(0,2)); }
 
   @FXML public void onRegister() { Router.go("/registration"); }

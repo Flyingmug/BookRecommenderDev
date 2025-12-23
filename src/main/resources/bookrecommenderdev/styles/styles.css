@@ -5,9 +5,9 @@
     -fx-border-width: 2px;
     -fx-border-style: solid;
     -fx-cursor: hand;
+    -fx-pref-height: 36;
     -fx-background-color: transparent;
     -fx-padding: 0 15 0 15;
-    -fx-pref-height: 36;
 }
 .libraries-button:hover {
     -fx-border-color: #23b6ed;

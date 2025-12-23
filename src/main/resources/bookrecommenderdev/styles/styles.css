@@ -1,24 +1,28 @@
 
-.navbar-button {
-    -fx-border-color: transparent;
-    -fx-border-radius: 3;
-    -fx-border-width: 2px;
-    -fx-border-style: solid;
-    -fx-cursor: hand;
-    -fx-pref-height: 36;
-    -fx-background-color: transparent;
-    -fx-padding: 0 15 0 15;
-}
-.libraries-button:hover {
-    -fx-border-color: #23b6ed;
-}
-.login-button:hover {
-    -fx-border-color: #06afb4;
-}
-.register-button:hover {
-    -fx-border-color: #41e5b1;
+/* Reusable font classes */
+
+.root {
+    -mont-regular: "Montserrat Regular";
+    -mont-light: "Montserrat Light";
+    -mont-medium: "Montserrat Medium";
 }
 
+.regular-14 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+}
+.regular-16 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 16;
+}
+.regular-17 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 17;
+}
+.regular-30 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 30;
+}
 
 
 /* Control button standard class */
@@ -57,8 +61,6 @@
     -fx-border-color: #668bc1;
 }
 
-
-
 /* ScrollPane standard class */
 .scrollable-pane {
     -fx-background-color: transparent;
@@ -76,6 +78,8 @@
     -fx-font-size: 14;
     -fx-padding: 5 0 5 0;
 }
+
+
 
 
 
@@ -119,6 +123,32 @@
 .searchbar-center {
     -fx-pref-height: 60px;
 }
+.navbar-button {
+    -fx-border-color: transparent;
+    -fx-border-radius: 3;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-cursor: hand;
+    -fx-pref-height: 36;
+    -fx-background-color: transparent;
+    -fx-padding: 0 15 0 15;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 15;
+}
+.libraries-button:hover {
+    -fx-border-color: #23b6ed;
+}
+.login-button:hover {
+    -fx-border-color: #04dbe1;
+}
+.register-button:hover {
+    -fx-border-color: #6cf3c9;
+}
+.navbar-buttons-container {
+    -fx-pref-height: 145;
+    -fx-spacing: 20;
+}
+
 
 
 /* Search page */
@@ -181,9 +211,8 @@
     -fx-icon-size: 38;
 }
 
-.login-feedback-label {
-    -fx-text-fill: #f22828;
-}
+
+/* MOVE ELSEWHERE? */
 
 .profile-picture-button {
     -fx-pref-height: 50;
@@ -304,6 +333,30 @@
 }
 
 
+
+/* Login */
+
+.login-page {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-border-color: #41a2e5;
+    -fx-border-radius: 15;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+    -fx-padding: 100;
+}
+.login-feedback-label {
+    -fx-text-fill: #f22828;
+}
+.login-field {
+    -fx-pref-height: 50;
+    -fx-pref-width: 300;
+}
+.login-controls-container {
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
 
 
 /* Temporary */

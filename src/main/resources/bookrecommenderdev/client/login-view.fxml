@@ -8,34 +8,16 @@
 
 <VBox fx:id="loginPage" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bookrecommenderdev.client.controller.LoginController" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
-   <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" spacing="20.0" style="-fx-border-color: #41a2e5; -fx-border-width: 3; -fx-border-radius: 15;" VBox.vgrow="NEVER">
-      <Label text="Accedi">
-         <font>
-            <Font name="Arial" size="30.0" />
-         </font>
-      </Label>
+      fx:controller="bookrecommenderdev.client.controller.LoginController" alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
+   <VBox fillWidth="false" styleClass="login-page" VBox.vgrow="NEVER">
+      <Label text="Accedi al tuo account" styleClass="regular-30" />
       <Label fx:id="loginFeedback" styleClass="login-feedback-label" />
-      <TextField fx:id="loginEmail" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" promptText="Email">
-         <font>
-            <Font size="18.0" />
-         </font></TextField>
-      <TextField fx:id="loginPassword" layoutX="113.0" layoutY="113.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" promptText="Password">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </TextField>
-      <HBox alignment="CENTER" spacing="20.0">
+      <TextField fx:id="loginEmail" styleClass="login-field, regular-17" minHeight="-Infinity" minWidth="-Infinity" promptText="Email" />
+      <TextField fx:id="loginPassword" styleClass="login-field, regular-17" minHeight="-Infinity" minWidth="-Infinity" promptText="Password"/>
+      <HBox styleClass="login-controls-container">
          <Region prefWidth="75.0" />
-         <Button fx:id="confirmLoginButton" mnemonicParsing="false" onAction="#onLogin" text="Conferma">
-            <font>
-               <Font size="18.0" />
-            </font>
-         </Button>
-         <CheckBox fx:id="loginRicordaCredenziali" mnemonicParsing="false" prefWidth="75.0" text="Ricorda" />
+         <Button fx:id="confirmLoginButton" onAction="#onLogin" text="Accedi" styleClass="regular-17" />
+         <CheckBox fx:id="loginRicordaCredenziali" prefWidth="75.0" text="Ricorda" />
       </HBox>
-      <padding>
-         <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
-      </padding>
    </VBox>
 </VBox>

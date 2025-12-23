@@ -59,26 +59,26 @@
       </StackPane>
    </VBox>
    <Region HBox.hgrow="ALWAYS" />
-   <HBox alignment="CENTER" prefHeight="145.0" style="-fx-spacing: 20;">
-      <Button fx:id="loginButton" layoutX="87.0" layoutY="59.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="36.0" styleClass="login-button, navbar-button" text="Accedi">
-         <font>
-            <Font size="15.0" />
-         </font>
+   <HBox alignment="CENTER" styleClass="navbar-buttons-container">
+      <Button fx:id="loginButton" onAction="#onLogin" styleClass="login-button, navbar-button" text="Accedi">
+         <tooltip>
+            <Tooltip text="Login" />
+         </tooltip>
       </Button>
-      <Button fx:id="registerButton" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onRegister" prefHeight="36.0" styleClass="register-button, navbar-button" text="Registrati">
-         <font>
-            <Font size="15.0" />
-         </font>
+      <Button fx:id="registerButton" onAction="#onRegister" styleClass="register-button, navbar-button" text="Registrati">
+         <tooltip>
+            <Tooltip text="Registrazione" />
+         </tooltip>
       </Button>
-      <Button fx:id="librariesButton" managed="false" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onLibraries" prefHeight="36.0" styleClass="libraries-button, navbar-button" text="Librerie">
+      <Button fx:id="librariesButton" managed="false" onAction="#onLibraries" styleClass="libraries-button, navbar-button" text="Librerie">
          <tooltip>
             <Tooltip text="Librerie personali" />
          </tooltip>
          <font>
-            <Font name="Arial" size="15.0" />
+            <Font size="15.0" />
          </font>
       </Button>
-      <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#onHomepage" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">
+      <Button contentDisplay="CENTER" onAction="#onHomepage" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="Pagina iniziale" />
          </tooltip>
@@ -86,7 +86,7 @@
             <FontIcon iconColor="#4E5498" iconLiteral="mdi2h-home" iconSize="32" />
          </graphic>
       </Button>
-      <Button fx:id="profileButton" managed="false" layoutX="121.0" layoutY="27.0" mnemonicParsing="false" onAction="#onProfile" prefHeight="36.0" styleClass="profile-picture-button">
+      <Button fx:id="profileButton" managed="false" onAction="#onProfile" prefHeight="36.0" styleClass="profile-picture-button">
          <font>
             <Font size="15.0" />
          </font>

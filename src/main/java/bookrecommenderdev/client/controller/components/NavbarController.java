@@ -38,11 +38,17 @@ public class NavbarController {
     loginButton.visibleProperty().bind(
         AuthContext.userProperty().isNull()
     );
+    loginButton.managedProperty().bind(
+        AuthContext.userProperty().isNull()
+    );
     loginButton.disableProperty().bind(
         AuthContext.userProperty().isNotNull()
     );
 
     registerButton.visibleProperty().bind(
+        AuthContext.userProperty().isNull()
+    );
+    registerButton.managedProperty().bind(
         AuthContext.userProperty().isNull()
     );
     registerButton.disableProperty().bind(

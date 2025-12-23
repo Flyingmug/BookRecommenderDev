@@ -27,7 +27,8 @@ public class SearchResultsController implements Routable {
 
   // searchPage
   @FXML private Label resultTitle;
-  @FXML private HBox resultNotFoundTitle;
+  @FXML private VBox resultsNotFoundTitle;
+  @FXML private Label resultsNotFoundQuery;
   @FXML private VBox booksResultSection;
   @FXML private VBox booksResultsContainer;
   @FXML private Label resultIndexCounter;
@@ -88,7 +89,7 @@ public class SearchResultsController implements Routable {
       if (books.isEmpty() || totalResults == 0) {
         System.out.println("Empty result set."); // DEBUG
         booksResultSection.setVisible(false);
-        showNoResults();
+        showNoResults(query);
         return;
       }
 
@@ -125,7 +126,6 @@ public class SearchResultsController implements Routable {
 
       if (results.indexOf(l) < results.size() - 1) {
         Separator line = new Separator();
-        line.setStyle("-fx-border-colo: #99b1e9");
         booksResultsContainer.getChildren().add(line);
       }
     }
@@ -216,11 +216,12 @@ public class SearchResultsController implements Routable {
   }
 
   /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
-  private void showNoResults() {
+  private void showNoResults(String query) {
     resultTitle.setVisible(false);
     resultTitle.setManaged(false);
-    resultNotFoundTitle.setVisible(true);
-    resultNotFoundTitle.setManaged(true);
+    resultsNotFoundTitle.setVisible(true);
+    resultsNotFoundTitle.setManaged(true);
+    resultsNotFoundQuery.setText("Nessun risultato trovato per: " + query);
   }
 
 }

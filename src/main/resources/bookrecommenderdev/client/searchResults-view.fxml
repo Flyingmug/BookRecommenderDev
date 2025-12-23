@@ -16,10 +16,11 @@
       <VBox styleClass="search-page">
          <HBox fx:id="resultTitleContainer" styleClass="result-title-container" alignment="CENTER">
             <Label fx:id="resultTitle" text="Risultati" />
-            <HBox fx:id="resultNotFoundTitle" managed="false" visible="false">
-               <Label styleClass="" text="Nessun risultato trovato" />
-               <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="38" />
-            </HBox>
+            <VBox fx:id="resultsNotFoundTitle" managed="false" visible="false"
+                  alignment="center" style="-fx-spacing: 10;">
+               <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="45" />
+               <Label fx:id="resultsNotFoundQuery" wrapText="true" />
+            </VBox>
             <HBox.margin>
                <Insets bottom="10.0" top="10.0" />
             </HBox.margin>

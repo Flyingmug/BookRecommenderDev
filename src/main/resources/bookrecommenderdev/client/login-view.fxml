@@ -6,18 +6,28 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
 
-<VBox fx:id="loginPage" xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bookrecommenderdev.client.controller.LoginController" alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
-   <VBox fillWidth="false" styleClass="login-page" VBox.vgrow="NEVER">
+      fx:controller="bookrecommenderdev.client.controller.LoginController"
+      alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
+
+   <Region prefHeight="50.0" />
+
+   <VBox styleClass="login-page" VBox.vgrow="NEVER" fillWidth="false">
       <Label text="Accedi al tuo account" styleClass="regular-30" />
       <Label fx:id="loginFeedback" styleClass="login-feedback-label" />
-      <TextField fx:id="loginEmail" styleClass="login-field, regular-17" minHeight="-Infinity" minWidth="-Infinity" promptText="Email" />
-      <TextField fx:id="loginPassword" styleClass="login-field, regular-17" minHeight="-Infinity" minWidth="-Infinity" promptText="Password"/>
+      <TextField fx:id="loginEmail" styleClass="login-field, regular-17" promptText="Email" />
+      <TextField fx:id="loginPassword" styleClass="login-field, regular-17" promptText="Password"/>
       <HBox styleClass="login-controls-container">
          <Region prefWidth="75.0" />
-         <Button fx:id="confirmLoginButton" onAction="#onLogin" text="Accedi" styleClass="regular-17" />
-         <CheckBox fx:id="loginRicordaCredenziali" prefWidth="75.0" text="Ricorda" />
+         <Button fx:id="confirmLoginButton" styleClass="control-button, control-button-border, login-control-button, regular-17"
+                 onAction="#onLogin" text="Accedi"/>
+         <CheckBox fx:id="loginRicordaCredenziali" text="Ricorda" styleClass="regular-14" />
       </HBox>
    </VBox>
+
+   <Region VBox.vgrow="ALWAYS" />
+
+   <Region prefHeight="50.0" />
+
 </VBox>

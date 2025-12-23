@@ -1,12 +1,10 @@
 
 /* Reusable font classes */
 
-.root {
-    -mont-regular: "Montserrat Regular";
-    -mont-light: "Montserrat Light";
-    -mont-medium: "Montserrat Medium";
+.regular-12 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 12;
 }
-
 .regular-14 {
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 14;
@@ -337,8 +335,8 @@
 /* Login */
 
 .login-page {
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
-    -fx-background-color: white;
+    -fx-min-width: 600;
+    -fx-background-color: rgba(255, 255, 255, 0.98);
     -fx-background-radius: 15;
     -fx-border-color: #41a2e5;
     -fx-border-radius: 15;
@@ -352,10 +350,41 @@
 .login-field {
     -fx-pref-height: 50;
     -fx-pref-width: 300;
+    -fx-border-width: 0 0 2 00;
+    -fx-border-color: #0c283d;
+    -fx-background-color: transparent;
+}
+.login-field:focused {
+    -fx-border-color: #3691d4;
 }
 .login-controls-container {
     -fx-alignment: center;
     -fx-spacing: 20;
+    -fx-padding: 25 0 0 0;
+}
+.login-control-button {
+    -fx-padding: 15;
+}
+
+/* Registration */
+
+.register-page-wrapper {
+    -fx-padding: 0 0 100 0;
+}
+.register-page {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.98),
+        rgba(255, 255, 255, 0.98),
+        rgba(244, 244, 253, 0.96)
+    );
+    -fx-background-radius: 20;
+    -fx-border-color: #7377d5;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-padding: 75 100 75 100;
 }
 
 

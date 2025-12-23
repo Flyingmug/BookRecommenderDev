@@ -20,7 +20,6 @@ import static bookrecommenderdev.utils.InputVerifiers.*;
 
 public class LoginController implements Routable {
 
-  @FXML private VBox loginPage;
   @FXML private Label loginFeedback;
   @FXML private TextField loginEmail;
   @FXML private TextField loginPassword;

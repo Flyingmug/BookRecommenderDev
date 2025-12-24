@@ -11,8 +11,6 @@ public class LibraryItemController {
 
   public void setLibrary(Libreria lib, int totalCount) {
 
-    System.out.println("Building library item...");
-
     if (lib != null) {
 
       itemTitleLabel.setText(lib.getNome());

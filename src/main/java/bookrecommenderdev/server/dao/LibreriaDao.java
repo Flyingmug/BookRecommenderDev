@@ -17,7 +17,11 @@ public class LibreriaDao {
   public LibreriaDao(DataSource ds) { this.datasource = ds; }
 
 
-  //Get librerie
+  // Get librerie
+  /*
+  * todo doc
+  * Restituisce anche le librerie vuote.
+  * */
   public List<LibraryResult> getLibrerie (long id_utente) throws SQLException {
     List<LibraryResult> elenco = new LinkedList<>();
 
@@ -37,9 +41,9 @@ public class LibreriaDao {
         elenco.add(
           new LibraryResult(
             new Libreria(
-              rs.getInt("id_libreria"),
-              rs.getInt("id_utente"),
-              rs.getString("nome")
+              rs.getLong("id_libreria"),
+              id_utente,
+              rs.getString("nome_libreria")
             ),
             rs.getInt("numero_libri")
             )

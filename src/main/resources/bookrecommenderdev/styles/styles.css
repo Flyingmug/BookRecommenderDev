@@ -43,6 +43,15 @@
     -fx-font-family: "Montserrat Light";
     -fx-font-size: 19;
 }
+/*ITALIC*/
+.italic-19 {
+    -fx-font-family: "Montserrat Italic";
+    -fx-font-size: 19;
+}
+.italic-40 {
+    -fx-font-family: "Montserrat Italic";
+    -fx-font-size: 40;
+}
 
 
 /* Control button standard class */
@@ -75,11 +84,39 @@
 }
 
 /* Control button specializations */
-
 .control-button-border {
+    -fx-border-color: #668bc1;
+    -fx-border-width: 2;
+}
+
+/* Control button round specialization */
+.control-button-round {
+    -fx-background-color: white;
+    -fx-background-radius: 9999;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-radius: 9999;
+    -fx-pref-width: 45;
+    -fx-pref-height: 45;
+    -fx-alignment: center;
+    -fx-padding: 4;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 17;
+}
+.control-button-round:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #668bc1;
+}
+.control-button-round:disabled {
+    -fx-opacity: 1;
+}
+.control-button-round-customdisabled {
+    -fx-background-color: #f2f2f2;
     -fx-border-width: 2;
     -fx-border-color: #668bc1;
 }
+
 
 /* ScrollPane standard class */
 .scrollable-pane {
@@ -483,21 +520,49 @@
     -fx-background-color: white;
     -fx-padding: 40;
 }
+/* searchbar */
+.libraries-searchbar-section {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+    -fx-fill-width: false;
+}
+.library-searchbar-wrapper {
+    -fx-border-radius: 9999;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+}
+.libraries-searchbar-section-separator {
+    -fx-padding: 5 0 0 0;
+}
+.libraries-searchbar-section-separator .line {
+    -fx-border-color: #668bc1;
+    -fx-border-width: 1;
+}
+.libraries-items-section-separator .line {
+    -fx-border-color: #668bc1;
+    -fx-border-width: 1;
+}
+/* items container */
+.libraries-items-section {
+    /* unused */
+}
+.libraries-items-control-container {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
 .libraries-container {
-    -fx-pref-wrap-length: 300;
-    -fx-pref-height: 120;
-    -fx-pref-width: 300;
+    -fx-pref-wrap-length: 280;
     -fx-hgap: 20;
     -fx-vgap: 20;
-    -fx-alignment: left;
     -fx-padding: 10;
 }
 
+/* items */
 .library-item-button {
     -fx-min-height: 120;
     -fx-max-height: 120;
-    -fx-min-width: 300;
-    -fx-max-width: 300;
+    -fx-min-width: 280;
+    -fx-max-width: 280;
     -fx-background-insets: 0, 1;
     -fx-background-radius: 4, 3;
     -fx-background-color: lightgrey, white;
@@ -520,6 +585,7 @@
     -fx-icon-size: 23;
     -fx-icon-color: #545454;
 }
+
 
 
 /* Temporary */

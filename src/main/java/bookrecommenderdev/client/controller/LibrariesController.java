@@ -44,33 +44,34 @@ public class LibrariesController implements Routable {
       }
       System.out.println("UI Libraries found: " + librerie.size());
 
-      librerie = new LinkedList<>();
-      librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          50
-      ));
-      librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          9
-      ));
-      librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          78456
-      ));
-      librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          43256
-      ));librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          612
-      ));librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          12
-      ));
-      librerie.add(new LibraryResult(
-          new Libreria(1, 1, "temp1"),
-          345
-      ));
+//
+//      librerie = new LinkedList<>();
+//      librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          50
+//      ));
+//      librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          9
+//      ));
+//      librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          78456
+//      ));
+//      librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          43256
+//      ));librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          612
+//      ));librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          12
+//      ));
+//      librerie.add(new LibraryResult(
+//          new Libreria(1, 1, "temp1"),
+//          345
+//      ));
 
       load(librerie);
 

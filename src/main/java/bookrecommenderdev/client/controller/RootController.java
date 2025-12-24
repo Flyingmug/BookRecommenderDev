@@ -48,8 +48,8 @@ public class RootController {
     routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, false));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, false));
     routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, true));
-    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.INTEGRATED, true));
-    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.INTEGRATED, true));
+    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, true));
+    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, true));
 
     initRegistry();
     if (bookRecommender != null) {

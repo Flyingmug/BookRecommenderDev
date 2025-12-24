@@ -1,14 +1,19 @@
 package bookrecommenderdev.model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Rappresenta una libreria con i rispettivi metodi di aggiunta
  * @author Selimi Sebian
  * @author Moscatelli Alexander
  */
-public class Libreria {
+public class Libreria implements Serializable {
+  @Serial
+  private static final long serialVersionUID = 1L;
 
-  int id_libreria;
-  int id_utente;
+  long id_libreria;
+  long id_utente;
   String nome;
 
   /**
@@ -16,7 +21,7 @@ public class Libreria {
    * @param id_libreria id libreria
    * @param nome nome libreria
    */
-  public Libreria(int id_libreria,int id_utente, String nome) {
+  public Libreria(long id_libreria, long id_utente, String nome) {
     this.id_libreria = id_libreria;
     this.id_utente = id_utente;
     this.nome = nome;
@@ -29,7 +34,7 @@ public class Libreria {
   /**
    * @return id libreria
    */
-  public int getIdLibreria() { return id_libreria; }
+  public long getIdLibreria() { return id_libreria; }
 
   /**
    * @return nome libreria

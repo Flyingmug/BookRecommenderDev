@@ -84,4 +84,9 @@ public class HistoryManager<T> {
       dq.removeFirst();
     }
   }
+
+  /** Rimuove gli elementi successivi. */
+  public void clearForward() {
+    forwardStack.clear();
+  }
 }

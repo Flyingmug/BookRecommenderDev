@@ -1,11 +1,11 @@
 package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
-import bookrecommenderdev.model.auth.RegisterStatus;
+import bookrecommenderdev.routing.auth.RegisterStatus;
+import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dao.*;
 import bookrecommenderdev.server.db.DatabaseConfig;
 import bookrecommenderdev.server.dto.*;
-import javafx.util.Pair;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static bookrecommenderdev.model.auth.AuthStatus.*;
-import static bookrecommenderdev.model.auth.RegisterStatus.FISCAL_CODE_ALREADY_USED;
+import static bookrecommenderdev.routing.auth.AuthStatus.*;
+import static bookrecommenderdev.routing.auth.RegisterStatus.FISCAL_CODE_ALREADY_USED;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
@@ -46,10 +46,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // libri
   //
 
-  public PaginaLibriRisultati searchTitolo(String titolo, int indicePagina) throws RemoteException {
+  public PageResult<Libro> searchTitolo(String titolo, int pageNumber) throws RemoteException {
     PaginaLibriRisultati elenco;
     try {
-      elenco = libri.getPage(indicePagina, titolo);
+      elenco = libri.getPage(pageNumber, titolo);
       return elenco;
     } catch (SQLException e) {
       return null;
@@ -88,7 +88,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // librerie
   //
   public List<LibraryResult> getListLibrerie(long idUtente) throws RemoteException {
-
     try {
       return librerie.getLibrerie(idUtente);
 
@@ -99,9 +98,18 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     }
   }
 
-  public List<Libro> getContenutoLibreria(List<Long> idList) throws RemoteException {
+  @Override
+  public PaginaLibriRisultati searchFromLibrerie(long idUtente, String query, int pageNumber) throws RemoteException {
+    return null;
+  }
 
-    return List.of();
+  public PaginaLibriRisultati searchLibreria(long idUtente, String nomeLibreria,  int pageNumber) throws RemoteException {
+    try {
+      return librerie.getLibraryPage(idUtente, nomeLibreria, pageNumber);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   public void createLibreria(Libreria lib) throws RemoteException, InsertDBException {

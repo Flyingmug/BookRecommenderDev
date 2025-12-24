@@ -1,4 +1,4 @@
-package bookrecommenderdev.model.auth;
+package bookrecommenderdev.routing.auth;
 
 import java.io.Serializable;
 

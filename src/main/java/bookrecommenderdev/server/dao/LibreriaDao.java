@@ -1,7 +1,9 @@
 package bookrecommenderdev.server.dao;
 
 import bookrecommenderdev.model.Libreria;
+import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.server.dto.LibraryResult;
+import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
@@ -11,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+
+import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 public class LibreriaDao {
   private final DataSource datasource;
@@ -50,94 +54,101 @@ public class LibreriaDao {
           );
       }
 
-      System.out.println("Numero risultati: "+ elenco.size());
+      System.out.println("Numero risultati (Librerie): "+ elenco.size());
 
     }
 
     return elenco;
   }
 
-  //show Libreria
-/*  // show Libreria -> restituisce solo i libri di una libreria
-  public List<Libro> showLibreria(int id_libreria) {
-    System.out.println("Chiave ricevuta: " + id_libreria);
 
-    String q = "SELECT b.id_libro, b.titolo, b.anno_pubblicazione, " +
-      "a.id_autore, a.nome_autore, " +
-      "e.id_editore, e.nome_editore, " +
-      "c.id_categoria, c.nome_categoria " +
-      "FROM Contiene co " +
-      "INNER JOIN Libri b ON co.id_libro = b.id_libro " +
-      "LEFT JOIN Autori a ON b.id_autore = a.id_autore " +
-      "LEFT JOIN Editori e ON b.id_editore = e.id_editore " +
-      "LEFT JOIN Libri_Categorie lc ON b.id_libro = lc.id_libro " +
-      "LEFT JOIN Categorie c ON lc.id_categoria = c.id_categoria " +
-      "WHERE co.id_libreria = ? " +
-      "ORDER BY b.titolo;";
+  /*
+  * todo documentazione
+  * */
+  public PaginaLibriRisultati getPage(int pageNumber, String query, long id_utente) throws SQLException {
 
-    List<Libro> libri = new LinkedList<>();
+    List<Libro> elenco = new LinkedList<>();
+    int totalCount = 0;
+
+    System.out.println("id Utente: " + id_utente);
+    System.out.println("query: " + query);
+    System.out.println("pageNumber: " + pageNumber);
+
+    String q = "SELECT *, COUNT(*) OVER() as \"numero_risultati\" FROM vw_librerie_libri" +
+        " WHERE id_utente = ? AND titolo ILIKE ?" +
+        " OFFSET ? LIMIT ?";
+
+    try (Connection conn = datasource.getConnection();
+    PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setLong(1, id_utente);
+      ps.setString(2, query);
+      ps.setInt(3, pageNumber * PAGE_SIZE);
+      ps.setInt(4, PAGE_SIZE);
+
+      ResultSet rs = ps.executeQuery();
+
+      if (rs.next()) {
+        totalCount = rs.getInt("numero_risultati");
+
+        do {
+          elenco.add(new Libro(
+              rs.getInt("id_libro"),
+              rs.getString("titolo"),
+              "", //rs.getString("autori"),
+              rs.getInt("anno_pubblicazione")
+          ));
+        } while (rs.next());
+      }
+
+    }
+    System.out.println("Numero risultati libri: " + elenco.size());
+    return new PaginaLibriRisultati(elenco, totalCount);
+  }
+
+
+  public PaginaLibriRisultati getLibraryPage(long id_utente, String nome_libreria, int pageNumber) throws SQLException {
+    List<Libro> elenco = new LinkedList<>();
+    int totalCount = 0;
+
+    System.out.println("id Utente: " + id_utente);
+    System.out.println("nome libreria: " + nome_libreria);
+    System.out.println("pageNumber: " + pageNumber);
+
+    String q = "SELECT *, COUNT(*) OVER() as \"numero_risultati\" FROM vw_librerie_libri" +
+        " WHERE id_utente = ? AND nome_libreria = ?" +
+        " OFFSET ? LIMIT ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
-      ps.setInt(1, id_libreria);
+      ps.setLong(1, id_utente);
+      ps.setString(2, nome_libreria);
+      ps.setInt(3, pageNumber * PAGE_SIZE);
+      ps.setInt(4, PAGE_SIZE);
+
       ResultSet rs = ps.executeQuery();
 
-      // per evitare duplicati dello stesso libro con più categorie
-      java.util.Map<Integer, Libro> libriMap = new java.util.HashMap<>();
+      if (rs.next()) {
+        totalCount = rs.getInt("numero_risultati");
 
-      while (rs.next()) {
-        int idLibro = rs.getInt("id_libro");
-        Libro libro = libriMap.get(idLibro);
-
-        if (libro == null) {
-          libro = new Libro(
-            idLibro,
-            rs.getString("titolo"),
-            rs.getInt("anno_pubblicazione")
-          );
-
-          // autore
-          if (rs.getInt("id_autore") != 0) {
-            libro.setAutore(new Autore(
-              rs.getInt("id_autore"),
-              rs.getString("nome_autore")
-            ));
-          }
-
-          // editore
-          if (rs.getInt("id_editore") != 0) {
-            libro.setEditore(new Editore(
-              rs.getInt("id_editore"),
-              rs.getString("nome_editore")
-            ));
-          }
-
-          libriMap.put(idLibro, libro);
-        }
-
-        // categoria (aggiungi se presente)
-        int idCategoria = rs.getInt("id_categoria");
-        if (idCategoria != 0) {
-          libro.addCategoria(new Categoria(
-            idCategoria,
-            rs.getString("nome_categoria")
+        do {
+          elenco.add(new Libro(
+              rs.getInt("id_libro"),
+              rs.getString("titolo"),
+              "",//rs.getString("autori"),
+              rs.getInt("anno_pubblicazione")
           ));
-        }
+        } while (rs.next());
       }
 
-      libri.addAll(libriMap.values());
-
-    } catch (SQLException e) {
-      System.out.println("Errore nella connessione al database.");
-      e.printStackTrace();
     }
+    System.out.println("Numero risultati libri: " + elenco.size());
+    return new PaginaLibriRisultati(elenco, totalCount);
+  }
 
-    return libri;
-  }*/
 
   /**
-   *
    * @param id_libreria
    * @return booleano per verificare se la cancellazione ha avuto successo
    */

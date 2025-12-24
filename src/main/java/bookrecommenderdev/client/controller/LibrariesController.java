@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.factory.LibraryItemFactory;
-import bookrecommenderdev.model.auth.AuthContext;
+import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;

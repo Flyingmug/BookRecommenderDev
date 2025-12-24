@@ -1,5 +1,7 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.model.data.PageFetcher;
+import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.Libro;
@@ -31,16 +33,18 @@ public class SearchResultsController {
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
 
-  private AppContext context;
-  int currentResultPageIndex;
+  int currentPageIndex;
   int totalResultCount;
   String currentSearch;
+  private PageFetcher<Libro> pageFetcher;
 
 
-  public void setContext(AppContext context, String query) {
-    this.context = context;
+  public void setSource(PageFetcher<Libro> pageFetcher, String query) {
     this.currentSearch = query;
-    search(query);
+
+    this.pageFetcher = pageFetcher;
+
+    search();
   }
 
 
@@ -51,46 +55,40 @@ public class SearchResultsController {
 
   /**
    * Effettua una richiesta di ricerca tramite la chiave fornita.
-   * @param query Chiave di ricerca.
    */
-  private void search(String query) {
-    System.out.println("SEARCH Searched: " + query);  // DEBUG
-    if (query == null || query.isEmpty()) return;
+  private void search() {
+    System.out.println("SEARCH Searched: " + currentSearch);  // DEBUG
+    // if (query == null || query.isEmpty()) return;  // fixme remove?
+    if (currentSearch == null || currentSearch.isEmpty()) return;
 
     // reset
-    currentResultPageIndex = 0;
+    currentPageIndex = 0;
     totalResultCount = 0;
-    currentSearch = query;
 
-    resolve(query, currentResultPageIndex);
+    resolve(0);
   }
 
   /** <p>Gestisce la richiesta al server utilizzando la chiave data {@code query}.
    * <p>L'indice di pagina {@code pageIndex} viene utilizzato per avere un <i>offset</i> sui risultati,
-   * questi <i>limitati</i> a una quantità fissa.
+   * <i>limitati</i> a una quantità fissa.
    * <p>todo completare una volte implementati i criteri di ricerca
-   * @param query Chiave di ricerca.
    * @param pageIndex Indice di offset.
    */
-  private void resolve(String query, int pageIndex) {
+  private void resolve(int pageIndex) {
 
     try {
-      PaginaLibriRisultati data = context.server().searchTitolo(query, pageIndex);
-      if (data == null) throw new RemoteException();  // temp fixme
+
+      PageResult<Libro> data = pageFetcher.fetch(pageIndex);
+      if (data == null) throw new RemoteException();
 
       List<Libro> books = data.results();
-      int totalResults = data.totalCount();
+      totalResultCount = data.totalCount();
 
-      if (books.isEmpty() || totalResults == 0) {
-        System.out.println("Empty result set."); // DEBUG
+      if (books.isEmpty() || totalResultCount == 0) {
         booksResultSection.setVisible(false);
-        showNoResults(query);
+        showNoResults(currentSearch);
         return;
       }
-
-      totalResultCount = totalResults;
-
-      System.out.println("Numero di risultati: " + totalResults); // DEBUG
 
       load(books);
 
@@ -103,8 +101,8 @@ public class SearchResultsController {
 
   /**
    * <p>Costruisce dinamicamente dei nodi per mostrare i dati di ciascun Libro.
-   * <p>Ciascun nodo è separato da un {@link Separator}.
-   * <p>Riabilita l'uso dei pulsanti di controllo dei risultati.
+   * <p>I nodi sono spaziati da nodi {@link Separator}.
+   * <p>Verifica e riabilita l'uso dei pulsanti di controllo dei risultati.
    * @param results lista di dati risultanti
    */
   private void load(List<Libro> results) {
@@ -133,11 +131,11 @@ public class SearchResultsController {
   @FXML
   private void onPrevious() {
     if (currentSearch == null || currentSearch.isEmpty()) return;
-    if (currentResultPageIndex <= 0) return;
+    if (currentPageIndex <= 0) return;
 
     showDisabled(previousPageButton, true);
 
-    goToPage(currentResultPageIndex - 1);
+    goToPage(currentPageIndex - 1);
   }
 
   /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
@@ -145,35 +143,39 @@ public class SearchResultsController {
   @FXML
   private void onNext() {
     if (currentSearch == null || currentSearch.isEmpty()) return;
-    if ((currentResultPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
+    if ((currentPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
 
     showDisabled(nextPageButton, true);
 
-    goToPage(currentResultPageIndex + 1);
+    goToPage(currentPageIndex + 1);
   }
 
   /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
   private void goToPage(int newIndex) {
 
-    setResultsControlsDisabled(true);
+    setControlDisabled(previousPageButton, true);
+    setControlDisabled(nextPageButton, true);
 
-    currentResultPageIndex = newIndex;
-    resolve(currentSearch, newIndex);
+    currentPageIndex = newIndex;
+    resolve(newIndex);
   }
 
 
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
-    setPrevControlVisibility(currentResultPageIndex > 0);
-    setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < totalResultCount);
-    setResultsControlsDisabled(false);
-    showDisabled(previousPageButton, false);
-    showDisabled(nextPageButton, false);
+    boolean canPrev = currentPageIndex > 0;
+    boolean canNext = (currentPageIndex + 1) * PAGE_SIZE < totalResultCount;
+
+    setPrevControlVisibility(canPrev);
+    setNextControlVisibility(canNext);
+    setControlDisabled(previousPageButton, !canPrev);
+    setControlDisabled(nextPageButton, !canNext);
+    showDisabled(previousPageButton, !canPrev);
+    showDisabled(nextPageButton, !canNext);
   }
   /** Disabilita i comandi di controlli dei risultati. */
-  private void setResultsControlsDisabled(boolean disable) {
-    previousPageButton.setDisable(disable);
-    nextPageButton.setDisable(disable);
+  private void setControlDisabled(Button control, boolean disable) {
+    control.setDisable(disable);
   }
 
   /** Controlla la visibilità del pulsante di pagina precedente. */
@@ -187,19 +189,19 @@ public class SearchResultsController {
   }
 
   /** Mostra la selezione del pulsante sulla grafica, aggiungendovi la classe rispettiva. */
-  private void showDisabled(Button controlButton, boolean b) {
+  private void showDisabled(Button control, boolean b) {
     if (b) {
-      controlButton.getStyleClass().add("control-button-customdisabled");
+      control.getStyleClass().add("control-button-customdisabled");
     } else {
-      controlButton.getStyleClass().remove("control-button-customdisabled");
+      control.getStyleClass().remove("control-button-customdisabled");
     }
   }
 
   /** Genera una stringa di testo per mostrare il numero di risultati visualizzati contro il totale. */
   private String formatIndexCounter() {
     return Math.min(
-        PAGE_SIZE*currentResultPageIndex+1, totalResultCount) +"-"+
-        Math.min(PAGE_SIZE*(1+currentResultPageIndex), totalResultCount) +" di "+
+        PAGE_SIZE*currentPageIndex+1, totalResultCount) +"-"+
+        Math.min(PAGE_SIZE*(1+currentPageIndex), totalResultCount) +" di "+
         totalResultCount + " risultati";
   }
 

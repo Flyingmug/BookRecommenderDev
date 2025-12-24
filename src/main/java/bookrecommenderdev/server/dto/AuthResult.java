@@ -1,6 +1,6 @@
 package bookrecommenderdev.server.dto;
 
-import bookrecommenderdev.model.auth.AuthStatus;
+import bookrecommenderdev.routing.auth.AuthStatus;
 import bookrecommenderdev.model.Utente;
 
 import java.io.Serial;

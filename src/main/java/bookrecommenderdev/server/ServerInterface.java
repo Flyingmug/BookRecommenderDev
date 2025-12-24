@@ -1,7 +1,8 @@
 package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
-import bookrecommenderdev.model.auth.RegisterStatus;
+import bookrecommenderdev.routing.auth.RegisterStatus;
+import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dto.*;
 
 import java.rmi.Remote;
@@ -13,13 +14,14 @@ import java.util.List;
  */
 public interface ServerInterface extends Remote {
 
-  PaginaLibriRisultati searchTitolo(String titolo, int indicePagina) throws RemoteException;
+  PageResult<Libro> searchTitolo(String titolo, int indicePagina) throws RemoteException;
   List<Libro> searchAutore(String autore) throws RemoteException;
   List<Libro> searchAnnoAutore(String annoAutore) throws RemoteException;
   PaginaLibro getPaginaLibro(int idLibro) throws RemoteException;
   LibroPaginaPersonaleDTO getPaginaLibroPersonale() throws RemoteException;
   List<LibraryResult> getListLibrerie(long idUtente) throws RemoteException;
-  List<Libro> getContenutoLibreria(List<Long> idList) throws RemoteException;
+  PaginaLibriRisultati searchFromLibrerie(long idUtente, String query,  int pageNumber) throws RemoteException;
+  PaginaLibriRisultati searchLibreria(long idUtente, String nomeLibreria,  int pageNumber) throws RemoteException;
   void createLibreria(Libreria lib) throws RemoteException;
   void deleteLibreria(Libreria lib) throws RemoteException;
   void deleteLibreria(String nome, long idUtente) throws RemoteException;

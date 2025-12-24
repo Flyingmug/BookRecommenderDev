@@ -1,6 +1,8 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.controller.components.SearchResultsController;
+import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
 import javafx.fxml.FXML;
@@ -18,7 +20,12 @@ public class SearchController implements Routable {
 
     if (resultsSectionController == null) return;
 
-    resultsSectionController.setContext(context, params.get("query"));
+    String query = params.get("query");
+
+    PageFetcher<Libro> source = page ->
+        context.server().searchTitolo(query, page);
+
+    resultsSectionController.setSource(source, query);
   }
 
 

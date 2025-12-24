@@ -30,6 +30,7 @@ module com.example.bookrecommenderdev {
 
   exports bookrecommenderdev.model;
   exports bookrecommenderdev;
+  exports bookrecommenderdev.model.data;
   opens bookrecommenderdev to javafx.fxml;
   exports bookrecommenderdev.routing;
   opens bookrecommenderdev.routing to javafx.fxml;
@@ -41,7 +42,7 @@ module com.example.bookrecommenderdev {
   opens bookrecommenderdev.routing.layout to javafx.fxml;
   exports bookrecommenderdev.routing.animation;
   opens bookrecommenderdev.routing.animation to javafx.fxml;
-  exports bookrecommenderdev.model.auth;
   exports bookrecommenderdev.client.controller.components.controls;
   opens bookrecommenderdev.client.controller.components.controls to javafx.fxml;
+  exports bookrecommenderdev.routing.auth;
 }

@@ -1,8 +1,9 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.model.auth.AuthContext;
-import bookrecommenderdev.model.auth.AuthStatus;
-import bookrecommenderdev.model.auth.AuthStorage;
+import bookrecommenderdev.routing.auth.AccessPolicy;
+import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.routing.auth.AuthStatus;
+import bookrecommenderdev.routing.auth.AuthStorage;
 import bookrecommenderdev.routing.*;
 import bookrecommenderdev.routing.layout.LayoutRegistry;
 import bookrecommenderdev.routing.layout.LayoutType;
@@ -42,14 +43,14 @@ public class RootController {
 
     // Registrazione delle pagine
 //    routes.put("/loading", new Route("loading-view.fxml"));
-    routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, false));
-    routes.add(new Route("/search/:query", "search-view.fxml", LayoutType.INTEGRATED, false));
-    routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED, false));
-    routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, false));
-    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, false));
-    routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, true));
-    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, true));
-    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, true));
+    routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
+    routes.add(new Route("/search/:query", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
+    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
+    routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     initRegistry();
     if (bookRecommender != null) {

@@ -1,4 +1,4 @@
-package bookrecommenderdev.model.auth;
+package bookrecommenderdev.routing.auth;
 
 import bookrecommenderdev.model.Credentials;
 

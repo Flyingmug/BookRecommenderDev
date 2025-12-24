@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.model.auth.AuthContext;
-import bookrecommenderdev.model.auth.AuthStorage;
+import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.routing.auth.AuthStorage;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.routing.Router;
@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 import java.util.Map;

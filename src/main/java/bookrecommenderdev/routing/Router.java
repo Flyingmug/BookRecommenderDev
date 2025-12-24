@@ -2,6 +2,7 @@ package bookrecommenderdev.routing;
 
 import bookrecommenderdev.routing.animation.Direction;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
+import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.history.HistoryManager;
 import bookrecommenderdev.routing.history.RouteEntry;
 import bookrecommenderdev.routing.layout.LayoutController;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static bookrecommenderdev.routing.animation.Animations.*;
+import static bookrecommenderdev.routing.auth.AccessPolicy.*;
 
 /**
  * todo Serve una descrizione approfondita del funzionamento.
@@ -110,6 +112,7 @@ public class Router {
 
 
   /**
+   * todo add guarding note
    * <p>Risolve le richieste di navigazione ai percorsi.
    * <p>Dal percorso viene ricercato un {@link Route} corrispondente nel registry locale,
    * e vengono estratti eventuali parametri di percorso.
@@ -131,6 +134,18 @@ public class Router {
         .flatMap(Optional::stream)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("No route for " + path));
+
+
+    System.out.println("ROUTER-TEST: Is authed: " + AuthContext.isAuthenticated());
+    System.out.println("ROUTER-TEST: Path requested: " + match.route().pathPattern());
+    // Route guarding -> verifica delle policy di accesso
+    if (!isAccessAllowed(match.route())) {
+      System.out.println("ROUTER: Access Denied");
+      handleAccessDenied(match.route());
+      return;
+    }
+
+    System.out.println("ROUTER: Access Allowed");
 
     navigationLocked.set(true);
 
@@ -325,4 +340,30 @@ public class Router {
     canBack.set(history.canBack());
     canForward.set(history.canForward());
   }
+
+
+  /**
+   * todo doc
+   * */
+  private static boolean isAccessAllowed(Route route) {
+    boolean authenticated = AuthContext.isAuthenticated();
+
+    return switch (route.access()) {
+      case PUBLIC -> true;
+      case AUTH_ONLY -> authenticated;
+      case GUEST_ONLY -> !authenticated;
+    };
+  }
+
+  /**
+   * todo doc
+   * */
+  private static void handleAccessDenied(Route route) {
+    switch (route.access()) {
+      case AUTH_ONLY -> go("/login", TransitionAnimation.FADE_INTO);
+      case GUEST_ONLY -> go("/", TransitionAnimation.FADE_INTO);
+      default -> throw new IllegalStateException();
+    }
+  }
+
 }

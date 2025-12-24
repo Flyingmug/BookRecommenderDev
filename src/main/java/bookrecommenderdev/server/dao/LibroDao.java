@@ -56,7 +56,7 @@ public class LibroDao {
 
   public PaginaLibriRisultati getPage(int pageNumber, String title) throws SQLException {
     System.out.println("Chiave ricevuta: " + title);
-    List<Libro> libri = new ArrayList<>();
+    List<Libro> elenco = new ArrayList<>();
     int totalCount = 0;
     String q = "SELECT id_libro, titolo, a.nome_autore as autori, anno_pubblicazione, COUNT(*) OVER() as numero_risultati" +
         " FROM Libri l JOIN Autori a ON l.id_autore = a.id_autore WHERE titolo ILIKE ? OFFSET ? LIMIT ?";
@@ -74,7 +74,7 @@ public class LibroDao {
         totalCount = rs.getInt("numero_risultati");
 
         do {
-          libri.add(new Libro(
+          elenco.add(new Libro(
               rs.getInt("id_libro"),
               rs.getString("titolo"),
               rs.getString("autori"),
@@ -83,8 +83,8 @@ public class LibroDao {
         } while (rs.next());
       }
     }
-    System.out.println("Numero risultati QUERY: " + libri.size());
-    return new PaginaLibriRisultati(libri, totalCount);
+    System.out.println("Numero risultati QUERY: " + elenco.size());
+    return new PaginaLibriRisultati(elenco, totalCount);
   }
 
   public List<Libro> getFrom(List<Integer> elenco_id) throws SQLException {

@@ -1,5 +1,6 @@
 package bookrecommenderdev.routing.route;
 
+import bookrecommenderdev.routing.auth.AccessPolicy;
 import bookrecommenderdev.routing.layout.LayoutType;
 import bookrecommenderdev.routing.Router;
 
@@ -13,6 +14,6 @@ public record Route(
     String pathPattern,
     String fxml,
     LayoutType layout,
-    boolean requiresAuth
+    AccessPolicy access
 ) {
 }

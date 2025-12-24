@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.model.auth.AuthContext;
-import bookrecommenderdev.model.auth.AuthStorage;
+import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.routing.auth.AuthStorage;
 import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

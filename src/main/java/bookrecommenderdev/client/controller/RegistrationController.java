@@ -1,13 +1,12 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.model.auth.AuthContext;
-import bookrecommenderdev.model.auth.AuthStorage;
-import bookrecommenderdev.model.auth.RegisterStatus;
+import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.routing.auth.AuthStorage;
+import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Utente;
-import bookrecommenderdev.utils.FileManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -18,7 +17,6 @@ import javafx.scene.layout.VBox;
 import java.rmi.RemoteException;
 import java.util.Map;
 
-import static bookrecommenderdev.Constants.LOCAL_CREDENTIALS;
 import static bookrecommenderdev.utils.InputVerifiers.*;
 import static bookrecommenderdev.utils.InputVerifiers.verCodiceFiscale;
 import static bookrecommenderdev.utils.InputVerifiers.verifyEmail;

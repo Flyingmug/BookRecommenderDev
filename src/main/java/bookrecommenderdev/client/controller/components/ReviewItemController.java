@@ -61,23 +61,23 @@ public class ReviewItemController {
 
   private String getReviewField(CampoValutazione campo, Valutazione review) {
     return switch (campo) {
-      case GENERALE -> review.getRecensioneGenerale();
       case STILE -> review.getRecensioneStile();
       case CONTENUTO -> review.getRecensioneContenuto();
-      case GRADEVOLEZZA ->  review.getRecensioneGradevolezzo();
+      case GRADEVOLEZZA ->  review.getRecensioneGradevolezza();
       case ORIGINALITA ->  review.getRecensioneOriginalita();
       case EDIZIONE -> review.getRecensioneEdizione();
+      case GENERALE -> review.getRecensioneGenerale();
     };
   }
 
   private double getReviewScore(CampoValutazione campo, Valutazione review) {
     return switch (campo) {
-      case GENERALE -> review.getVotoFinale();
       case STILE -> review.getStile();
       case CONTENUTO -> review.getContenuto();
       case GRADEVOLEZZA -> review.getGradevolezza();
       case ORIGINALITA -> review.getOriginalita();
       case EDIZIONE -> review.getEdizione();
+      case GENERALE -> review.getVotoFinale();
     };
   }
 }

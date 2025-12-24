@@ -3,6 +3,8 @@ package bookrecommenderdev.model;
 import java.io.Serial;
 import java.io.Serializable;
 
+import static bookrecommenderdev.model.CampoValutazione.*;
+
 /**
  * Classe utilizzata per definire le caratteristiche delle valutazioni,
  * in termini di stile, contenuto, gradevolezza, originalita' ed edizione.
@@ -53,7 +55,7 @@ public class Valutazione implements Serializable {
    */
   public Valutazione(int id_libro, int id_utente, int stile, int contenuto, int gradevolezza, int originalita,
                      int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,
-                     String recEdizione) {
+                     String recEdizione, String recGenerale) {
 
     this.id_libro = id_libro;
     this.id_utente = id_utente;
@@ -62,27 +64,29 @@ public class Valutazione implements Serializable {
     this.gradevolezza = gradevolezza;
     this.originalita = originalita;
     this.edizione = edizione;
-    setRecensione("stile", recStile);
-    setRecensione("contenuto", recContenuto);
-    setRecensione("gradevolezza", recGradevolezza);
-    setRecensione("originalita", recOriginalita);
-    setRecensione("edizione", recEdizione);
+    setRecensione(STILE, recStile);
+    setRecensione(CONTENUTO, recContenuto);
+    setRecensione(GRADEVOLEZZA, recGradevolezza);
+    setRecensione(ORIGINALITA, recOriginalita);
+    setRecensione(EDIZIONE, recEdizione);
+    setRecensione(GENERALE, recGenerale);
   }
 
   public Valutazione(int stile, int contenuto, int gradevolezza, int originalita,
                      int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,
-                     String recEdizione) {
+                     String recEdizione, String recGenerale) {
 
     this.stile = stile;
     this.contenuto = contenuto;
     this.gradevolezza = gradevolezza;
     this.originalita = originalita;
     this.edizione = edizione;
-    setRecensione("stile", recStile);
-    setRecensione("contenuto", recContenuto);
-    setRecensione("gradevolezza", recGradevolezza);
-    setRecensione("originalita", recOriginalita);
-    setRecensione("edizione", recEdizione);
+    setRecensione(STILE, recStile);
+    setRecensione(CONTENUTO, recContenuto);
+    setRecensione(GRADEVOLEZZA, recGradevolezza);
+    setRecensione(ORIGINALITA, recOriginalita);
+    setRecensione(EDIZIONE, recEdizione);
+    setRecensione(GENERALE, recGenerale);
   }
 
 
@@ -118,7 +122,7 @@ public class Valutazione implements Serializable {
   public String getRecensioneContenuto() { return recensione_contenuto; }
   /**
    * @return recensione testuale*/
-  public String getRecensioneGradevolezzo() { return recensione_gradevolezza; }
+  public String getRecensioneGradevolezza() { return recensione_gradevolezza; }
   /**
    * @return recensione testuale*/
   public String getRecensioneOriginalita() { return recensione_originalita; }
@@ -147,29 +151,19 @@ public class Valutazione implements Serializable {
    * @param nomeCampo nome campo recensito
    * @param testo recensione
    */
-  public void setRecensione(String nomeCampo, String testo) {
+  public void setRecensione(CampoValutazione nomeCampo, String testo) {
     if (testo != null && testo.length() > MAX_SIZE_RECENSIONE) {
       testo = testo.substring(0, MAX_SIZE_RECENSIONE);
     }
 
     switch (nomeCampo) {
-      case "stile":
-        this.recensione_stile = testo;
-        break;
-      case "contenuto":
-        this.recensione_contenuto = testo;
-        break;
-      case "gradevolezza":
-        this.recensione_gradevolezza = testo;
-        break;
-      case "originalita":
-        this.recensione_originalita = testo;
-        break;
-      case "edizione":
-        this.recensione_edizione = testo;
-        break;
-      default:
-        break;
+      case STILE -> recensione_stile = testo;
+      case CONTENUTO ->  recensione_contenuto = testo;
+      case GRADEVOLEZZA -> recensione_gradevolezza = testo;
+      case ORIGINALITA -> recensione_originalita = testo;
+      case EDIZIONE -> recensione_edizione = testo;
+      case GENERALE -> recensione_generale = testo;
+      default -> throw new IllegalStateException("Unexpected value: " + nomeCampo); // todo handle
     }
   }
   /**
@@ -180,6 +174,4 @@ public class Valutazione implements Serializable {
    * Metodo per settare il campo: idUtente.
    * @param idUtente int*/
   public void setIdUtente(int idUtente) { this.id_utente = idUtente; }
-
-  /** aaaaaaaaa */
 }

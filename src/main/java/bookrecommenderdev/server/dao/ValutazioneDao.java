@@ -64,8 +64,9 @@ public class ValutazioneDao
     System.out.println("Chiave ricevuta: " + id_libro);
 
     String q = "SELECT stile, contenuto, gradevolezza, originalita, edizione, " +
-        "recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione " +
-        "FROM  Valutazioni WHERE id_libro = ?";
+        "recensione_stile, recensione_contenuto, recensione_gradevolezza, " +
+        "recensione_originalita, recensione_edizione, recensione_generale " +
+        "FROM Valutazioni WHERE id_libro = ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -83,7 +84,8 @@ public class ValutazioneDao
             rs.getString("recensione_contenuto"),
             rs.getString("recensione_gradevolezza"),
             rs.getString("recensione_originalita"),
-            rs.getString("recensione_edizione")));
+            rs.getString("recensione_edizione"),
+            rs.getString("recensione_generale")));
       }
 
       System.out.println("Numero risultati: "+ elenco.size());
@@ -119,7 +121,8 @@ public class ValutazioneDao
             rs.getString("recensione_contenuto"),
             rs.getString("recensione_gradevolezza"),
             rs.getString("recensione_originalita"),
-            rs.getString("recensione_edizione"));
+            rs.getString("recensione_edizione"),
+            rs.getString("recensione_generale"));
       }
 
       System.out.println("Valutazione istanziata: " + (valutazione != null));
@@ -151,7 +154,7 @@ public class ValutazioneDao
       ps.setInt(7, valutazione.getEdizione());
       ps.setString(8, valutazione.getRecensioneStile());
       ps.setString(9, valutazione.getRecensioneContenuto());
-      ps.setString(10, valutazione.getRecensioneGradevolezzo());
+      ps.setString(10, valutazione.getRecensioneGradevolezza());
       ps.setString(11, valutazione.getRecensioneOriginalita());
       ps.setString(12, valutazione.getRecensioneEdizione());
 
@@ -195,7 +198,8 @@ public class ValutazioneDao
               rs.getString("recensione_contenuto"),
               rs.getString("recensione_gradevolezza"),
               rs.getString("recensione_originalita"),
-              rs.getString("recensione_edizione")
+              rs.getString("recensione_edizione"),
+              rs.getString("recensione_generale")
           ));
         } while (rs.next());
       }

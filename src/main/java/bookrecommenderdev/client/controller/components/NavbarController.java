@@ -79,7 +79,7 @@ public class NavbarController {
 
   @FXML public void onLogin() { Router.go("/login"); }
 
-  @FXML public void onLibraries() {  }
+  @FXML public void onLibraries() { Router.go("/libraries"); }
 
   @FXML public void onProfile() { Router.go("/profile"); }
 

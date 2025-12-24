@@ -1,6 +1,7 @@
 package bookrecommenderdev.server.dao;
 
 import bookrecommenderdev.model.Libreria;
+import bookrecommenderdev.server.dto.LibraryResult;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
@@ -17,15 +18,13 @@ public class LibreriaDao {
 
 
   //Get librerie
-  public List<Pair<Libreria, Integer>> getLibrerie (long id_utente) throws SQLException {
-    List<Pair<Libreria, Integer>> elenco = new LinkedList<>();
+  public List<LibraryResult> getLibrerie (long id_utente) throws SQLException {
+    List<LibraryResult> elenco = new LinkedList<>();
 
-
-    //elenco.getFirst().getKey()= new Libreria();
     System.out.println("Chiave ricevuta: " + id_utente);
 
-    String q = "SELECT id_libreria, l.nome AS nome_libreria, COUNT(c.id_libro) AS numero_libri " +
-            " FROM Librerie l LEFT JOIN Contiene c ON l.id_libreria = c.id_libreria " +
+    String q = "SELECT l.id_libreria, l.nome AS nome_libreria, COUNT(c.id_libro) AS numero_libri " +
+            " FROM Librerie l LEFT JOIN Libreria_Contiene c ON l.id_libreria = c.id_libreria " +
             " WHERE l.id_utente = ? GROUP BY l.id_libreria, l.nome;";
 
     try (Connection conn = datasource.getConnection();
@@ -36,15 +35,15 @@ public class LibreriaDao {
 
       while (rs.next()) {
         elenco.add(
-          new Pair<>(
+          new LibraryResult(
             new Libreria(
               rs.getInt("id_libreria"),
               rs.getInt("id_utente"),
               rs.getString("nome")
             ),
             rs.getInt("numero_libri")
-          )
-        );
+            )
+          );
       }
 
       System.out.println("Numero risultati: "+ elenco.size());

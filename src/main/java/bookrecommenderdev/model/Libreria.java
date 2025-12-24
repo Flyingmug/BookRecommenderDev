@@ -34,7 +34,7 @@ public class Libreria {
   /**
    * @return nome libreria
    */
-  public String getNomeLibreria() { return nome; }
+  public String getNome() { return nome; }
 
 
   /**
@@ -43,6 +43,6 @@ public class Libreria {
    */
   @Override
   public boolean equals(Object obj) {
-    return obj.getClass() == Libreria.class && this.nome.equals(((Libreria) obj).getNomeLibreria());
+    return obj.getClass() == Libreria.class && this.nome.equals(((Libreria) obj).getNome());
   }
 }

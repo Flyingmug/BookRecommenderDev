@@ -15,5 +15,4 @@ public class SearchbarController {
   }
   @FXML void testMethod() { System.out.println("TEST: Click detected"); }
 
-
 }

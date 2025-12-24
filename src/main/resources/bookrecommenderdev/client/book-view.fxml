@@ -8,11 +8,11 @@
 <ScrollPane fx:id="bookPage"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="bookrecommenderdev.client.controller.BookController"
-            fitToWidth="true" fitToHeight="true"
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
             styleClass="scrollable-pane">
 
    <VBox styleClass="book-page-container">
-      <VBox styleClass="book-page">
+      <VBox styleClass="book-page" VBox.vgrow="ALWAYS">
 
          <VBox styleClass="book-data-section">
             <Label fx:id="bookTitolo" styleClass="book-label-title" wrapText="true" />

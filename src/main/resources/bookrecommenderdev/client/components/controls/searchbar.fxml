@@ -9,9 +9,9 @@
     xmlns="http://javafx.com/javafx"
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="bookrecommenderdev.client.controller.components.controls.SearchbarController"
-    styleClass="searchbar-navbar">
+    styleClass="searchbar">
 
-   <HBox alignment="CENTER" minWidth="-Infinity" style="-fx-padding: 0 10 0 10;">
+   <HBox alignment="CENTER" style="-fx-padding: 0 10 0 10;">
       <TextField fx:id="searchInput" styleClass="searchbar-input, regular-19" focusTraversable="false" minHeight="-Infinity" promptText="Cerca..." HBox.hgrow="ALWAYS" />
       <Button contentDisplay="CENTER" styleClass="searchbar-control" onAction="#onSearchAction" HBox.hgrow="NEVER">
          <tooltip>
@@ -32,28 +32,3 @@
    </HBox>
 
 </StackPane>
-<!--<StackPane fx:id="homeSearchbarWrapper" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="500.0" prefHeight="60.0" prefWidth="640.0" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-width: 1; -fx-background-radius: 5; -fx-border-color: lightgrey;" styleClass="searchbar-center">-->
-<!--<HBox alignment="CENTER" minWidth="-Infinity" prefWidth="213.0" style="-fx-padding: 0 10 0 10;">-->
-<!--   <TextField fx:id="searchbar" focusTraversable="false" minHeight="-Infinity" prefWidth="0.0" promptText="Cerca..." style="-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-border-color: transparent; -fx-background-color: transparent;" HBox.hgrow="ALWAYS">-->
-<!--      <font>-->
-<!--         <Font name="Constantia" size="20.0" />-->
-<!--      </font>-->
-<!--   </TextField>-->
-<!--   <Button fx:id="searchButton" contentDisplay="CENTER" onMouseClicked="#onSearchAction" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">-->
-<!--      <tooltip>-->
-<!--         <Tooltip text="Cerca" />-->
-<!--      </tooltip>-->
-<!--      <graphic>-->
-<!--         <FontIcon iconColor="#4E5498" iconLiteral="mdi2m-magnify" iconSize="38" />-->
-<!--      </graphic>-->
-<!--   </Button>-->
-<!--   <Button contentDisplay="CENTER" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: transparent;" textAlignment="CENTER" HBox.hgrow="NEVER">-->
-<!--      <tooltip>-->
-<!--         <Tooltip text="Criterio di ricerca" />-->
-<!--      </tooltip>-->
-<!--      <graphic>-->
-<!--         <FontIcon iconColor="#4E5498" iconLiteral="mdi2t-table-filter" iconSize="32" />-->
-<!--      </graphic>-->
-<!--   </Button>-->
-<!--</HBox>-->
-<!--</StackPane>-->

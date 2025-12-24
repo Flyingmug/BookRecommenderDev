@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+<GridPane fx:id="reviewContainer"
+   xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
    fx:controller="bookrecommenderdev.client.controller.components.ReviewItemController"
-   fx:id="reviewContainer"
    minHeight="-Infinity"
    styleClass="review-item">
 

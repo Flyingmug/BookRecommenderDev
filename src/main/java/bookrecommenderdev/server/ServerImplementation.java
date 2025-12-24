@@ -8,7 +8,6 @@ import bookrecommenderdev.server.dto.*;
 import javafx.util.Pair;
 
 import javax.sql.DataSource;
-import javax.swing.text.html.Option;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
@@ -88,15 +87,14 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   //
   // librerie
   //
-  public List<Pair<Libreria, Integer>> getListLibrerie(long idUtente) throws RemoteException {
+  public List<LibraryResult> getListLibrerie(long idUtente) throws RemoteException {
 
     try {
-      List<Pair<Libreria, Integer>> libs = librerie.getLibrerie(idUtente);
-      return libs;
+      return librerie.getLibrerie(idUtente);
+
     } catch(SQLException e) {
-      System.err.println("Error in list obtaining");
+      System.err.println("Error in list obtaining");  // DEBUG
       e.printStackTrace();
-      System.out.println(e.getMessage());
       return null;
     }
   }

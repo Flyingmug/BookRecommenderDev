@@ -40,28 +40,28 @@ public class RootController {
         .register(LayoutType.EMPTY, "empty-layout.fxml");
 
 
-
     // Registrazione delle pagine
 //    routes.put("/loading", new Route("loading-view.fxml"));
     routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, false));
     routes.add(new Route("/search/:query", "searchResults-view.fxml", LayoutType.INTEGRATED, false));
     routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED, false));
-    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY, false));
-    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY, false));
+    routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, false));
+    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, false));
     routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, true));
-    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, true));
-    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, true));
+    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.INTEGRATED, true));
+    routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.INTEGRATED, true));
 
     initRegistry();
     if (bookRecommender != null) {
       context = new AppContext(bookRecommender);
       Router.init(content, context, routes, layouts);
 
+      attemptAutoLogin();
+
       // fixme TEST
       //Router.go("/");
-      Router.go("/book/1");
+      Router.go("/libraries");
 
-      attemptAutoLogin();
     }
 
   }

@@ -1,7 +1,6 @@
-package bookrecommenderdev.client.controller;
+package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
@@ -17,12 +16,11 @@ import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Map;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 
-public class SearchResultsController implements Routable {
+public class SearchResultsController {
 
   // searchPage
   @FXML private Label resultTitle;
@@ -33,7 +31,7 @@ public class SearchResultsController implements Routable {
   @FXML private Label resultIndexCounter;
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
-  @FXML private ScrollPane booksResultsPage;
+//  @FXML private ScrollPane booksResultsPage;  // scrollpane moved outside of view scope
 
   private AppContext context;
   int currentResultPageIndex;
@@ -41,15 +39,22 @@ public class SearchResultsController implements Routable {
   String currentSearch;
 
 
-  @Override
-  public void onRoute(Map<String, String> params, AppContext context) {
+
+  public void setContext(AppContext context, String query) {
     this.context = context;
-    currentSearch = params.get("query"); // set the current search query
-    search(currentSearch);
+    this.currentSearch = query;
+    search(query);
   }
 
+  public void setSource(String source) {
+    // DEBUG
+    resultTitle.setText(source);
+  }
+
+
+
   @FXML
-  private void onPublicBookPage(Integer idLibro) {
+  private void onBookPage(Integer idLibro) {
     Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
   }
 
@@ -120,7 +125,7 @@ public class SearchResultsController implements Routable {
     resultIndexCounter.setText(formatIndexCounter());
 
     for (Libro l: results) {
-      Parent row = BookResultItemFactory.createBookResultItem(l, this::onPublicBookPage);
+      Parent row = BookResultItemFactory.createBookResultItem(l, this::onBookPage);
       booksResultsContainer.getChildren().add(row);
 
       if (results.indexOf(l) < results.size() - 1) {
@@ -141,7 +146,6 @@ public class SearchResultsController implements Routable {
     showDisabled(nextPageButton, false);
   }
 
-
   /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
@@ -152,7 +156,7 @@ public class SearchResultsController implements Routable {
     showDisabled(previousPageButton, true);
 
     goToPage(currentResultPageIndex - 1);
-    booksResultsPage.setVvalue(1);  // vai a fondo pagina
+//    booksResultsPage.setVvalue(1);  // vai a fondo pagina
   }
 
   /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
@@ -165,13 +169,11 @@ public class SearchResultsController implements Routable {
     showDisabled(nextPageButton, true);
 
     goToPage(currentResultPageIndex + 1);
-    booksResultsPage.setVvalue(0);  // vai a inizio pagina
+//    booksResultsPage.setVvalue(0);  // vai a inizio pagina
   }
 
   /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
   private void goToPage(int newIndex) {
-    // if (newIndex < 0 || newIndex * PAGE_SIZE >= totalResultCount) return;
-    // fixme verification divided in two separate methods, but shouldn't be any problem
 
     setResultsControlsDisabled(true);
 

@@ -43,7 +43,7 @@ public class RootController {
     // Registrazione delle pagine
 //    routes.put("/loading", new Route("loading-view.fxml"));
     routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, false));
-    routes.add(new Route("/search/:query", "searchResults-view.fxml", LayoutType.INTEGRATED, false));
+    routes.add(new Route("/search/:query", "search-view.fxml", LayoutType.INTEGRATED, false));
     routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED, false));
     routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, false));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, false));

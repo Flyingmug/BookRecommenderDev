@@ -211,6 +211,14 @@
     -fx-pref-height: 145;
     -fx-spacing: 20;
 }
+.profile-picture-button {
+    -fx-pref-height: 35;
+    -fx-pref-width: 35;
+    -fx-background-radius: 9999;
+}
+.profile-picture-text {
+    -fx-font: bold 20px "Arial";
+}
 
 
 
@@ -257,42 +265,31 @@
 
 
 
-/* Home page */
 
-.welcome-title-container {
-    -fx-min-width: 600;
-    -fx-max-width: 600;
-    -fx-min-height: 200;
-    -fx-max-height: 200;
-}
+/* Search results page */
 
-
-/* Search page */
-
-.search-page-container {
+.results-page-container {
     -fx-alignment: top-center;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
-.search-page {
-    -fx-background-color: white;
+.results-page {
     -fx-max-width: 1000;
     -fx-pref-width: 1000;
-    -fx-padding: 0 20 0 20;
 }
 .result-title-container {
     -fx-content-display: center;
+    -fx-alignment: center;
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 30;
     -fx-padding: 10;
 }
-.search-results-container {
+.results-books-container {
     -fx-spacing: 10;
     -fx-background-color: white;
     -fx-border-width: 2 0 2 0;
-    -fx-border-color: #99b1e9;
+    -fx-border-color: #668bc1;
     -fx-padding: 10 10 0 10;
 }
-.search-controls-container {
+.results-books-controls-container {
     -fx-padding: 10;
 }
 
@@ -327,16 +324,37 @@
 }
 
 
-/* MOVE ELSEWHERE? */
 
-.profile-picture-button {
-    -fx-pref-height: 35;
-    -fx-pref-width: 35;
-    -fx-background-radius: 9999;
+
+
+
+
+/* Home page */
+
+.welcome-title-container {
+    -fx-min-width: 600;
+    -fx-max-width: 600;
+    -fx-min-height: 200;
+    -fx-max-height: 200;
 }
-.profile-picture-text {
-    -fx-font: bold 20px "Arial";
+
+
+
+/* Search Page */
+
+.search-page-container {
+    -fx-alignment: top_center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
+.search-page {
+    -fx-background-color: white;
+    -fx-spacing: 20;
+    -fx-max-width: 1000;
+    -fx-min-width: 800;
+    -fx-padding: 20;
+}
+
+
 
 
 
@@ -597,10 +615,10 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .library-page {
+    -fx-background-color: white;
     -fx-spacing: 20;
     -fx-max-width: 1100;
     -fx-min-width: 500;
-    -fx-background-color: white;
     -fx-padding: 40;
 }
 

@@ -3,13 +3,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <ScrollPane fx:id="libraryPage"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="bookrecommenderdev.client.controller.SearchController"
             fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
             styleClass="scrollable-pane">
 
-   <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
+   <VBox styleClass="search-page-container">
+      <VBox styleClass="search-page">
+
+         <Label text="HEO" styleClass="regular-30" />
+         <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
+
+      </VBox>
+   </VBox>
+
 
 </ScrollPane>

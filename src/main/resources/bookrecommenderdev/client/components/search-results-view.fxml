@@ -9,11 +9,12 @@
 <VBox
     xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
     fx:controller="bookrecommenderdev.client.controller.components.SearchResultsController"
-    styleClass="search-page-container">
+    styleClass="results-page-container" VBox.vgrow="ALWAYS">
 
-   <VBox styleClass="search-page" VBox.vgrow="ALWAYS">
+   <VBox styleClass="results-page" VBox.vgrow="ALWAYS">
 
-      <HBox fx:id="resultTitleContainer" styleClass="result-title-container" alignment="CENTER">
+      <HBox fx:id="resultTitleContainer" styleClass="result-title-container">
+
          <Label fx:id="resultTitle" text="Risultati" />
          <VBox fx:id="resultsNotFoundTitle" managed="false" visible="false"
                alignment="center" style="-fx-spacing: 10;">
@@ -23,22 +24,23 @@
          <HBox.margin>
             <Insets bottom="10.0" top="10.0" />
          </HBox.margin>
+
       </HBox>
 
       <VBox fx:id="booksResultSection">
 
          <HBox alignment="BOTTOM_LEFT">
             <Label fx:id="resultIndexCounter" styleClass="results-index-counter"
-                   text="/-/ di / risultati" />
+                   text="Nessun risultato presente." />
          </HBox>
 
-         <VBox fx:id="booksResultsContainer" styleClass="search-results-container" VBox.vgrow="ALWAYS" />
+         <VBox fx:id="booksResultsContainer" styleClass="results-books-container" VBox.vgrow="ALWAYS" />
 
-         <BorderPane styleClass="search-controls-container">
+         <BorderPane styleClass="results-books-controls-container">
             <left>
                <Button fx:id="previousPageButton" styleClass="control-button"
                        BorderPane.alignment="CENTER"
-                       onAction="#onPreviousResults"
+                       onAction="#onPrevious"
                        visible="false"
                        text="Precedente">
                   <graphic>
@@ -49,7 +51,7 @@
             <right>
                <Button fx:id="nextPageButton" styleClass="control-button"
                        BorderPane.alignment="CENTER"
-                       onAction="#onNextResults"
+                       onAction="#onNext"
                        visible="false"
                        text="Successivo">
                   <graphic>

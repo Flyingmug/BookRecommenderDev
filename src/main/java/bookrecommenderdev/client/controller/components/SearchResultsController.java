@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 
@@ -31,7 +30,6 @@ public class SearchResultsController {
   @FXML private Label resultIndexCounter;
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
-//  @FXML private ScrollPane booksResultsPage;  // scrollpane moved outside of view scope
 
   private AppContext context;
   int currentResultPageIndex;
@@ -39,18 +37,11 @@ public class SearchResultsController {
   String currentSearch;
 
 
-
   public void setContext(AppContext context, String query) {
     this.context = context;
     this.currentSearch = query;
     search(query);
   }
-
-  public void setSource(String source) {
-    // DEBUG
-    resultTitle.setText(source);
-  }
-
 
 
   @FXML
@@ -71,7 +62,7 @@ public class SearchResultsController {
     totalResultCount = 0;
     currentSearch = query;
 
-    resolveSearch(query, currentResultPageIndex);
+    resolve(query, currentResultPageIndex);
   }
 
   /** <p>Gestisce la richiesta al server utilizzando la chiave data {@code query}.
@@ -81,7 +72,7 @@ public class SearchResultsController {
    * @param query Chiave di ricerca.
    * @param pageIndex Indice di offset.
    */
-  private void resolveSearch(String query, int pageIndex) {
+  private void resolve(String query, int pageIndex) {
 
     try {
       PaginaLibriRisultati data = context.server().searchTitolo(query, pageIndex);
@@ -101,8 +92,7 @@ public class SearchResultsController {
 
       System.out.println("Numero di risultati: " + totalResults); // DEBUG
 
-
-      loadResults(books);
+      load(books);
 
     } catch(RemoteException e) {
       System.out.println("SEARCHERR Error while fetching data");
@@ -117,7 +107,7 @@ public class SearchResultsController {
    * <p>Riabilita l'uso dei pulsanti di controllo dei risultati.
    * @param results lista di dati risultanti
    */
-  private void loadResults(List<Libro> results) {
+  private void load(List<Libro> results) {
 
     // Rimozione di eventuali elementi precedenti
     booksResultsContainer.getChildren().clear();
@@ -137,39 +127,29 @@ public class SearchResultsController {
     setControls();
   }
 
-  /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
-  private void setControls() {
-    setPrevControlVisibility(currentResultPageIndex > 0);
-    setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < totalResultCount);
-    setResultsControlsDisabled(false);
-    showDisabled(previousPageButton, false);
-    showDisabled(nextPageButton, false);
-  }
 
   /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
-  private void onPreviousResults() {
+  private void onPrevious() {
     if (currentSearch == null || currentSearch.isEmpty()) return;
     if (currentResultPageIndex <= 0) return;
 
     showDisabled(previousPageButton, true);
 
     goToPage(currentResultPageIndex - 1);
-//    booksResultsPage.setVvalue(1);  // vai a fondo pagina
   }
 
   /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
-  private void onNextResults() {
+  private void onNext() {
     if (currentSearch == null || currentSearch.isEmpty()) return;
     if ((currentResultPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
 
     showDisabled(nextPageButton, true);
 
     goToPage(currentResultPageIndex + 1);
-//    booksResultsPage.setVvalue(0);  // vai a inizio pagina
   }
 
   /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
@@ -178,11 +158,18 @@ public class SearchResultsController {
     setResultsControlsDisabled(true);
 
     currentResultPageIndex = newIndex;
-    resolveSearch(currentSearch, newIndex);
+    resolve(currentSearch, newIndex);
   }
 
 
-
+  /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
+  private void setControls() {
+    setPrevControlVisibility(currentResultPageIndex > 0);
+    setNextControlVisibility((currentResultPageIndex + 1) * PAGE_SIZE < totalResultCount);
+    setResultsControlsDisabled(false);
+    showDisabled(previousPageButton, false);
+    showDisabled(nextPageButton, false);
+  }
   /** Disabilita i comandi di controlli dei risultati. */
   private void setResultsControlsDisabled(boolean disable) {
     previousPageButton.setDisable(disable);

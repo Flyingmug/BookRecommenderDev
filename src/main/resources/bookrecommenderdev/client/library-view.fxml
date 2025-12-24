@@ -9,6 +9,14 @@
             fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
             styleClass="scrollable-pane">
 
-   <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
+   <VBox styleClass="library-page-container">
+      <VBox styleClass="library-page">
+
+         <Label text="HEO" styleClass="regular-30" />
+         <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
+
+      </VBox>
+   </VBox>
+
 
 </ScrollPane>

@@ -1,26 +1,22 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.factory.LibraryItemFactory;
-import bookrecommenderdev.model.Libreria;
 import bookrecommenderdev.model.auth.AuthContext;
 import bookrecommenderdev.routing.AppContext;
+import bookrecommenderdev.routing.Router;
+import bookrecommenderdev.routing.animation.TransitionAnimation;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.server.dto.LibraryResult;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static bookrecommenderdev.Constants.LIBRARIES_PAGE_SIZE;
-import static bookrecommenderdev.Constants.REVIEWS_PAGE_SIZE;
 
 public class LibrariesController implements Routable {
 
@@ -98,7 +94,11 @@ public class LibrariesController implements Routable {
 
     for (LibraryResult lib : pagedResults) {
       librariesContainer.getChildren().add(
-          LibraryItemFactory.createLibraryItem(lib.library(), lib.bookCount())
+          LibraryItemFactory.createLibraryItem(
+              lib.library(),
+              lib.bookCount(),
+              () -> Router.go("/libraries/" + lib.library().getNome(), TransitionAnimation.LEFT_SLIDE)
+          )
       );
     }
     setControls();

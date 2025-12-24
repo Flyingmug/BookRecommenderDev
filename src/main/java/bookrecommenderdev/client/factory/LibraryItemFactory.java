@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class LibraryItemFactory {
 
-  public static Parent createLibraryItem(Libreria lib, int totalCount) {
+  public static Parent createLibraryItem(Libreria lib, int totalCount, Runnable onClick) {
 
     try {
       FXMLLoader loader = new FXMLLoader(
@@ -21,7 +21,7 @@ public class LibraryItemFactory {
       );
       Parent node = loader.load();
       LibraryItemController controller = loader.getController();
-      controller.setLibrary(lib, totalCount);
+      controller.setLibrary(lib, totalCount, onClick);
       return node;
     } catch (IOException e) {
       VBox node = new VBox();

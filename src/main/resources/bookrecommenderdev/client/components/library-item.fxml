@@ -5,7 +5,7 @@
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<Button
+<Button fx:id="libraryLink"
     xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
     fx:controller="bookrecommenderdev.client.controller.components.LibraryItemController"
     minHeight="-Infinity"

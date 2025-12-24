@@ -588,6 +588,34 @@
 
 
 
+
+
+
+/* Library Page */
+
+.library-page-container {
+    -fx-alignment: top_center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+.library-page {
+    -fx-spacing: 20;
+    -fx-max-width: 1100;
+    -fx-min-width: 500;
+    -fx-background-color: white;
+    -fx-padding: 40;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /* Temporary */
 
 .error-label {

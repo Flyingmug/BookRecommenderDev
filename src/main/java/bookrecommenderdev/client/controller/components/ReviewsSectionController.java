@@ -29,14 +29,15 @@ public class ReviewsSectionController {
 
   AppContext context;
   private long idLibro;
-  int currentResultPageIndex;
+  int currentPageIndex;
   int totalResultCount;
+
 
   public void initializeForBook(long idLibro, AppContext context) {
     this.idLibro = idLibro;
     this.context = context;
 
-    currentResultPageIndex = 0;
+    currentPageIndex = 0;
     totalResultCount = 0;
 
     resolveReviews(0);
@@ -49,7 +50,10 @@ public class ReviewsSectionController {
   private void resolveReviews(int pageIndex) {
     try {
       PaginaValutazioni data = context.server().getValutazioni(idLibro, pageIndex);
-      if (data == null) throw new RemoteException();  // temp fixme
+      if (data == null) {
+        System.out.println("ERROR received null from DB: " + idLibro); // temp fixme
+        return;
+      }
 
       List<Valutazione> reviews = data.results();
       int totalResults = data.totalCount();
@@ -62,9 +66,11 @@ public class ReviewsSectionController {
 
       totalResultCount = totalResults;
 
+      resultReviewIndexCounter.setText(formatIndexCounter()); // should NOT happen everytime
+
       System.out.println("Numero di risultati: " + totalResults); // DEBUG
 
-      loadResults(reviews);
+      load(reviews);
 
     } catch(RemoteException e) {
       System.out.println("SEARCHERR Error while fetching data");
@@ -79,12 +85,10 @@ public class ReviewsSectionController {
    * <p>Riabilita l'uso dei pulsanti di controllo dei risultati.
    * @param results lista di dati risultanti
    */
-  private void loadResults(List<Valutazione> results) {
+  private void load(List<Valutazione> results) {
 
     // Rimozione di eventuali elementi precedenti
     reviewsContainer.getChildren().clear();
-
-    resultReviewIndexCounter.setText(formatIndexCounter());
 
     for (Valutazione v: results) {
       Parent row = ReviewItemFactory.createReviewNode(v);
@@ -102,8 +106,8 @@ public class ReviewsSectionController {
 
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
-    setPrevControlVisibility(currentResultPageIndex > 0);
-    setNextControlVisibility((currentResultPageIndex + 1) * REVIEWS_PAGE_SIZE < totalResultCount);
+    setPrevControlVisibility(currentPageIndex > 0);
+    setNextControlVisibility((currentPageIndex + 1) * REVIEWS_PAGE_SIZE < totalResultCount);
     setResultsControlsDisabled(false);
     showDisabled(previousReviewsButton, false);
     showDisabled(nextReviewsButton, false);
@@ -113,25 +117,25 @@ public class ReviewsSectionController {
   /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
-  private void onPrevReviews() {
-    if (totalResultCount <= 0 || currentResultPageIndex <= 0) return;
+  private void onPrev() {
+    if (totalResultCount <= 0 || currentPageIndex <= 0) return;
 
     showDisabled(previousReviewsButton, true);
 
-    goToPage(currentResultPageIndex - 1);
+    goToPage(currentPageIndex - 1);
   }
 
   /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
-  private void onNextReviews() {
+  private void onNext() {
     if (totalResultCount <= 0 ||
-        (currentResultPageIndex + 1) * REVIEWS_PAGE_SIZE > totalResultCount)
+        (currentPageIndex + 1) * REVIEWS_PAGE_SIZE > totalResultCount)
       return;
 
     showDisabled(nextReviewsButton, true);
 
-    goToPage(currentResultPageIndex + 1);
+    goToPage(currentPageIndex + 1);
 
   }
 
@@ -139,7 +143,7 @@ public class ReviewsSectionController {
   private void goToPage(int newIndex) {
     setResultsControlsDisabled(true);
 
-    currentResultPageIndex = newIndex;
+    currentPageIndex = newIndex;
     resolveReviews(newIndex);
   }
 

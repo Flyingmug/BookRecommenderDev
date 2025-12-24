@@ -8,89 +8,169 @@ import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.server.dto.LibraryResult;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static bookrecommenderdev.Constants.LIBRARIES_PAGE_SIZE;
+import static bookrecommenderdev.Constants.REVIEWS_PAGE_SIZE;
+
 public class LibrariesController implements Routable {
 
   @FXML private FlowPane librariesContainer;
+  @FXML private Button prevPageButton;
+  @FXML private Button nextPageButton;
+  @FXML private VBox prevPageControl;
+  @FXML private VBox nextPageControl;
+
 
   AppContext context;
+  int currentPageIndex;
+  List<LibraryResult> libraries;
+  int totalResultCount;
+
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
     this.context = context;
-    resolveLibraries();
+    resolve(0);
   }
 
-  private void resolveLibraries() {
+  @FXML
+  private void initialize() {
+    currentPageIndex = 0;
+    totalResultCount = 0;
+  }
 
-//    if (!AuthContext.isAuthenticated()) return;   // router shouldn't allow to be here regardless
-    long userId = 3;
+  private void resolve(int pageIndex) {
+
+    if (!AuthContext.isAuthenticated()) return;   // router shouldn't allow to be here regardless
+    long userId = AuthContext.getUser().getId_utente();
 
     try {
 
-      List<LibraryResult> librerie = context.server().getListLibrerie(userId);
+      List<LibraryResult> results = context.server().getListLibrerie(userId);
 
-      if (librerie == null) {
+      if (results == null) {
         System.out.println("UI error retrieving libraries");
         return;
       }
-      System.out.println("UI Libraries found: " + librerie.size());
 
-//
-//      librerie = new LinkedList<>();
-//      librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          50
-//      ));
-//      librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          9
-//      ));
-//      librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          78456
-//      ));
-//      librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          43256
-//      ));librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          612
-//      ));librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          12
-//      ));
-//      librerie.add(new LibraryResult(
-//          new Libreria(1, 1, "temp1"),
-//          345
-//      ));
+      if (results.isEmpty()) {
+        System.out.println("Empty result set."); // DEBUG
+        showNoResults();
+        return;
+      }
 
-      load(librerie);
+      totalResultCount = results.size();
+      libraries = results;
+
+      load(results, pageIndex);
 
     } catch (RemoteException e) {
+      System.out.println("SEARCHERR Error while fetching data");
       e.printStackTrace();
     }
 
   }
 
-  private void load(List<LibraryResult> libraries) {
+  private void load(List<LibraryResult> libraries, int pageIndex) {
+    int fromIndex = pageIndex * LIBRARIES_PAGE_SIZE;
 
-    for (LibraryResult libr : libraries) {
-      librariesContainer.getChildren().add(
-          LibraryItemFactory.createLibraryItem(libr.library(), libr.bookCount())
-      );
+    if (fromIndex >= totalResultCount) {
+      // Handle empty page (e.g., clear the container and return)
+      librariesContainer.getChildren().clear();
+      return;
     }
 
+    int toIndex = Math.min(fromIndex + LIBRARIES_PAGE_SIZE, totalResultCount);
+
+    List<LibraryResult> pagedResults = libraries.subList(fromIndex, toIndex);
+
+    librariesContainer.getChildren().clear();
+
+    for (LibraryResult lib : pagedResults) {
+      librariesContainer.getChildren().add(
+          LibraryItemFactory.createLibraryItem(lib.library(), lib.bookCount())
+      );
+    }
+    setControls();
   }
 
+  /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
+  private void setControls() {
+    setPrevControlVisibility(currentPageIndex > 0);
+    setNextControlVisibility((currentPageIndex + 1) * LIBRARIES_PAGE_SIZE < totalResultCount);
+    setResultsControlsDisabled(false);
+    showDisabled(prevPageButton, false);
+    showDisabled(nextPageButton, false);
+  }
+  /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
+   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+  @FXML
+  private void onPrev() {
+    if (totalResultCount <= 0 || currentPageIndex <= 0) return;
+
+    showDisabled(prevPageButton, true);
+
+    goToPage(currentPageIndex - 1);
+  }
+  /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
+   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+  @FXML
+  private void onNext() {
+    if (totalResultCount <= 0 ||
+        (currentPageIndex + 1) * LIBRARIES_PAGE_SIZE > totalResultCount)
+      return;
+
+    showDisabled(nextPageButton, true);
+
+    goToPage(currentPageIndex + 1);
+  }
+
+  /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
+  private void goToPage(int newIndex) {
+    setResultsControlsDisabled(true);
+
+    currentPageIndex = newIndex;
+    resolve(newIndex);
+  }
+
+  /** Disabilita i comandi di controlli dei risultati. */
+  private void setResultsControlsDisabled(boolean disable) {
+    prevPageButton.setDisable(disable);
+    nextPageButton.setDisable(disable);
+  }
+  /** Controlla la visibilità del pulsante di pagina precedente. */
+  private void setPrevControlVisibility(boolean visibility) {
+    prevPageControl.setVisible(visibility);
+  }
+
+  /** Controlla la visibilità del pulsante di pagina successiva. */
+  private void setNextControlVisibility(boolean visibility) {
+    nextPageControl.setVisible(visibility);
+  }
+
+  /** Collassa la pagina e imposta la visibilità a {@code false}. */
+  private void showNoResults() {
+    librariesContainer.setVisible(false);
+  }
+
+  /** Mostra la selezione del pulsante sulla grafica, aggiungendovi la classe rispettiva. */
+  private void showDisabled(Button controlButton, boolean b) {
+    if (b) {
+      controlButton.getStyleClass().add("control-button-customdisabled");
+    } else {
+      controlButton.getStyleClass().remove("control-button-customdisabled");
+    }
+  }
 
   @FXML
   protected void onLibraryOpen() {

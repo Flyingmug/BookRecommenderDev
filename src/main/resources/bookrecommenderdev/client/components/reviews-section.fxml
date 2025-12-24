@@ -18,7 +18,7 @@
    <VBox styleClass="reviews-section">
       <HBox fx:id="reviewsTopSeparator" styleClass="reviews-section-separator" managed="false" visible="false" >
          <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
-         <Button fx:id="previousReviewsButton" styleClass="control-button, control-button-border" onAction="#onPrevReviews">
+         <Button fx:id="previousReviewsButton" styleClass="control-button, control-button-border" onAction="#onPrev">
             <graphic>
                <Label style="-fx-opacity: 1;" text="Recensioni precedenti" />
             </graphic>
@@ -30,7 +30,7 @@
 
       <HBox fx:id="reviewsBottomSeparator" styleClass="reviews-section-separator" managed="false" visible="false" >
          <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
-         <Button fx:id="nextReviewsButton" styleClass="control-button, control-button-border" onAction="#onNextReviews">
+         <Button fx:id="nextReviewsButton" styleClass="control-button, control-button-border" onAction="#onNext">
             <graphic>
                <Label style="-fx-opacity: 1;" text="Altre recensioni" />
             </graphic>

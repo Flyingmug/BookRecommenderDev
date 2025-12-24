@@ -26,9 +26,9 @@
 
          <HBox>
 
-            <VBox HBox.hgrow="NEVER" styleClass="libraries-items-control-container" visible="false">
+            <VBox fx:id="prevPageControl" HBox.hgrow="NEVER" styleClass="libraries-items-control-container" visible="false">
                <Separator orientation="vertical" VBox.vgrow="ALWAYS" styleClass="libraries-items-section-separator" />
-               <Button styleClass="control-button-round, control-button-border">
+               <Button fx:id="prevPageButton" styleClass="control-button-round, control-button-border" onAction="#onPrev">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-left" />
                   </graphic>
@@ -40,9 +40,9 @@
                       styleClass="libraries-container"
                       HBox.hgrow="ALWAYS"/>
 
-            <VBox HBox.hgrow="NEVER" styleClass="libraries-items-control-container" visible="false">
+            <VBox fx:id="nextPageControl" HBox.hgrow="NEVER" styleClass="libraries-items-control-container" visible="false">
                <Separator orientation="vertical" VBox.vgrow="ALWAYS" styleClass="libraries-items-section-separator" />
-               <Button styleClass="control-button-round, control-button-border">
+               <Button fx:id="nextPageButton" styleClass="control-button-round, control-button-border" onAction="#onNext">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-right" />
                   </graphic>

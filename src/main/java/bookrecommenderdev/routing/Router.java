@@ -136,16 +136,14 @@ public class Router {
         .orElseThrow(() -> new RuntimeException("No route for " + path));
 
 
-    System.out.println("ROUTER-TEST: Is authed: " + AuthContext.isAuthenticated());
-    System.out.println("ROUTER-TEST: Path requested: " + match.route().pathPattern());
     // Route guarding -> verifica delle policy di accesso
     if (!isAccessAllowed(match.route())) {
-      System.out.println("ROUTER: Access Denied");
+      System.out.println("ROUTER: Access Denied");  // DEBUG
       handleAccessDenied(match.route());
       return;
     }
 
-    System.out.println("ROUTER: Access Allowed");
+    System.out.println("ROUTER: Access Allowed"); // DEBUG
 
     navigationLocked.set(true);
 

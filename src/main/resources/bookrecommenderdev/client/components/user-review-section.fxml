@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.shape.*?>
+
+<VBox visible="false" managed="false"
+    xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="bookrecommenderdev.client.controller.components.UserReviewSectionController"
+    fx:id="root">
+
+   <VBox fx:id="content" styleClass="user-review-container">
+
+      <VBox fx:id="mainArea" alignment="CENTER" spacing="20" minHeight="-Infinity">
+
+         <Label fx:id="titleLabel" styleClass="italic-30" style="-fx-padding: 10 0 0 0"
+                wrapText="true" textAlignment="center"
+                text="Fai sapere cosa ne pensi scrivendo una recensione!" />
+
+         <Button fx:id="reviewButton" styleClass="user-review-add-button" onAction="#onReview">
+            <graphic>
+               <StackPane mouseTransparent="true">
+
+                  <HBox alignment="CENTER" styleClass="user-review-bg-icons-container">
+                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
+                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
+                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#dedede" />
+                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
+                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
+                  </HBox>
+
+                  <Label styleClass="medium-21" text="Scrivi" />
+               </StackPane>
+            </graphic>
+         </Button>
+
+      </VBox>
+
+      <Button fx:id="removeButton"
+              text="Rimuovi recensione"
+              visible="false"
+              managed="false"
+              onAction="#onRemoveReview"
+              styleClass="user-review-remove-button"/>
+   </VBox >
+   <Separator styleClass="review-section-separator" />
+
+</VBox>

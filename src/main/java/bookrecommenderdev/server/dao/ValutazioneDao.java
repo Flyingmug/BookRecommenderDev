@@ -58,49 +58,10 @@ public class ValutazioneDao
     }
   }
 
-  public List<Valutazione> getAll (int id_libro){
-    List<Valutazione> elenco = new LinkedList<>();
-
-    System.out.println("Chiave ricevuta: " + id_libro);
-
-    String q = "SELECT stile, contenuto, gradevolezza, originalita, edizione, " +
-        "recensione_stile, recensione_contenuto, recensione_gradevolezza, " +
-        "recensione_originalita, recensione_edizione, recensione_generale " +
-        "FROM Valutazioni WHERE id_libro = ?";
-
-    try (Connection conn = datasource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(q)) {
-
-      ps.setInt(1, id_libro);
-      ResultSet rs = ps.executeQuery();
-
-      while (rs.next()) {
-        elenco.add(new Valutazione(rs.getInt("stile"),
-            rs.getInt("contenuto"),
-            rs.getInt("gradevolezza"),
-            rs.getInt("originalita"),
-            rs.getInt("edizione"),
-            rs.getString("recensione_stile"),
-            rs.getString("recensione_contenuto"),
-            rs.getString("recensione_gradevolezza"),
-            rs.getString("recensione_originalita"),
-            rs.getString("recensione_edizione"),
-            rs.getString("recensione_generale")));
-      }
-
-      System.out.println("Numero risultati: "+ elenco.size());
-
-    } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
-    }
-    return elenco;
-  }
-
-  public Valutazione get(int id_libro, int id_utente){
+  public Valutazione get(int id_libro, int id_utente) throws SQLException {
     Valutazione valutazione = null;
     System.out.println("Chiave ricevuta: " + id_libro);
-    String q = "SELECT * FROM Valutazioni WHERE id_libro = ? AND id_utente = ?";
+    String q = "SELECT * FROM valutazionilibri WHERE id_libro = ? AND id_utente = ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -125,47 +86,62 @@ public class ValutazioneDao
             rs.getString("recensione_generale"));
       }
 
-      System.out.println("Valutazione istanziata: " + (valutazione != null));
+      System.out.println("Valutazione presente: " + (valutazione != null));
 
-    } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
     }
+
     return valutazione;
   }
 
 
-  public boolean save (int id_libro, Valutazione valutazione){
-    System.out.println("Chiavi ricevute: " + id_libro);
-    String q = "INSERT INTO Valutazioni (" +
-        "id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione, " +
-        "recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione) " +
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+  public boolean save(Valutazione valutazione) throws SQLException {
+    System.out.println("Chiavi ricevute: id libro: " + valutazione.getIdLibro() + ", id utente: " + valutazione.getIdUtente()); // DEBUG
+    String q = "INSERT INTO valutazionilibri (" +
+      "id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione, " +
+      "recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione, recensione_generale) " +
+      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
       ps.setInt(1, valutazione.getIdUtente());
       ps.setInt(2, valutazione.getIdLibro());
+
       ps.setInt(3, valutazione.getStile());
       ps.setInt(4, valutazione.getContenuto());
       ps.setInt(5, valutazione.getGradevolezza());
       ps.setInt(6, valutazione.getOriginalita());
       ps.setInt(7, valutazione.getEdizione());
-      ps.setString(8, valutazione.getRecensioneStile());
-      ps.setString(9, valutazione.getRecensioneContenuto());
+
+      // if null in Java, it will be NULL in the database.
+      ps.setString(8,  valutazione.getRecensioneStile());
+      ps.setString(9,  valutazione.getRecensioneContenuto());
       ps.setString(10, valutazione.getRecensioneGradevolezza());
       ps.setString(11, valutazione.getRecensioneOriginalita());
       ps.setString(12, valutazione.getRecensioneEdizione());
+      ps.setString(13, valutazione.getRecensioneGenerale());
 
-      int rowsAffected = ps.executeUpdate(q);
+      int rowsAffected = ps.executeUpdate();
       System.out.println("Righe modificate: " + rowsAffected);
-      return rowsAffected>0;
-    } catch (SQLException e) {
-      System.out.println("Errore nelle connessione al database.");
-      e.printStackTrace();
+      return rowsAffected > 0;
     }
-    return false;
+  }
+
+  public boolean delete(int id_libro, int id_utente) throws SQLException {
+
+    String q = "DELETE FROM valutazionilibri WHERE id_libro = ? AND id_utente = ?";
+
+    try (Connection conn = datasource.getConnection();
+    PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setInt(1, id_libro);
+      ps.setInt(2, id_utente);
+
+      int rowsAffected = ps.executeUpdate();
+
+      System.out.println("Right modificate: " + rowsAffected);
+      return rowsAffected>0;
+    }
   }
 
   public PaginaValutazioni getPage(int pageNumber, long idLibro) throws SQLException {
@@ -208,4 +184,46 @@ public class ValutazioneDao
     System.out.println("VAL DAO Numero risultati: " + valutazioni.size());
     return new PaginaValutazioni(valutazioni, totalCount);
   }
+
+
+//
+//  public List<Valutazione> getAll (int id_libro){
+//    List<Valutazione> elenco = new LinkedList<>();
+//
+//    System.out.println("Chiave ricevuta: " + id_libro);
+//
+//    String q = "SELECT stile, contenuto, gradevolezza, originalita, edizione, " +
+//        "recensione_stile, recensione_contenuto, recensione_gradevolezza, " +
+//        "recensione_originalita, recensione_edizione, recensione_generale " +
+//        "FROM Valutazioni WHERE id_libro = ?";
+//
+//    try (Connection conn = datasource.getConnection();
+//         PreparedStatement ps = conn.prepareStatement(q)) {
+//
+//      ps.setInt(1, id_libro);
+//      ResultSet rs = ps.executeQuery();
+//
+//      while (rs.next()) {
+//        elenco.add(new Valutazione(rs.getInt("stile"),
+//            rs.getInt("contenuto"),
+//            rs.getInt("gradevolezza"),
+//            rs.getInt("originalita"),
+//            rs.getInt("edizione"),
+//            rs.getString("recensione_stile"),
+//            rs.getString("recensione_contenuto"),
+//            rs.getString("recensione_gradevolezza"),
+//            rs.getString("recensione_originalita"),
+//            rs.getString("recensione_edizione"),
+//            rs.getString("recensione_generale")));
+//      }
+//
+//      System.out.println("Numero risultati: "+ elenco.size());
+//
+//    } catch (SQLException e) {
+//      System.out.println("Errore nelle connessione al database.");
+//      e.printStackTrace();
+//    }
+//    return elenco;
+//  }
+
 }

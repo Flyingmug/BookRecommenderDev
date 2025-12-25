@@ -25,9 +25,13 @@ public interface ServerInterface extends Remote {
   void createLibreria(Libreria lib) throws RemoteException;
   void deleteLibreria(Libreria lib) throws RemoteException;
   void deleteLibreria(String nome, long idUtente) throws RemoteException;
+  Valutazione getValutazione(int idLibro, int userId) throws RemoteException;
   PaginaValutazioni getValutazioni(long idLibro, int indicePagina) throws RemoteException;
+  boolean inserisciValutazione(Valutazione valutazione) throws RemoteException;
+  boolean deleteValutazione(int idLibro, int id_utente) throws RemoteException;
   List<Libro> getConsigli(long idLibro) throws RemoteException;
   AuthResult login(String nome, String password) throws RemoteException;
   RegisterStatus registrazione(Utente u) throws RemoteException, InsertDBException;
   String ping() throws RemoteException;
+
 }

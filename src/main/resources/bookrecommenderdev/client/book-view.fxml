@@ -30,21 +30,41 @@
             </GridPane>
          </VBox>
 
-         <VBox fx:id="scoresSection" styleClass="scores-section">
-            <TilePane fx:id="scoresContainer" styleClass="scores-container" />
-            <VBox managed="false" visible="false" fx:id="reviewsLinkContainer">
-               <Button alignment="CENTER" onAction="#onReviews" styleClass="scores-section-reviews-link">
-                  <graphic>
-                     <HBox alignment="CENTER">
-                        <Label text="Vedi tutte le valutazioni" />
-                        <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="16" styleClass="result-page-arrow" />
-                     </HBox>
-                  </graphic>
-               </Button>
-            </VBox>
+         <HBox alignment="BOTTOM_LEFT">
+            <Label styleClass="italic-33" text="Recensioni &amp; Valutazioni" />
+         </HBox>
+
+         <VBox>
+            <HBox alignment="BOTTOM_LEFT">
+               <Label styleClass="regular-23" text="La mia recensione" />
+            </HBox>
+
+            <fx:include source="components/user-review-section.fxml" fx:id="userReviewSection" />
          </VBox>
 
-         <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
+         <VBox>
+            <HBox alignment="BOTTOM_LEFT">
+               <Label styleClass="regular-23" text="Recensioni della Comunità" />
+            </HBox>
+
+            <VBox fx:id="scoresSection" styleClass="scores-section">
+               <TilePane fx:id="scoresContainer" styleClass="scores-container" />
+               <VBox managed="false" visible="false" fx:id="reviewsLinkContainer">  <!-- fixme TEST PURPOSES -->
+                  <Button alignment="CENTER" onAction="#onReviews" styleClass="scores-section-reviews-link">
+                     <graphic>
+                        <HBox alignment="CENTER">
+                           <Label text="Vedi tutte le valutazioni" />
+                           <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="16" styleClass="result-page-arrow" />
+                        </HBox>
+                     </graphic>
+                  </Button>
+               </VBox>
+            </VBox>
+
+            <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
+         </VBox>
+
+
 
       </VBox>
 

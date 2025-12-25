@@ -1,7 +1,7 @@
 package bookrecommenderdev.utils;
 
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputControl;
 
 public class InputVerifiers {
   private static final String FISCAL_REGEX = "^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]";
@@ -42,7 +42,7 @@ public class InputVerifiers {
   /**
    * todo documentation
    * */
-  public static void preventMultipleSpacesAndLimit(TextField textField, int maxLength) {
+  public static void preventMultipleSpacesAndLimit(TextInputControl textInput, int maxLength) {
     TextFormatter<String> formatter = new TextFormatter<>(change -> {
       String newText = change.getControlNewText();
 
@@ -66,10 +66,10 @@ public class InputVerifiers {
       return change;
     });
 
-    textField.setTextFormatter(formatter);
+    textInput.setTextFormatter(formatter);
   }
 
-  public static void restrictLooseFiscalCodeInput(TextField field) {
+  public static void restrictLooseFiscalCodeInput(TextInputControl field) {
     field.setTextFormatter(new TextFormatter<>(change -> {
       String newText = change.getControlNewText().toUpperCase(); // force uppercase
       // allow partial match so user can type gradually

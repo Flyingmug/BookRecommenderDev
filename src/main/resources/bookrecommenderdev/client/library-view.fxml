@@ -10,13 +10,12 @@
             styleClass="scrollable-pane">
 
    <VBox styleClass="library-page-container">
-      <VBox styleClass="library-page">
+      <VBox styleClass="library-page" VBox.vgrow="ALWAYS">
 
          <Label text="HEO" styleClass="regular-30" />
          <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
 
       </VBox>
    </VBox>
-
 
 </ScrollPane>

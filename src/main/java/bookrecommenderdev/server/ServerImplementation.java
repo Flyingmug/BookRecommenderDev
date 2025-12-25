@@ -124,9 +124,22 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
   }
 
+
   //
   // Valutazioni
   //
+
+
+  @Override
+  public Valutazione getValutazione(int idLibro, int idUtente) throws RemoteException {
+    try {
+      return valutazioni.get(idLibro, idUtente);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+      // throw new RemoteException("Error in list obtaining"); // Replace with better error
+    }
+  }
 
   public PaginaValutazioni getValutazioni(long idLibro, int indicePagina) throws RemoteException {
     PaginaValutazioni elenco;
@@ -136,6 +149,28 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
+    }
+  }
+
+  @Override
+  public boolean inserisciValutazione(Valutazione valutazione) throws RemoteException {
+    try {
+      return valutazioni.save(valutazione);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  @Override
+  public boolean deleteValutazione(int idLibro, int idUtente) throws RemoteException {
+    try {
+      return valutazioni.delete(idLibro, idUtente);
+      // todo gestione true/false per valutazione inesistente o rimossa
+      // todo POSSIBILE SOLUZIONE: usare false come "database intoccato"
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
   }
 

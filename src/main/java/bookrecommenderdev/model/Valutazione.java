@@ -166,6 +166,18 @@ public class Valutazione implements Serializable {
       default -> throw new IllegalStateException("Unexpected value: " + nomeCampo); // todo handle
     }
   }
+  public void setPunteggio(CampoValutazione nomeCampo, int punteggio) {
+    if (punteggio < 0) { punteggio = 0; }
+    else if (punteggio > 5) { punteggio = 5; }
+
+    switch (nomeCampo) {
+      case STILE -> stile = punteggio;
+      case CONTENUTO ->  contenuto = punteggio;
+      case GRADEVOLEZZA -> gradevolezza = punteggio;
+      case ORIGINALITA -> originalita = punteggio;
+      case EDIZIONE -> edizione = punteggio;
+    }
+  }
   /**
    * Metodo per settare il campo: idLibro.
    * @param idLibro int*/

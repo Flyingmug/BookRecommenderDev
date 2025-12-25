@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import java.rmi.RemoteException;
 import java.util.Map;
 
+import static bookrecommenderdev.Constants.*;
 import static bookrecommenderdev.utils.InputVerifiers.*;
 
 public class LoginController implements Routable {
@@ -34,8 +35,8 @@ public class LoginController implements Routable {
   @FXML
   public void initialize() {
     // login fields
-    preventMultipleSpacesAndLimit(loginEmail, 255);
-    preventMultipleSpacesAndLimit(loginPassword, 64);
+    preventMultipleSpacesAndLimit(loginEmail, MAX_REVIEW_LENGTH);
+    preventMultipleSpacesAndLimit(loginPassword, MAX_PASSWORD_LENGTH);
   }
 
 

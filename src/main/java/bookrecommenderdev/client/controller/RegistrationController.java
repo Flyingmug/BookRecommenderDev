@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import java.rmi.RemoteException;
 import java.util.Map;
 
+import static bookrecommenderdev.Constants.*;
 import static bookrecommenderdev.utils.InputVerifiers.*;
 import static bookrecommenderdev.utils.InputVerifiers.verCodiceFiscale;
 import static bookrecommenderdev.utils.InputVerifiers.verifyEmail;
@@ -46,10 +47,10 @@ public class RegistrationController implements Routable {
   @FXML
   public void initialize() {
     // registration fields
-    preventMultipleSpacesAndLimit(registerName, 64);
-    preventMultipleSpacesAndLimit(registerSurname, 64);
-    preventMultipleSpacesAndLimit(registerEmail, 255);
-    preventMultipleSpacesAndLimit(registerPassword, 64);
+    preventMultipleSpacesAndLimit(registerName, MAX_NAME_LENGTH);
+    preventMultipleSpacesAndLimit(registerSurname, MAX_NAME_LENGTH);
+    preventMultipleSpacesAndLimit(registerEmail, MAX_REVIEW_LENGTH);
+    preventMultipleSpacesAndLimit(registerPassword, MAX_PASSWORD_LENGTH);
     restrictLooseFiscalCodeInput(registerCodiceFiscale);
   }
 

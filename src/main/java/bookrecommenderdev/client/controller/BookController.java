@@ -1,18 +1,23 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.controller.components.ReviewsSectionController;
+import bookrecommenderdev.client.controller.components.UserReviewSectionController;
 import bookrecommenderdev.client.factory.StarIconFactory;
 import bookrecommenderdev.model.CampoValutazione;
 import bookrecommenderdev.routing.AppContext;
+import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.routing.context.CurrentBookContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.server.dto.PaginaLibro;
 import bookrecommenderdev.utils.LabelCustomizer;
 import bookrecommenderdev.utils.Size;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -25,18 +30,20 @@ import java.util.Map;
 
 public class BookController implements Routable {
 
-  @FXML public ScrollPane bookPage; // fixme removable if unused
-  @FXML public Label bookTitolo;
-  @FXML public Label bookAutori;
-  @FXML public Label bookAnnoPubblicazione;
-  @FXML public Label bookEditore;
-  @FXML public Label bookCategorie;
-  @FXML public VBox scoresSection;
-  @FXML public TilePane scoresContainer;
-  @FXML public VBox reviewsLinkContainer; // fixme kept for testing purposes
-  @FXML public VBox reviewsSection;
+  @FXML private ScrollPane bookPage; // fixme removable if unused
+  @FXML private Label bookTitolo;
+  @FXML private Label bookAutori;
+  @FXML private Label bookAnnoPubblicazione;
+  @FXML private Label bookEditore;
+  @FXML private Label bookCategorie;
+  @FXML private VBox scoresSection;
+  @FXML private TilePane scoresContainer;
+  @FXML private VBox reviewsLinkContainer; // fixme kept for testing purposes
+  @FXML private VBox reviewsSection;
   @FXML private ReviewsSectionController reviewsSectionController;  // assegnazione automatica tramite fx:include
 
+  @FXML private Parent userReviewSection;
+  @FXML private UserReviewSectionController userReviewSectionController;
 
   AppContext context;
   int idLibro;
@@ -44,12 +51,14 @@ public class BookController implements Routable {
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
     this.context = context;
-    loadPublicBookPage(Integer.parseInt(params.get("query")));
+    loadBookPage(Integer.parseInt(params.get("query")));
+
+    userReviewSectionController.setContext(context, idLibro);
   }
 
   @FXML
   public void initialize() {
-
+    setHandleLayoutChange();
   }
 
   /**
@@ -57,7 +66,7 @@ public class BookController implements Routable {
    * della pagina.
    * @param idLibro id del libro selezionato
    */
-  protected void loadPublicBookPage(int idLibro) {
+  protected void loadBookPage(int idLibro) {
     System.out.println("BOOKPAGE id libro: " + idLibro); // DEBUG
     this.idLibro = idLibro;
 
@@ -68,6 +77,7 @@ public class BookController implements Routable {
 
         if (pagina.getLibro() != null) {
           Libro l = pagina.getLibro();
+          CurrentBookContext.set(l);
 
           bookTitolo.setText(l.getTitolo());
           bookAutori.setText(l.getAutori());
@@ -113,6 +123,7 @@ public class BookController implements Routable {
   }
 
   // fixme kept for testing purposes.
+  // fixme what happens when an unexisting route is requested? -> error
   public void onReviews() {
     Router.go("/book/"+idLibro+"/reviews");
   }
@@ -170,4 +181,18 @@ public class BookController implements Routable {
     );
   }
 
+  /** Reimposta al valore precedente il {@code vvalue} dello {@link ScrollPane} al cambiamento di layout. */
+  private void setHandleLayoutChange() {
+
+    if (userReviewSectionController != null) {
+      userReviewSectionController.setOnLayoutChange(() -> {
+        double v = bookPage.getVvalue();
+
+        bookPage.applyCss();
+        bookPage.layout();
+
+        Platform.runLater(() -> bookPage.setVvalue(v));
+      });
+    }
+  }
 }

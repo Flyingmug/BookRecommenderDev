@@ -51,6 +51,7 @@ public class RootController {
     routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/review/:query", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     initRegistry();
     if (bookRecommender != null) {
@@ -61,7 +62,7 @@ public class RootController {
 
       // fixme TEST
       //Router.go("/");
-      Router.go("/libraries");
+      Router.go("/book/1");
 
     }
 

@@ -8,27 +8,23 @@
       fx:id="reviewsSectionContainer">
 
    <HBox alignment="BOTTOM_LEFT">
-      <Label styleClass="reviews-section-title" text="Recensioni &amp; Valutazioni" />
-   </HBox>
-
-   <HBox alignment="BOTTOM_LEFT">
       <Label fx:id="resultReviewIndexCounter" styleClass="results-index-counter" text="/ risultati" />
    </HBox>
 
    <VBox styleClass="reviews-section">
-      <HBox fx:id="reviewsTopSeparator" styleClass="reviews-section-separator" managed="false" visible="false" >
+      <HBox fx:id="reviewsTopSeparator" styleClass="reviews-control-separator" managed="false" visible="false" >
          <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
          <Button fx:id="previousReviewsButton" styleClass="control-button, control-button-border" onAction="#onPrev">
             <graphic>
                <Label style="-fx-opacity: 1;" text="Recensioni precedenti" />
             </graphic>
          </Button>
-         <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
+         <Separator HBox.hgrow="ALWAYS" styleClass="review-separator" />
       </HBox>
 
-      <VBox fx:id="reviewsContainer" />
+      <VBox styleClass="reviews-container" fx:id="reviewsContainer" />
 
-      <HBox fx:id="reviewsBottomSeparator" styleClass="reviews-section-separator" managed="false" visible="false" >
+      <HBox fx:id="reviewsBottomSeparator" styleClass="reviews-control-separator" managed="false" visible="false" >
          <Separator styleClass="review-separator" HBox.hgrow="ALWAYS" />
          <Button fx:id="nextReviewsButton" styleClass="control-button, control-button-border" onAction="#onNext">
             <graphic>

@@ -35,6 +35,11 @@
     -fx-font-size: 34;
 }
 /* LIGHT */
+
+.light-13 {
+    -fx-font-family: "Montserrat Light";
+    -fx-font-size: 13;
+}
 .light-17 {
     -fx-font-family: "Montserrat Light";
     -fx-font-size: 17;
@@ -289,17 +294,44 @@
 /* Searchbar */
 
 .searchbar {
-    -fx-background-color: white;
     -fx-border-radius: 9999;
     -fx-background-radius: 9999;
     -fx-min-width: 300;
-    -fx-pref-width: 640;
+    -fx-pref-width: 800;
     -fx-pref-height: 50;
 }
-.searchbar-input {
-    -fx-padding: 10;
+.searchbar-content {
     -fx-border-color: transparent;
-    -fx-background-color: transparent;
+    -fx-alignment: center;
+    -fx-spacing: 3;
+    -fx-padding: 0;
+}
+.searchbar-section {
+    -fx-background-color: white;
+}
+.searchbar-left {
+    -fx-alignment: center-left;
+    -fx-border-radius: 9999 2000 2000 9999;
+    -fx-background-radius: 9999 2000 2000 9999;
+    -fx-padding: 10 10 10 15;
+}
+.searchbar-center {
+    -fx-alignment: center;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+}
+.searchbar-left,
+.searchbar-center {
+  -fx-min-height: 48;
+  -fx-pref-height: 48;
+  -fx-max-height: 48;
+}
+.searchbar-right {
+    -fx-alignment: center-right;
+    -fx-border-radius: 2000 9999 9999 2000;
+    -fx-background-radius: 2000 9999 9999 2000;
+    -fx-padding: 0 10 0 10;
 }
 .searchbar-control {
     -fx-pref-height: 48;
@@ -313,10 +345,18 @@
     -fx-icon-color: #5c62ab;
     -fx-effect: dropshadow(three-pass-box, rgba(92, 98, 171, 0.3), 5, 0, 0, 2);
 }
+.searchbar-control:pressed .ikonli-font-icon {
+    -fx-icon-color: #454b94;
+}
+.searchbar-mode {
+  -fx-background-color: #f0f0f0;
+  -fx-padding: 6 10;
+  -fx-background-radius: 999;
+}
 
 
 .navbar-searchbar-container {
-    -fx-alignment: center;
+    -fx-alignment: center-left;
 }
 .home-searchbar-container {
     -fx-alignment: center;
@@ -325,6 +365,7 @@
     -fx-pref-height: 60;
     -fx-border-width: 1;
     -fx-border-color: lightgrey;
+    -fx-pref-width: 640;
 }
 
 
@@ -432,10 +473,10 @@
     -fx-background-color: white;
     -fx-max-width: 1000;
     -fx-pref-width: 1000;
-    -fx-spacing: 10;
     -fx-padding: 20;
 }
-.book-data-section {
+.book-page-content {
+    -fx-spacing: 10;
 }
 .book-label-title {
     -fx-font-family: "Montserrat Medium";

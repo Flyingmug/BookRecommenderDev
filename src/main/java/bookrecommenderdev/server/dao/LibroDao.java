@@ -1,6 +1,7 @@
 package bookrecommenderdev.server.dao;
 
 import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 
 import javax.sql.DataSource;
@@ -17,6 +18,13 @@ public class LibroDao {
   public LibroDao(DataSource ds) {
     this.datasource = ds;
   }
+
+  final String baseSearchQuery = "SELECT " +
+      "l.id_libro, l.titolo, a.nome_autore AS autori, l.anno_pubblicazione, " +
+      "COUNT(*) OVER() AS numero_risultati " +
+      "FROM Libri l " +
+      "JOIN Autori a ON l.id_autore = a.id_autore ";
+
 
   public Optional<Libro> getBasic(int id_libro) throws SQLException {
     final String q = "SELECT " +
@@ -85,13 +93,9 @@ public class LibroDao {
     }
   }
 
-  public PaginaLibriRisultati searchTitolo(int pageNumber, String title) throws SQLException {
-    final String q =
-        "SELECT " +
-            "l.id_libro, l.titolo, a.nome_autore AS autori, l.anno_pubblicazione, " +
-            "COUNT(*) OVER() AS numero_risultati " +
-            "FROM Libri l " +
-            "JOIN Autori a ON l.id_autore = a.id_autore " +
+
+  public PaginaLibriRisultati searchTitolo(int indicePagina, String titolo) throws SQLException {
+    final String q = baseSearchQuery +
             "WHERE l.titolo ILIKE ? " +
             "ORDER BY l.titolo, l.id_libro " +
             "OFFSET ? LIMIT ?";
@@ -102,9 +106,78 @@ public class LibroDao {
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
-      ps.setString(1, "%" + title.toLowerCase() + "%");
-      ps.setInt(2, pageNumber * PAGE_SIZE);
+      ps.setString(1, "%" + titolo.toLowerCase() + "%");
+      ps.setInt(2, Math.max(0, indicePagina) * PAGE_SIZE);
       ps.setInt(3, PAGE_SIZE);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          totalCount = rs.getInt("numero_risultati");
+          do {
+            items.add(new Libro(
+                rs.getInt("id_libro"),
+                rs.getString("titolo"),
+                rs.getString("autori"),
+                rs.getInt("anno_pubblicazione")
+            ));
+          } while (rs.next());
+        }
+      }
+    }
+
+    return new PaginaLibriRisultati(items, totalCount);
+  }
+
+  public PageResult<Libro> searchAutori(int indicePagina, String autori) throws SQLException {
+    final String q = baseSearchQuery +
+            "WHERE a.nome_autore ILIKE ? " +
+            "ORDER BY l.titolo, l.id_libro " +
+            "OFFSET ? LIMIT ?";
+
+    List<Libro> items = new ArrayList<>();
+    int totalCount = 0;
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setString(1, "%" + autori.toLowerCase() + "%");
+      ps.setInt(2, Math.max(0, indicePagina) * PAGE_SIZE);
+      ps.setInt(3, PAGE_SIZE);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          totalCount = rs.getInt("numero_risultati");
+          do {
+            items.add(new Libro(
+                rs.getInt("id_libro"),
+                rs.getString("titolo"),
+                rs.getString("autori"),
+                rs.getInt("anno_pubblicazione")
+            ));
+          } while (rs.next());
+        }
+      }
+    }
+
+    return new PaginaLibriRisultati(items, totalCount);
+  }
+
+  public PageResult<Libro> searchAutoriAnno(int indicePagina, String autori, int anno) throws SQLException {
+    final String q = baseSearchQuery +
+        "WHERE a.nome_autore ILIKE ? AND anno_pubblicazione = ? " +
+        "ORDER BY l.titolo, l.id_libro " +
+        "OFFSET ? LIMIT ?";
+
+    List<Libro> items = new ArrayList<>();
+    int totalCount = 0;
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setString(1, "%" + autori.toLowerCase() + "%");
+      ps.setInt(2, anno);
+      ps.setInt(3, Math.max(0, indicePagina) * PAGE_SIZE);
+      ps.setInt(4, PAGE_SIZE);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {

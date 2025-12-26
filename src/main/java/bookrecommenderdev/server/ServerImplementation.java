@@ -1,6 +1,7 @@
 package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
+import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dao.*;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static bookrecommenderdev.routing.auth.AuthStatus.*;
 import static bookrecommenderdev.routing.auth.RegisterStatus.FISCAL_CODE_ALREADY_USED;
+import static bookrecommenderdev.utils.InputVerifiers.pulisci;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
@@ -27,40 +29,62 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
   public ServerImplementation() throws RemoteException {
     super();
-    // campi
     DataSource datasource = DatabaseConfig.getDataSource();
     libri = new LibroDao(datasource);
     utenti = new UtenteDao(datasource);
     valutazioni = new ValutazioneDao(datasource);
     consigli = new ConsiglioLibroDao(datasource);
     librerie = new LibreriaDao(datasource);
-    // TESTING DATABASE PURPOSES
-//    this.searchTitolo("a");
   }
 
-  //
-  // metodi
-  //
 
   //
   // libri
   //
 
-  public PageResult<Libro> searchTitolo(String titolo, int pageNumber)
+  public PageResult<Libro> cercaLibro(SearchRequest richiesta, int indicePagina)
       throws RemoteException, DataAccessException {
+
+    if (richiesta == null || richiesta.getTipo() == null) {
+      return new PaginaLibriRisultati(List.of(), 0);
+    }
+
     try {
-      return libri.searchTitolo(pageNumber, titolo); // returns PageResult/your DTO
+      return switch(richiesta.getTipo()) {
+        case TITOLO -> {
+          String titolo = pulisci(richiesta.getTitolo());
+          if (titolo.isBlank()) yield new PaginaLibriRisultati(List.of(), 0);
+          yield libri.searchTitolo(indicePagina, titolo);
+        }
+        case AUTORE -> {
+          String autori = pulisci(richiesta.getAutore());
+          if (autori.isBlank()) yield new PaginaLibriRisultati(List.of(), 0);
+          yield libri.searchAutori(indicePagina, autori);
+        }
+        case AUTORE_ANNO -> {
+          String autori = pulisci(richiesta.getAutore());
+          Integer anno = richiesta.getAnno();
+          if (autori.isBlank() || anno == null) yield new PaginaLibriRisultati(List.of(), 0);
+          yield libri.searchAutoriAnno(indicePagina, autori, anno);
+        }
+      };
     } catch (SQLException e) {
+
       throw new DataAccessException("Errore DB durante searchTitolo", e);
     }
   }
 
-  public List<Libro> searchAutore(String autore) throws RemoteException {
-      return List.of();
+
+  public PageResult<Libro> searchAutore(String autore)
+      throws RemoteException, DataAccessException {
+
+    return null;
   }
 
-  public List<Libro> searchAnnoAutore(String annoAutore) throws RemoteException {
-      return List.of();
+  public PageResult<Libro> searchAnnoAutore(String annoAutore)
+      throws RemoteException, DataAccessException {
+
+      return null;
   }
 
   /**

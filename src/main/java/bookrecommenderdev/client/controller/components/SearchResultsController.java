@@ -1,7 +1,9 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.model.data.PageResult;
+import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.Libro;
@@ -31,14 +33,16 @@ public class SearchResultsController {
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
 
+  @FXML private ErrorBannerController errorBannerController;
+
+
   int currentPageIndex;
   int totalResultCount;
-  String currentSearch;
   private PageFetcher<Libro> pageFetcher;
+  private SearchRequest request;
 
-
-  public void setSource(PageFetcher<Libro> pageFetcher, String query) {
-    this.currentSearch = query;
+  public void setSource(PageFetcher<Libro> pageFetcher, SearchRequest req) {
+    request = req;
 
     this.pageFetcher = pageFetcher;
 
@@ -55,11 +59,6 @@ public class SearchResultsController {
    * Effettua una richiesta di ricerca tramite la chiave fornita.
    */
   private void search() {
-    System.out.println("SEARCH Searched: " + currentSearch);  // DEBUG
-    // if (query == null || query.isEmpty()) return;  // fixme remove?
-    if (currentSearch == null || currentSearch.isEmpty()) return;
-
-    // reset
     currentPageIndex = 0;
     totalResultCount = 0;
 
@@ -70,37 +69,52 @@ public class SearchResultsController {
    * <p>L'indice di pagina {@code pageIndex} viene utilizzato per avere un <i>offset</i> sui risultati,
    * <i>limitati</i> a una quantità fissa.
    * <p>todo completare una volte implementati i criteri di ricerca
+   * <p>Verifica e riabilita l'uso dei pulsanti di controllo dei risultati.
+   *
    * @param pageIndex Indice di offset.
    */
   private void resolve(int pageIndex) {
-
     try {
 
       PageResult<Libro> data = pageFetcher.fetch(pageIndex);
-      if (data == null) throw new RemoteException();
 
       List<Libro> books = data.results();
       totalResultCount = data.totalCount();
 
       if (books.isEmpty() || totalResultCount == 0) {
-        booksResultSection.setVisible(false);
-        showNoResults(currentSearch);
+        setNoResultsTitle();
+        setResultsVisible(false);
         return;
       }
 
+      setNoResultsTitleVisible(false);
+      setResultsVisible(true);
       load(books);
+      setControls();
+
+    } catch (DataAccessException e) {
+
+      setResultsVisible(false);
+      errorBannerController.show(
+          "Errore durante la ricerca (database)",
+          () -> resolve(pageIndex),
+          null
+      );
 
     } catch(RemoteException e) {
-      System.out.println("SEARCHERR Error while fetching data");
-      e.printStackTrace();
-    }
 
+      setResultsVisible(false);
+      errorBannerController.show(
+          "Server non raggiungibile.",
+          () -> resolve(pageIndex),
+          null
+      );
+    }
   }
 
   /**
    * <p>Costruisce dinamicamente dei nodi per mostrare i dati di ciascun Libro.
    * <p>I nodi sono spaziati da nodi {@link Separator}.
-   * <p>Verifica e riabilita l'uso dei pulsanti di controllo dei risultati.
    * @param results lista di dati risultanti
    */
   private void load(List<Libro> results) {
@@ -120,7 +134,6 @@ public class SearchResultsController {
       }
     }
 
-    setControls();
   }
 
 
@@ -128,7 +141,7 @@ public class SearchResultsController {
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
   private void onPrevious() {
-    if (currentSearch == null || currentSearch.isEmpty()) return;
+    if (request == null) return;
     if (currentPageIndex <= 0) return;
 
     showDisabled(previousPageButton, true);
@@ -140,7 +153,7 @@ public class SearchResultsController {
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
   private void onNext() {
-    if (currentSearch == null || currentSearch.isEmpty()) return;
+    if (request == null) return;
     if ((currentPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
 
     showDisabled(nextPageButton, true);
@@ -158,6 +171,10 @@ public class SearchResultsController {
     resolve(newIndex);
   }
 
+  private void setResultsVisible(boolean visible) {
+    booksResultSection.setVisible(visible);
+    booksResultSection.setManaged(visible);
+  }
 
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
@@ -171,6 +188,7 @@ public class SearchResultsController {
     showDisabled(previousPageButton, !canPrev);
     showDisabled(nextPageButton, !canNext);
   }
+
   /** Disabilita i comandi di controlli dei risultati. */
   private void setControlDisabled(Button control, boolean disable) {
     control.setDisable(disable);
@@ -204,10 +222,12 @@ public class SearchResultsController {
   }
 
   /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
-  private void showNoResults(String query) {
-    resultsNotFoundTitle.setVisible(true);
-    resultsNotFoundTitle.setManaged(true);
-    resultsNotFoundQuery.setText("Nessun risultato trovato per: " + query);
+  private void setNoResultsTitle() {
+    setNoResultsTitleVisible(true);
+    resultsNotFoundQuery.setText("Nessun risultato trovato per!");
   }
-
+  private void setNoResultsTitleVisible(boolean b) {
+    resultsNotFoundTitle.setVisible(b);
+    resultsNotFoundTitle.setManaged(b);
+  }
 }

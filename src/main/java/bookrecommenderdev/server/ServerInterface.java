@@ -1,6 +1,7 @@
 package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
+import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dto.*;
@@ -15,9 +16,7 @@ import java.util.List;
 public interface ServerInterface extends Remote {
 
   // ricerca
-  PageResult<Libro> searchTitolo(String titolo, int indicePagina) throws RemoteException;
-  List<Libro> searchAutore(String autore) throws RemoteException;
-  List<Libro> searchAnnoAutore(String annoAutore) throws RemoteException;
+  PageResult<Libro> cercaLibro(SearchRequest richiesta, int indicePagina) throws RemoteException, DataAccessException;
 
   // libri
   Libro getLibro(int idLibro) throws RemoteException, NotFoundException, DataAccessException;

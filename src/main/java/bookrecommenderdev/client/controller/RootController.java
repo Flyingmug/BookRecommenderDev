@@ -44,13 +44,19 @@ public class RootController {
     // Registrazione delle pagine
 //    routes.put("/loading", new Route("loading-view.fxml"));
     routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
-    routes.add(new Route("/search/:query", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/search/title/:q", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/search/author/:a", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/search/author/:a/year/:y", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+
     routes.add(new Route("/book/:id", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+
     routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
+
     routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries/:id", "library-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/library/create", "library-creator-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+
     routes.add(new Route("/review/:id", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     routes.add(new Route("/not-found", "errors/not-found-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));

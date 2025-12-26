@@ -16,9 +16,9 @@
 
          <fx:include source="components/error-banner.fxml" fx:id="errorBanner"/>
 
-         <VBox fx:id="content" VBox.vgrow="ALWAYS" >
+         <VBox fx:id="content" styleClass="book-page-content" VBox.vgrow="ALWAYS" >
 
-            <VBox styleClass="book-data-section">
+            <VBox>
                <Label fx:id="titolo" styleClass="book-label-title" wrapText="true" />
                <HBox styleClass="book-label-subtitle">
                   <Label text="By" />

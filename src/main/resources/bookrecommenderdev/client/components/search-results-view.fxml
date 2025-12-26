@@ -26,6 +26,8 @@
 
       </HBox>
 
+      <fx:include source="error-banner.fxml" fx:id="errorBanner" />
+
       <VBox fx:id="booksResultSection">
 
          <HBox alignment="BOTTOM_LEFT">

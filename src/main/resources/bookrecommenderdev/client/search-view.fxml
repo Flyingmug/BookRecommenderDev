@@ -12,10 +12,18 @@
    <VBox styleClass="search-page-container">
       <VBox styleClass="search-page" VBox.vgrow="ALWAYS">
 
-         <VBox>
-            <Label text="Ricerca" styleClass="italic-30" style="-fx-text-fill: #8f8f8f;" />
-            <Label fx:id="searchedTitle" minHeight="-Infinity" styleClass="regular-30" />
+         <VBox minHeight="-Infinity">
+
+            <Label text="Ricerca"
+                   styleClass="italic-30"
+                   style="-fx-text-fill: #8f8f8f;" />
+
+            <Label fx:id="searchedTitle"
+                   minHeight="-Infinity"
+                   wrapText="true"
+                   styleClass="regular-30" />
          </VBox>
+
          <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
 
       </VBox>

@@ -3,6 +3,7 @@ package bookrecommenderdev.client.controller;
 import bookrecommenderdev.client.controller.components.SearchResultsController;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.routing.AppContext;
@@ -31,7 +32,7 @@ public class LibraryPageController implements Routable {
     PageFetcher<Libro> source = page ->
         context.server().searchLibreria(u.getId_utente(), query, page);
 
-    resultsSectionController.setSource(source, query);
+    resultsSectionController.setSource(source, SearchRequest.perTitolo(query));
   }
 
   @FXML

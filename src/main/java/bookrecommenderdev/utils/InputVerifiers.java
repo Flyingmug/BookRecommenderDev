@@ -42,33 +42,41 @@ public class InputVerifiers {
   /**
    * todo documentation
    * */
-  public static void preventMultipleSpacesAndLimit(TextInputControl textInput, int maxLength) {
+  public static void preventMultipleSpacesAndLimit(TextInputControl input, int maxLength) {
+    input.setTextFormatter(new TextFormatter<String>(change -> {
+      String text = change.getControlNewText();
+
+      // length limit (reject rather than truncate)
+      if (text.length() > maxLength) return null;
+
+      // no leading whitespace
+      if (text.matches("^\\s+.*")) return null;
+
+      // no double spaces anywhere
+      if (text.contains("  ")) return null;
+
+      return change;
+    }));
+  }
+  public static void numericOnlyAndLimit(TextInputControl input, int maxLength) {
     TextFormatter<String> formatter = new TextFormatter<>(change -> {
       String newText = change.getControlNewText();
 
-      // Step 1: Remove leading spaces
-      newText = newText.replaceAll("^\\s+", "");
-
-      // Step 2: Replace multiple spaces between words with a single space
-      newText = newText.replaceAll("\\s{2,}", " ");
-
-      // Step 3: Limit to max length
-      if (newText.length() > maxLength) {
-        newText = newText.substring(0, maxLength);
+      // Reject non-digits
+      if (!newText.matches("\\d*")) {
+        return null;
       }
 
-      // If modified, replace entire text
-      if (!newText.equals(change.getControlNewText())) {
-        change.setText(newText);
-        change.setRange(0, change.getControlText().length());
+      // Enforce max length
+      if (newText.length() > maxLength) {
+        return null;
       }
 
       return change;
     });
 
-    textInput.setTextFormatter(formatter);
+    input.setTextFormatter(formatter);
   }
-
   public static void restrictLooseFiscalCodeInput(TextInputControl field) {
     field.setTextFormatter(new TextFormatter<>(change -> {
       String newText = change.getControlNewText().toUpperCase(); // force uppercase
@@ -81,4 +89,7 @@ public class InputVerifiers {
     }));
   }
 
+  public static String pulisci(String s) {
+    return s == null ? "" : s.trim();
+  }
 }

@@ -12,6 +12,7 @@ module com.example.bookrecommenderdev {
   requires javafx.graphics;
   requires javafx.base;
   requires java.prefs;
+  requires java.xml.crypto;
 
   exports bookrecommenderdev.client;
   opens bookrecommenderdev.client to javafx.fxml;

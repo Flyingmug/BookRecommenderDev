@@ -1,11 +1,7 @@
 package bookrecommenderdev.utils;
 
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Classe contenente metodi generici con vari campi di utilizzo
@@ -14,34 +10,7 @@ import java.util.Random;
  */
 public class Tools {
   private static final String INTEGER_REGEX = "^-?\\d+$"; // Match per gli interi
-  private static final Random rand = new Random();
 
-
-  /**
-   * Applies a random background color to the specified node through
-   * the style property {@code -fx-background-color: rgb(r, g, b)}.
-   * @param node Target Node.
-   */
-  public static void setRandomBackgroundColor(Node node) {
-    // Generate random RGB values
-    int r = rand.nextInt(256);
-    int g = rand.nextInt(256);
-    int b = rand.nextInt(256);
-
-    // Create Color object and make it lighter
-    Color randomColor = Color.rgb(r, g, b).brighter(); // call .brighter() once or multiple times
-
-    // Convert to CSS RGB string
-    String cssColor = String.format(
-        "rgb(%d, %d, %d)",
-        (int) (randomColor.getRed() * 255),
-        (int) (randomColor.getGreen() * 255),
-        (int) (randomColor.getBlue() * 255)
-    );
-
-    // Apply as background
-    node.setStyle("-fx-background-color: " + cssColor + ";");
-  }
 
   /**
    * Verifica se la stringa contiene un numero intero

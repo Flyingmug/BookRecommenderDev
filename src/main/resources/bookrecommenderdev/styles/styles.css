@@ -77,6 +77,11 @@
     -fx-font-family: "Montserrat Medium";
     -fx-font-size: 20;
 }
+/* BOLD */
+.bold-20 {
+    -fx-font-family: "Montserrat Bold";
+    -fx-font-size: 20;
+}
 
 
 
@@ -245,14 +250,39 @@
     -fx-spacing: 20;
 }
 .profile-picture-button {
-    -fx-pref-height: 35;
-    -fx-pref-width: 35;
+    -fx-alignment: center;
+    -fx-max-height: 45;
+    -fx-max-width: 45;
+    -fx-min-height: 45;
+    -fx-min-width: 45;
+    -fx-background-color: #ba82ff;
     -fx-background-radius: 9999;
+    -fx-border-width: 0;
+    -fx-border-color: #456ddc;
+    -fx-border-radius: 9999;
+    -fx-cursor: hand;
 }
-.profile-picture-text {
-    -fx-font: bold 20px "Arial";
+.profile-picture-button:hover {
+    -fx-border-width: 1;
+    -fx-background-color: #9d5bef;
+}
+.profile-picture-button:pressed {
+    -fx-border-width: 2;
 }
 
+.context-menu {
+    -fx-background-color: white;
+    -fx-border-color: #b5b5b5;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+.menu-item {
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
+.menu-item:hover {
+    -fx-background-color: #267bff;
+}
 
 
 /* Searchbar */
@@ -743,7 +773,6 @@
 
 
 
-
 /* Library Page */
 
 .library-page-container {
@@ -762,6 +791,21 @@
 
 
 
+/* Library Creator Page */
+.library-creator-container {
+    -fx-alignment: top_center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+.library-creator {
+    -fx-spacing: 20;
+    -fx-max-width: 1100;
+    -fx-min-width: 500;
+    -fx-background-color: white;
+    -fx-padding: 20;
+}
+.library-creator-main {
+    -fx-spacing: 20;
+}
 
 
 

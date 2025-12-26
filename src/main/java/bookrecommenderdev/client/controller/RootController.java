@@ -48,9 +48,9 @@ public class RootController {
     routes.add(new Route("/book/:query", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
     routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
-    routes.add(new Route("/profile", "profile-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries/:query", "library-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/library/create", "library-creator-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/review/:query", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     initRegistry();
@@ -62,7 +62,7 @@ public class RootController {
 
       // fixme TEST
       //Router.go("/");
-      Router.go("/book/1");
+      Router.go("/library/create");
 
     }
 

@@ -38,16 +38,6 @@
          </font>
       </Button>
       <fx:include source="controls/home-link.fxml" />
-      <Button fx:id="profileButton" managed="false" onAction="#onProfile" styleClass="profile-picture-button">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <tooltip>
-            <Tooltip text="Profilo" />
-         </tooltip>
-         <graphic>
-            <Label fx:id="profileText" styleClass="profile-picture-text" />
-         </graphic>
-      </Button>
+      <fx:include fx:id="profileButton" source="controls/profile-control.fxml" />
    </HBox>
 </HBox>

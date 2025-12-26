@@ -1,0 +1,33 @@
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Integer?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+    fx:controller="bookrecommenderdev.client.controller.LibraryCreatorController"
+    styleClass="library-creator-container">
+   <VBox styleClass="library-creator" VBox.vgrow="ALWAYS">
+
+      <HBox styleClass="library-creator-main" VBox.vgrow="ALWAYS">
+
+         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+                     styleClass="scrollable-pane">
+
+            <fx:include fx:id="searchSection" source="components/search-results-view.fxml" />
+
+         </ScrollPane>
+
+         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+                     styleClass="scrollable-pane">
+
+            <fx:include fx:id="selectionSection" source="components/search-results-view.fxml" />
+
+         </ScrollPane>
+
+      </HBox>
+
+   </VBox>
+</VBox>

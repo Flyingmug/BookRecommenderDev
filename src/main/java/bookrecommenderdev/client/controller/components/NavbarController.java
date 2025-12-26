@@ -3,22 +3,19 @@ package bookrecommenderdev.client.controller.components;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-import static bookrecommenderdev.utils.Tools.setRandomBackgroundColor;
-
 public class NavbarController {
-
 
   @FXML private VBox searchbar;
 
   @FXML private Button loginButton;
   @FXML private Button registerButton;
   @FXML private Button librariesButton;
-  @FXML private Button profileButton;
-  @FXML private Label profileText;
+  @FXML private Parent profileButton;
 
   public void setSearchbarVisible(boolean visible) {
     searchbar.setVisible(visible);
@@ -27,8 +24,6 @@ public class NavbarController {
 
   @FXML
   public void initialize() {
-    setRandomBackgroundColor(profileButton);
-
     loginButton.visibleProperty().bind(
         AuthContext.userProperty().isNull()
     );
@@ -69,9 +64,6 @@ public class NavbarController {
         AuthContext.userProperty().isNull()
     );
   }
-
-  // fixme unused
-  public void setProfileInitials(String s) { profileText.setText(s.substring(0,2)); }
 
   @FXML public void onRegister() { Router.go("/registration"); }
 

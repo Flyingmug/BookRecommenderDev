@@ -7,13 +7,16 @@ import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 
 import java.util.Map;
 
 public class SearchController implements Routable {
 
+  @FXML private Label searchedTitle;
   @FXML private Parent resultsSection;
   @FXML private SearchResultsController resultsSectionController;
+
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
@@ -21,12 +24,12 @@ public class SearchController implements Routable {
     if (resultsSectionController == null) return;
 
     String query = params.get("query");
+    searchedTitle.setText(query);
 
     PageFetcher<Libro> source = page ->
         context.server().searchTitolo(query, page);
 
     resultsSectionController.setSource(source, query);
   }
-
 
 }

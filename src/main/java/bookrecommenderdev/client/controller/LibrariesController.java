@@ -5,6 +5,7 @@ import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
+import bookrecommenderdev.routing.context.CurrentLibraryContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.server.dto.LibraryResult;
 import javafx.fxml.FXML;
@@ -97,7 +98,10 @@ public class LibrariesController implements Routable {
           LibraryItemFactory.createLibraryItem(
               lib.library(),
               lib.bookCount(),
-              () -> Router.go("/libraries/" + lib.library().getNome(), TransitionAnimation.LEFT_SLIDE)
+              () -> {
+                CurrentLibraryContext.set(lib.library());
+                Router.go("/libraries/" + lib.library().getNome(), TransitionAnimation.LEFT_SLIDE);
+              }
           )
       );
     }

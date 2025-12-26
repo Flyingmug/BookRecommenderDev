@@ -15,7 +15,6 @@
 
       <HBox fx:id="resultTitleContainer" styleClass="result-title-container">
 
-         <Label fx:id="resultTitle" text="Risultati" />
          <VBox fx:id="resultsNotFoundTitle" managed="false" visible="false"
                alignment="center" style="-fx-spacing: 10;">
             <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="45" />

@@ -20,6 +20,5 @@ public class LibraryItemController {
       itemCountLabel.setText(""+totalCount);
 
     }
-
   }
 }

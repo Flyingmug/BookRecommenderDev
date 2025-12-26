@@ -23,8 +23,6 @@ import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 public class SearchResultsController {
 
-  // searchPage
-  @FXML private Label resultTitle;
   @FXML private VBox resultsNotFoundTitle;
   @FXML private Label resultsNotFoundQuery;
   @FXML private VBox booksResultSection;
@@ -207,8 +205,6 @@ public class SearchResultsController {
 
   /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
   private void showNoResults(String query) {
-    resultTitle.setVisible(false);
-    resultTitle.setManaged(false);
     resultsNotFoundTitle.setVisible(true);
     resultsNotFoundTitle.setManaged(true);
     resultsNotFoundQuery.setText("Nessun risultato trovato per: " + query);

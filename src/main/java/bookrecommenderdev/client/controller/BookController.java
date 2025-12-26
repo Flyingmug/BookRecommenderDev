@@ -5,7 +5,6 @@ import bookrecommenderdev.client.controller.components.UserReviewSectionControll
 import bookrecommenderdev.client.factory.StarIconFactory;
 import bookrecommenderdev.model.CampoValutazione;
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.context.CurrentBookContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Libro;
@@ -67,7 +66,6 @@ public class BookController implements Routable {
    * @param idLibro id del libro selezionato
    */
   protected void loadBookPage(int idLibro) {
-    System.out.println("BOOKPAGE id libro: " + idLibro); // DEBUG
     this.idLibro = idLibro;
 
     try {
@@ -79,11 +77,11 @@ public class BookController implements Routable {
           Libro l = pagina.getLibro();
           CurrentBookContext.set(l);
 
-          bookTitolo.setText(l.getTitolo());
-          bookAutori.setText(l.getAutori());
-          bookAnnoPubblicazione.setText(Integer.toString(l.getAnnoPubblicazione()));
-          bookCategorie.setText(l.getCategorie());
-          bookEditore.setText(l.getEditore());
+          setTextValue(bookTitolo, l.getTitolo());
+          setTextValue(bookAutori, l.getAutori());
+          setTextValue(bookAnnoPubblicazione, Integer.toString(l.getAnnoPubblicazione()));
+          setTextValue(bookEditore, l.getEditore());
+          setTextValue(bookCategorie, l.getCategorie());
         }
 
         if (pagina.getValutazioniAggregate() != null && scoresPresent(pagina.getValutazioniAggregate())) {
@@ -100,7 +98,7 @@ public class BookController implements Routable {
                   Color.BLACK
               )
           );
-          setReviewsVisible(false);
+          hideReviews();
         }
 
       }
@@ -112,14 +110,18 @@ public class BookController implements Routable {
     }
   }
 
+  private void setTextValue(Label label, String text) {
+    label.setText(text == null || text.isBlank() ? "Sconosciuto" : text);
+  }
+
   private void showReviews() {
     // caricamento delle review
     reviewsSectionController.initializeForBook(idLibro, context);
   }
 
-  private void setReviewsVisible(boolean b) {
-    reviewsSection.setVisible(b);
-    reviewsSection.setManaged(b);
+  private void hideReviews() {
+    reviewsSection.setVisible(false);
+    reviewsSection.setManaged(false);
   }
 
   // fixme kept for testing purposes.

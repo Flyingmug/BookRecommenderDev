@@ -2,7 +2,6 @@ package bookrecommenderdev.server.dao;
 
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.server.dto.PaginaLibriRisultati;
-import javafx.util.Pair;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -22,16 +21,22 @@ public class LibroDao {
     Libro libro = null;
     System.out.println("Chiave ricevuta: " + id_libro);
     String q = "SELECT " +
-      " l.id_libro as idLibro," +
-      " l.anno_pubblicazione as annoPubblicazione," +
-      " l.titolo," +
-      " a.nome_autore as autori," +
-      " e.nome_editore as editore, " +
-      " STRING_AGG(c.nome_categoria, ', ' ORDER BY c.nome_categoria) AS categorie " +
-      "FROM Libri l JOIN Autori a ON l.id_autore = a.id_autore JOIN Editori e ON l.id_editore = e.id_editore " +
-      "JOIN Libri_Categorie lc ON l.id_libro = lc.id_libro JOIN Categorie c ON lc.id_categoria = c.id_categoria " +
-      "WHERE l.id_libro = ? " +
-      "GROUP BY l.id_libro, l.anno_pubblicazione, l.titolo, a.nome_autore, e.nome_editore;";
+        "l.id_libro AS idLibro, " +
+        "l.anno_pubblicazione AS annoPubblicazione, " +
+        "l.titolo,a.nome_autore AS autori, " +
+        "e.nome_editore AS editore,STRING_AGG(c.nome_categoria, ', ' ORDER BY c.nome_categoria) AS categorie " +
+        "FROM Libri l " +
+        "JOIN Autori a ON l.id_autore = a.id_autore " +
+        "JOIN Editori e ON l.id_editore = e.id_editore " +
+        "LEFT JOIN Libri_Categorie lc ON l.id_libro = lc.id_libro " +
+        "LEFT JOIN Categorie c ON lc.id_categoria = c.id_categoria " +
+        "WHERE l.id_libro = ? " +
+        "GROUP BY " +
+        "l.id_libro, " +
+        "l.anno_pubblicazione, " +
+        "l.titolo, " +
+        "a.nome_autore, " +
+        "e.nome_editore;";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -74,6 +79,8 @@ public class LibroDao {
         totalCount = rs.getInt("numero_risultati");
 
         do {
+          System.out.println("idLibro DB: " + rs.getInt("id_libro"));
+
           elenco.add(new Libro(
               rs.getInt("id_libro"),
               rs.getString("titolo"),
@@ -85,9 +92,5 @@ public class LibroDao {
     }
     System.out.println("Numero risultati QUERY: " + elenco.size());
     return new PaginaLibriRisultati(elenco, totalCount);
-  }
-
-  public List<Libro> getFrom(List<Integer> elenco_id) throws SQLException {
-    return null;
   }
 }

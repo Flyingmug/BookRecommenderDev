@@ -64,11 +64,7 @@
             <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
          </VBox>
 
-
-
       </VBox>
-
    </VBox>
-
 
 </ScrollPane>

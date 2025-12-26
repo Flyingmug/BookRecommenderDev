@@ -192,6 +192,7 @@
 .history-control-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
+    -fx-cursor: hand;
 }
 .history-control-button:hover {
     -fx-dropshadow: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);

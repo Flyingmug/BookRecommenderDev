@@ -21,6 +21,8 @@ module com.example.bookrecommenderdev {
   opens bookrecommenderdev.client.controller.layouts to javafx.fxml;
   exports bookrecommenderdev.client.controller.components;
   opens bookrecommenderdev.client.controller.components to javafx.fxml;
+  exports bookrecommenderdev.client.controller.errors;
+  opens bookrecommenderdev.client.controller.errors to javafx.fxml;
 
   opens bookrecommenderdev.server to javafx.fxml;
   exports bookrecommenderdev.server;

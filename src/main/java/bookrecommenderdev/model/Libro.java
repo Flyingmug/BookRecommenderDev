@@ -48,6 +48,12 @@ public class Libro implements Serializable {
     this.titolo = titolo;
   }
 
+  public Libro(int idLibro, int annoPubblicazione, String titolo) {
+    this.id_libro = idLibro;
+    this.anno_pubblicazioni = annoPubblicazione;
+    this.titolo = titolo;
+  }
+
   /**
    * @return id libro
    */
@@ -86,7 +92,9 @@ public class Libro implements Serializable {
    */
   @Override
   public boolean equals(Object obj) {
-    return obj.getClass() == Libro.class && this.id_libro == ((Libro) obj).getIdLibro();
+    if (this == obj) return true;
+    if (!(obj instanceof Libro other)) return false;
+    return this.id_libro == other.id_libro;
   }
 }
 

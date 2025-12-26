@@ -17,12 +17,12 @@ public class AuthService {
 //  }
 //
 //  public boolean validateSession(String token) {
-//    Session session = activeSessions.get(token);
+//    Session session = activeSessions.getComplete(token);
 //    return session != null && !session.isExpired();
 //  }
 //
 //  public Utente getUserFromToken(String token) {
-//    Session session = activeSessions.get(token);
+//    Session session = activeSessions.getComplete(token);
 //    return (session != null && !session.isExpired()) ? session.getUser() : null;
 //  }
 }

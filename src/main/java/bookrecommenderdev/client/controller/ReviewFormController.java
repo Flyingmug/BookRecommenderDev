@@ -7,9 +7,7 @@ import bookrecommenderdev.model.Valutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.context.CurrentBookContext;
 import bookrecommenderdev.routing.route.Routable;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -35,19 +33,20 @@ public class ReviewFormController implements Routable {
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
+    String idLibro = params.get("id");
+
     this.context = context;
+  }
+
+  private void fetchBook(AppContext context, String idLibro) {
+
+
+
   }
 
   @FXML
   private void initialize() {
-    CurrentBookContext.get()
-        .ifPresentOrElse(
-            l -> {
-              libro = l;
-              setTitle(l.getTitolo());
-            },
-            () -> Platform.runLater(() -> Router.go("/"))
-        );
+    // get libro
 
     fields = Map.of(
         GENERALE, generaleController,
@@ -108,7 +107,6 @@ public class ReviewFormController implements Routable {
 
     try {
       boolean res = context.server().inserisciValutazione(v);
-      CurrentBookContext.clear();   // temp, perhaps should stay here
       System.out.println(res ? "Valutazione aggiunta" : "DB unaffected");
 
       if (res) Router.go("/book/" + libro.getIdLibro());

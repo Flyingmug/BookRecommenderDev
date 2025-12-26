@@ -22,7 +22,7 @@ public class UtenteDao {
 //   * @param fiscalCode
 //   * @return ottiene la lista di utenti con email e password/codiceFiscale corrispondenti
 //   */
-//        public List<Utente> get(String email, String key, boolean fiscalCode) throws SQLException {
+//        public List<Utente> getComplete(String email, String key, boolean fiscalCode) throws SQLException {
 //    List<Utente> utenti = new LinkedList<>();
 //
 //    String q = "SELECT u.* FROM UtentiRegistrati u WHERE u.email = ?" + (fiscalCode ? " OR u.codice_fiscale = ?;" : " AND u.password = ?;");

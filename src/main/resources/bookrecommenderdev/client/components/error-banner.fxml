@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox fx:id="root"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.components.ErrorBannerController"
+      spacing="12"
+      visible="false"
+      managed="false"
+      style="-fx-background-color: #fdecea; -fx-padding: 12; -fx-border-color: #f44336;">
+
+   <Label fx:id="messageLabel"
+          text="Error"
+          style="-fx-text-fill: #b71c1c; -fx-font-weight: bold;" />
+
+   <Pane HBox.hgrow="ALWAYS"/>
+
+   <Button fx:id="retryButton"
+           text="Riprova"
+           visible="false"
+           managed="false"/>
+
+   <Button fx:id="backButton"
+           text="Indietro"
+           visible="false"
+           managed="false"/>
+</HBox>

@@ -3,11 +3,9 @@ package bookrecommenderdev.client.controller;
 import bookrecommenderdev.client.controller.components.SearchResultsController;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.model.Utente;
-import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.context.CurrentLibraryContext;
 import bookrecommenderdev.routing.route.Routable;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -26,7 +24,7 @@ public class LibraryPageController implements Routable {
 
     if (resultsSectionController == null) return;
 
-    String query = params.get("query");
+    String query = params.get("id");
 
     Utente u = AuthContext.getUser();
 
@@ -38,11 +36,6 @@ public class LibraryPageController implements Routable {
 
   @FXML
   private void initialize() {
-    CurrentLibraryContext.get()
-        .ifPresentOrElse(
-            lib -> libraryTitle.setText(lib.getNome()),
-            () -> Router.go("/") // defensive fallback
-        );
-//    CurrentLibraryContext.clear();  // FIXME PLEASE
+
   }
 }

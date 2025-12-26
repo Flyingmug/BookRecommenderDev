@@ -14,54 +14,50 @@
    <VBox styleClass="book-page-container">
       <VBox styleClass="book-page" VBox.vgrow="ALWAYS">
 
-         <VBox styleClass="book-data-section">
-            <Label fx:id="bookTitolo" styleClass="book-label-title" wrapText="true" />
-            <HBox styleClass="book-label-subtitle">
-               <Label text="By" />
-               <Label fx:id="bookAutori" />
-            </HBox>
-            <GridPane styleClass="book-data-entries-container" >
-               <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="0" text="ANNO" wrapText="true" />
-               <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="1" text="CATEGORIE" wrapText="true" />
-               <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="2" text="EDITORE" wrapText="true" />
-               <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="bookAnnoPubblicazione" />
-               <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="bookCategorie" />
-               <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="bookEditore" />
-            </GridPane>
-         </VBox>
+         <fx:include source="components/error-banner.fxml" fx:id="errorBanner"/>
 
-         <HBox alignment="BOTTOM_LEFT">
-            <Label styleClass="italic-33" text="Recensioni &amp; Valutazioni" />
-         </HBox>
+         <VBox fx:id="content" VBox.vgrow="ALWAYS" >
 
-         <VBox>
-            <HBox alignment="BOTTOM_LEFT">
-               <Label styleClass="regular-23" text="La mia recensione" />
-            </HBox>
-
-            <fx:include source="components/user-review-section.fxml" fx:id="userReviewSection" />
-         </VBox>
-
-         <VBox>
-            <HBox alignment="BOTTOM_LEFT">
-               <Label styleClass="regular-23" text="Recensioni della Comunità" />
-            </HBox>
-
-            <VBox fx:id="scoresSection" styleClass="scores-section">
-               <TilePane fx:id="scoresContainer" styleClass="scores-container" />
-               <VBox managed="false" visible="false" fx:id="reviewsLinkContainer">  <!-- fixme TEST PURPOSES -->
-                  <Button alignment="CENTER" onAction="#onReviews" styleClass="scores-section-reviews-link">
-                     <graphic>
-                        <HBox alignment="CENTER">
-                           <Label text="Vedi tutte le valutazioni" />
-                           <FontIcon iconLiteral="mdi2a-arrow-right" iconSize="16" styleClass="result-page-arrow" />
-                        </HBox>
-                     </graphic>
-                  </Button>
-               </VBox>
+            <VBox styleClass="book-data-section">
+               <Label fx:id="titolo" styleClass="book-label-title" wrapText="true" />
+               <HBox styleClass="book-label-subtitle">
+                  <Label text="By" />
+                  <Label fx:id="autori" />
+               </HBox>
+               <GridPane styleClass="book-data-entries-container" >
+                  <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="0" text="ANNO" wrapText="true" />
+                  <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="1" text="CATEGORIE" wrapText="true" />
+                  <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="2" text="EDITORE" wrapText="true" />
+                  <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="annoPubblicazione" />
+                  <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="categorie" />
+                  <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="editore" />
+               </GridPane>
             </VBox>
 
-            <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
+            <HBox alignment="BOTTOM_LEFT">
+               <Label styleClass="italic-33" text="Recensioni &amp; Valutazioni" />
+            </HBox>
+
+            <VBox>
+               <HBox alignment="BOTTOM_LEFT">
+                  <Label styleClass="regular-23" text="La mia recensione" />
+               </HBox>
+
+               <fx:include source="components/user-review-section.fxml" fx:id="userReviewSection" />
+            </VBox>
+
+            <VBox>
+               <HBox alignment="BOTTOM_LEFT">
+                  <Label styleClass="regular-23" text="Recensioni della Comunità" />
+               </HBox>
+
+               <VBox styleClass="scores-section">
+                  <TilePane fx:id="scoresContainer" styleClass="scores-container" />
+               </VBox>
+
+               <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
+            </VBox>
+
          </VBox>
 
       </VBox>

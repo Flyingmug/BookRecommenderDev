@@ -1,11 +1,14 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.ReviewsSectionController;
 import bookrecommenderdev.client.controller.components.UserReviewSectionController;
 import bookrecommenderdev.client.factory.StarIconFactory;
 import bookrecommenderdev.model.CampoValutazione;
+import bookrecommenderdev.model.DataAccessException;
+import bookrecommenderdev.model.NotFoundException;
 import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.context.CurrentBookContext;
+import bookrecommenderdev.routing.animation.TransitionAnimation;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
@@ -17,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -29,20 +34,23 @@ import java.util.Map;
 
 public class BookController implements Routable {
 
-  @FXML private ScrollPane bookPage; // fixme removable if unused
-  @FXML private Label bookTitolo;
-  @FXML private Label bookAutori;
-  @FXML private Label bookAnnoPubblicazione;
-  @FXML private Label bookEditore;
-  @FXML private Label bookCategorie;
-  @FXML private VBox scoresSection;
+  @FXML private ScrollPane bookPage;
+  @FXML private VBox content;
+  @FXML private Label titolo;
+  @FXML private Label autori;
+  @FXML private Label annoPubblicazione;
+  @FXML private Label editore;
+  @FXML private Label categorie;
   @FXML private TilePane scoresContainer;
-  @FXML private VBox reviewsLinkContainer; // fixme kept for testing purposes
+
   @FXML private VBox reviewsSection;
   @FXML private ReviewsSectionController reviewsSectionController;  // assegnazione automatica tramite fx:include
 
   @FXML private Parent userReviewSection;
   @FXML private UserReviewSectionController userReviewSectionController;
+
+  @FXML private ErrorBannerController errorBannerController;
+
 
   AppContext context;
   int idLibro;
@@ -50,9 +58,12 @@ public class BookController implements Routable {
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
     this.context = context;
-    loadBookPage(Integer.parseInt(params.get("query")));
+
+    idLibro = (Integer.parseInt(params.get("id")));
 
     userReviewSectionController.setContext(context, idLibro);
+
+    loadBookPage(idLibro);
   }
 
   @FXML
@@ -66,70 +77,62 @@ public class BookController implements Routable {
    * @param idLibro id del libro selezionato
    */
   protected void loadBookPage(int idLibro) {
-    this.idLibro = idLibro;
-
     try {
       PaginaLibro pagina = context.server().getPaginaLibro(idLibro);
 
-      if (pagina != null) {
+      setContentVisible(true);
 
-        if (pagina.getLibro() != null) {
-          Libro l = pagina.getLibro();
-          CurrentBookContext.set(l);
+      Libro l = pagina.getLibro();
 
-          setTextValue(bookTitolo, l.getTitolo());
-          setTextValue(bookAutori, l.getAutori());
-          setTextValue(bookAnnoPubblicazione, Integer.toString(l.getAnnoPubblicazione()));
-          setTextValue(bookEditore, l.getEditore());
-          setTextValue(bookCategorie, l.getCategorie());
-        }
+      setTextValue(titolo, l.getTitolo());
+      setTextValue(autori, l.getAutori());
+      setTextValue(annoPubblicazione, Integer.toString(l.getAnnoPubblicazione()));
+      setTextValue(editore, l.getEditore());
+      setTextValue(categorie, l.getCategorie());
 
-        if (pagina.getValutazioniAggregate() != null && scoresPresent(pagina.getValutazioniAggregate())) {
-          double[] scores = pagina.getValutazioniAggregate();
+      double[] scores = pagina.getValutazioniAggregate();
+      if (scoresPresent(pagina.getValutazioniAggregate())) {
+        showReviews();  // mostra la sezione delle recensioni
+        showScores(scores); // mostra le medie delle valutazioni
+      } else {
 
-          showReviews();  // mostra la sezione delle recensioni
-          showScores(scores); // mostra le medie delle valutazioni
-        } else {
-          reviewsLinkContainer.setVisible(false);
-          scoresContainer.getChildren().add(
-              LabelCustomizer.createLabel(
-                  "Nessuna valutazione presente",
-                  Size.LG,
-                  Color.BLACK
-              )
-          );
-          hideReviews();
-        }
-
+        scoresContainer.getChildren().add(
+            LabelCustomizer.createLabel(
+                "Nessuna valutazione presente",
+                Size.LG,
+                Color.BLACK
+            )
+        );
+        hideReviews();
       }
 
-    } catch (RemoteException e) {
-      e.printStackTrace();
+    } catch (NotFoundException e) {
 
-      // todo Add error display
+      Platform.runLater(() -> Router.go("/not-found", TransitionAnimation.LEFT_SLIDE));
+    } catch (DataAccessException e) {
+      setContentVisible(false);
+      content.setVisible(false);
+      content.setManaged(false);
+
+      errorBannerController.show(
+          "Servizio dati non disponibile (errore database). Riprova tra poco.",
+          () -> loadBookPage(idLibro),
+          () -> Router.go("/")
+      );
+
+    } catch (RemoteException e) {
+      content.setVisible(false);
+      content.setManaged(false);
+
+      errorBannerController.show(
+          "Server non raggiungibile. Verifica la connessione e riprova.",
+          () -> loadBookPage(idLibro),
+          () -> Router.go("/")
+      );
+
+      e.printStackTrace();  // fixme DEBUG
     }
   }
-
-  private void setTextValue(Label label, String text) {
-    label.setText(text == null || text.isBlank() ? "Sconosciuto" : text);
-  }
-
-  private void showReviews() {
-    // caricamento delle review
-    reviewsSectionController.initializeForBook(idLibro, context);
-  }
-
-  private void hideReviews() {
-    reviewsSection.setVisible(false);
-    reviewsSection.setManaged(false);
-  }
-
-  // fixme kept for testing purposes.
-  // fixme what happens when an unexisting route is requested? -> error
-  public void onReviews() {
-    Router.go("/book/"+idLibro+"/reviews");
-  }
-
 
   /**
    * Verifica che il numero dei campi di valutazione nel vettore dato rispetti la dimensione dei campi definiti in {@link CampoValutazione}.
@@ -197,4 +200,24 @@ public class BookController implements Routable {
       });
     }
   }
+
+  private void setTextValue(Label label, String text) {
+    label.setText(text == null || text.isBlank() ? "Sconosciuto" : text);
+  }
+
+  private void showReviews() {
+    // caricamento delle review
+    reviewsSectionController.initializeForBook(idLibro, context);
+  }
+
+  private void hideReviews() {
+    reviewsSection.setVisible(false);
+    reviewsSection.setManaged(false);
+  }
+
+  private void setContentVisible(boolean b) {
+    content.setVisible(b);
+    content.setManaged(b);
+  }
+
 }

@@ -29,9 +29,10 @@ public class LibroDao {
   public Optional<Libro> getBasic(int id_libro) throws SQLException {
     final String q = "SELECT " +
         "id_libro, " +
-        "anno_pubblicazione, " +
+        "titolo, " +
+        "anno_pubblicazione " +
         "FROM Libri " +
-        "WHERE l.id_libro = ? ";
+        "WHERE id_libro = ? ";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {

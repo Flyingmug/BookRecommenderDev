@@ -20,24 +20,24 @@ public interface ServerInterface extends Remote {
 
   // libri
   Libro getLibro(int idLibro) throws RemoteException, NotFoundException, DataAccessException;
-  PaginaLibro getPaginaLibro(int idLibro) throws RemoteException;
+  PaginaLibro getPaginaLibro(int idLibro) throws RemoteException, DataAccessException;
 
   // librerie
-  PaginaLibriRisultati searchAllLibrerie(long idUtente, String query,  int pageNumber) throws RemoteException;
-  PaginaLibriRisultati searchLibreria(long idUtente, String nomeLibreria,  int pageNumber) throws RemoteException;
-  List<LibraryResult> getListLibrerie(long idUtente) throws RemoteException;
-  void createLibreria(Libreria lib) throws RemoteException;
-  void deleteLibreria(Libreria lib) throws RemoteException;
-  void deleteLibreria(String nome, long idUtente) throws RemoteException;
+  PaginaLibriRisultati searchAllLibrerie(int idUtente, String query,  int pageNumber) throws RemoteException, DataAccessException;
+  PaginaLibriRisultati searchLibreria(int idUtente, String nomeLibreria,  int pageNumber) throws RemoteException, DataAccessException;
+  List<LibraryResult> getListLibrerie(int idUtente) throws RemoteException, DataAccessException;
+  void createLibreria(Libreria lib) throws RemoteException, DataAccessException;
+  void deleteLibreria(Libreria lib) throws RemoteException, DataAccessException;
+  void deleteLibreria(String nome, int idUtente) throws RemoteException, DataAccessException;
 
   // valutazioni
-  Valutazione getValutazione(int idLibro, int userId) throws RemoteException;
-  PaginaValutazioni getValutazioni(long idLibro, int indicePagina) throws RemoteException;
-  boolean inserisciValutazione(Valutazione valutazione) throws RemoteException;
-  boolean deleteValutazione(int idLibro, int id_utente) throws RemoteException;
+  Valutazione getValutazione(int idLibro, int userId) throws RemoteException, DataAccessException;
+  PaginaValutazioni cercaValutazioni(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
+  boolean inserisciValutazione(Valutazione valutazione) throws RemoteException, DataAccessException;
+  boolean deleteValutazione(int idLibro, int id_utente) throws RemoteException, DataAccessException;
 
   // consigli
-  List<Libro> getConsigli(long idLibro) throws RemoteException;
+  List<Libro> getConsigli(int idLibro) throws RemoteException;
 
   // autenticazione e accesso
   AuthResult login(String nome, String password) throws RemoteException;

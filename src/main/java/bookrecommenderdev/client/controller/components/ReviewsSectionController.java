@@ -28,12 +28,12 @@ public class ReviewsSectionController {
   @FXML public VBox reviewsContainer;
 
   AppContext context;
-  private long idLibro;
+  private int idLibro;
   int currentPageIndex;
   int totalResultCount;
 
 
-  public void initializeForBook(long idLibro, AppContext context) {
+  public void initializeForBook(int idLibro, AppContext context) {
     this.idLibro = idLibro;
     this.context = context;
 
@@ -45,11 +45,11 @@ public class ReviewsSectionController {
 
 
   /** <p>Gestisce una richiesta a una pagina logica di recensioni per un libro.
-   * La richiesta viene fatta utilizzando il campo assegnato nel metodo {@link #initializeForBook(long, AppContext)}.
+   * La richiesta viene fatta utilizzando il campo assegnato nel metodo {@link #initializeForBook(int, AppContext)}.
    * */
   private void resolveReviews(int pageIndex) {
     try {
-      PaginaValutazioni data = context.server().getValutazioni(idLibro, pageIndex);
+      PaginaValutazioni data = context.server().cercaValutazioni(idLibro, pageIndex);
       if (data == null) {
         System.out.println("ERROR received null from DB: " + idLibro); // temp fixme
         return;

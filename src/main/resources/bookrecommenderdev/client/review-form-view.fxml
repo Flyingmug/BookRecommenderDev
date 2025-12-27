@@ -17,7 +17,16 @@
    <VBox styleClass="review-page-container">
       <VBox styleClass="review-page" VBox.vgrow="ALWAYS">
 
-         <Label fx:id="titleLabel" styleClass="regular-30" />
+         <VBox>
+            <Label text="Valuta"
+                   styleClass="italic-30"
+                   style="-fx-text-fill: #8f8f8f;" />
+
+            <Label fx:id="titleLabel"
+                   minHeight="-Infinity"
+                   wrapText="true"
+                   styleClass="regular-30" />
+         </VBox>
 
          <VBox styleClass="review-form">
 
@@ -29,6 +38,8 @@
             <fx:include fx:id="edizione" source="components/rating-field.fxml"/>
 
          </VBox>
+
+         <fx:include source="components/error-banner.fxml" fx:id="errorBanner"/>
 
          <HBox alignment="CENTER_LEFT" spacing="15">
             <Button text="Invia recensione" styleClass="control-button, control-button-border"

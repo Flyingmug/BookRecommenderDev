@@ -1,20 +1,18 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.RatingFieldController;
-import bookrecommenderdev.model.CampoValutazione;
-import bookrecommenderdev.model.Libro;
-import bookrecommenderdev.model.Valutazione;
+import bookrecommenderdev.model.*;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.route.Routable;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 import java.rmi.RemoteException;
 import java.util.Map;
-
-import static bookrecommenderdev.model.CampoValutazione.*;
 
 public class ReviewFormController implements Routable {
 
@@ -27,98 +25,124 @@ public class ReviewFormController implements Routable {
   @FXML private RatingFieldController edizioneController;
   @FXML private Label feedbackLabel;
 
-  private Map<CampoValutazione, RatingFieldController> fields;
+  @FXML private ErrorBannerController errorBannerController;
+
   Libro libro;
   AppContext context;
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context) {
+    this.context = context;
+
     String idLibro = params.get("id");
 
-    this.context = context;
+    if (!AuthContext.isAuthenticated()) {
+      Platform.runLater(() -> Router.go("/login"));
+      return;
+    }
+
+    fetchBook(idLibro);
   }
 
-  private void fetchBook(AppContext context, String idLibro) {
+  /**
+   * Ottiene il libro corrispondente all'id dato e imposta il titolo di pagina al titolo del libro.
+   * @param idLibro Id libro
+   */
+  private void fetchBook(String idLibro) {
+    try {
+      libro = context.server().getLibro(Integer.parseInt(idLibro));
+      setTitle(libro.getTitolo());
+    } catch (NotFoundException e) {
 
+      Platform.runLater(() -> Router.go("/not-found"));
+    } catch (DataAccessException e) {
 
+      showError("Errore database nel reperimento del titolo.");
+    } catch (RemoteException e) {
+
+      showError("Server non raggiungibile.");
+    }
 
   }
 
   @FXML
   private void initialize() {
-    // get libro
+    generaleController.setScoreBoxVisible(false);
 
-    fields = Map.of(
-        GENERALE, generaleController,
-        STILE, stileController,
-        CONTENUTO, contenutoController,
-        ORIGINALITA, originalitaController,
-        GRADEVOLEZZA, gradevolezzaController,
-        EDIZIONE, edizioneController
-    );
-
-    fields.get(GENERALE).setScoreBoxVisible(false);
-
-    fields.get(GENERALE).setTitle("Generale");
-    fields.get(STILE).setTitle("Stile");
-    fields.get(CONTENUTO).setTitle("Contenuto");
-    fields.get(GRADEVOLEZZA).setTitle("Gradevolezza");
-    fields.get(ORIGINALITA).setTitle("Originalità");
-    fields.get(EDIZIONE).setTitle("Edizione");
+    generaleController.setTitle("Generale");
+    stileController.setTitle("Stile");
+    contenutoController.setTitle("Contenuto");
+    gradevolezzaController.setTitle("Gradevolezza");
+    originalitaController.setTitle("Originalità");
+    edizioneController.setTitle("Edizione");
   }
 
   @FXML
   private void conferma() {
-    if (!AuthContext.isAuthenticated()) Router.go("/login"); // temp?
+    errorBannerController.hide();
 
-    for (Map.Entry<CampoValutazione, RatingFieldController> entry : fields.entrySet()) {
-
-      CampoValutazione campo = entry.getKey();
-      RatingFieldController controller = entry.getValue();
-
-      if (campo == CampoValutazione.GENERALE) continue;
-
-      System.out.println(
-          controller.getScore()
-              + " — "
-              + (controller.getTextReview() == null ? "N/A" : controller.getTextReview())
-      );
-    }
-
-
-    Valutazione v = new Valutazione();
-    v.setIdLibro(libro.getIdLibro());
-    v.setIdUtente(AuthContext.getUser().getId_utente());
-
-    for (CampoValutazione criteria: CampoValutazione.values()) {
-
-      String text = fields.get(criteria).getTextReview();
-      v.setRecensione(criteria, text.isBlank() ? null : text);
-      if (criteria == GENERALE) continue;
-
-      if (fields.get(criteria).getScore() < 0) {
-        setErrorFeedback("Tutti i punteggi devono essere impostati.");
-        return;
-      }
-
-      v.setPunteggio(criteria, fields.get(criteria).getScore());
-
-    }
+    Valutazione v = buildOrShowError();
+    if (v == null) return;
 
     try {
-      boolean res = context.server().inserisciValutazione(v);
-      System.out.println(res ? "Valutazione aggiunta" : "DB unaffected");
+      context.server().inserisciValutazione(v);
+      javafx.application.Platform.runLater(() ->
+          Router.go("/book/" + libro.getIdLibro())
+      );
 
-      if (res) Router.go("/book/" + libro.getIdLibro());
-    } catch (RemoteException e) {
-      e.printStackTrace();
+    } catch (DataAccessException e) {
+
+      showError("Errore database. Riprova.");
+    } catch (java.rmi.RemoteException e) {
+
+      showError("Server non raggiungibile. Riprova.");
     }
+
   }
 
+  /**
+   * todo doc
+   * */
+  private Valutazione buildOrShowError() {
+    Integer stile = stileController.getScore();
+    Integer contenuto = contenutoController.getScore();
+    Integer gradevolezza = gradevolezzaController.getScore();
+    Integer originalita = originalitaController.getScore();
+    Integer edizione = edizioneController.getScore();
+
+    if (stile == null || contenuto == null || gradevolezza == null || originalita == null || edizione == null) {
+      setErrorFeedback("Seleziona un voto (1–5) per tutti i campi.");
+      return null;
+    }
+
+    // Errore di fallback
+    if (!AuthContext.isAuthenticated()) {
+      showError("Devi effettuare l'accesso per inviare una recensione.");
+      return null;
+    }
+
+    int userId = AuthContext.getUser().getId_utente();
+
+    return new Valutazione(
+        libro.getIdLibro(),
+        userId,
+        stile, contenuto, gradevolezza, originalita, edizione,
+        stileController.getTextReview(),
+        contenutoController.getTextReview(),
+        gradevolezzaController.getTextReview(),
+        originalitaController.getTextReview(),
+        edizioneController.getTextReview(),
+        generaleController.getTextReview()
+    );
+  }
 
   /** @param title Titolo del libro */
   private void setTitle(String title) {
     this.titleLabel.setText("Recensisci " + title);
+  }
+
+  private void showError(String s) {
+    errorBannerController.show(s, null, null);
   }
 
   private void setErrorFeedback(String feedback) {

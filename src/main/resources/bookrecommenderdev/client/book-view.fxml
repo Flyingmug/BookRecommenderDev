@@ -20,10 +20,12 @@
 
             <VBox>
                <Label fx:id="titolo" styleClass="book-label-title" wrapText="true" />
+
                <HBox styleClass="book-label-subtitle">
                   <Label text="By" />
                   <Label fx:id="autori" />
                </HBox>
+
                <GridPane styleClass="book-data-entries-container" >
                   <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="0" text="ANNO" wrapText="true" />
                   <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="1" text="CATEGORIE" wrapText="true" />
@@ -38,7 +40,7 @@
                <Label styleClass="italic-33" text="Recensioni &amp; Valutazioni" />
             </HBox>
 
-            <VBox>
+            <VBox fx:id="myReviewSection">
                <HBox alignment="BOTTOM_LEFT">
                   <Label styleClass="regular-23" text="La mia recensione" />
                </HBox>

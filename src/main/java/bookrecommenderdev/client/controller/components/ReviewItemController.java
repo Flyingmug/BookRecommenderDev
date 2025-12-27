@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
+import static bookrecommenderdev.utils.InputVerifiers.pulisci;
+
 public class ReviewItemController {
 
   @FXML private GridPane reviewContainer;
@@ -14,16 +16,30 @@ public class ReviewItemController {
   @FXML private Label reviewGenerale;
 
   public void setReview(Valutazione review) {
+    if (review == null) {
+      reviewHeaderScoreContainer.getChildren().clear();
+      hide(reviewGenerale);
+      return;
+    }
 
+    System.out.println("review: " + review.getIdUtente() + "\n" +
+        review.getIdLibro() + "\n" +
+        review.getStile() + " " + review.getRecensioneStile() + "\n" +
+        review.getContenuto() + " " + review.getRecensioneContenuto());
+
+    // voto finale
     reviewHeaderScoreContainer.getChildren().setAll(
         new Label(String.format("%.1f", review.getVotoFinale())),
         StarIconFactory.buildStars(review.getVotoFinale())
     );
 
     // aggiunta recensione generale (se presente)
-    if(review.getRecensioneGenerale() != null && !review.getRecensioneGenerale().isEmpty()) {
+    String generale = pulisci(review.getRecensioneGenerale());
+    if(!generale.isEmpty()) {
+      show(reviewGenerale);
       reviewGenerale.setText(review.getRecensioneGenerale());
     } else {
+      reviewGenerale.setVisible(false);
       reviewGenerale.setManaged(false);
     }
 
@@ -32,21 +48,18 @@ public class ReviewItemController {
     for (CampoValutazione campo : CampoValutazione.values()) {
       if (campo == CampoValutazione.GENERALE) continue;
 
-      String valueText = getReviewField(campo, review);
+      String valueText = pulisci(getReviewField(campo, review));
       int score = (int) getReviewScore(campo, review);
 
-      if (valueText != null && !valueText.isEmpty()) {
-        addRow(campo.label(), score, valueText, row);
-        row++;
-      }
+      addRow(campo.label(), score, valueText, row);
+      row++;
     }
 
   }
 
   private void addRow(String fieldText, int reviewScore, String valueText, int row) {
-
     Label field = new Label(fieldText.toUpperCase());
-    Label score = new Label(""+reviewScore);
+    Label score = new Label(Integer.toString(reviewScore));
     score.getStyleClass().add("review-key-score");
 
     HBox keyBox = new HBox(field, score);
@@ -79,5 +92,15 @@ public class ReviewItemController {
       case EDIZIONE -> review.getEdizione();
       case GENERALE -> review.getVotoFinale();
     };
+  }
+
+  private static void hide(Region r) {
+    r.setVisible(false);
+    r.setManaged(false);
+  }
+
+  private static void show(Region r) {
+    r.setVisible(true);
+    r.setManaged(true);
   }
 }

@@ -49,6 +49,7 @@ public class RootController {
     routes.add(new Route("/search/author/:a/year/:y", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
 
     routes.add(new Route("/book/:id", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/book/:id/review", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
@@ -57,7 +58,6 @@ public class RootController {
     routes.add(new Route("/libraries/:id", "library-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/library/create", "library-creator-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
-    routes.add(new Route("/review/:id", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     routes.add(new Route("/not-found", "errors/not-found-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
 

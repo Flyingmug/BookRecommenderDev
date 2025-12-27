@@ -9,6 +9,7 @@ import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.NotFoundException;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
+import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
@@ -42,6 +43,7 @@ public class BookController implements Routable {
   @FXML private Label editore;
   @FXML private Label categorie;
   @FXML private TilePane scoresContainer;
+  @FXML private VBox myReviewSection;
 
   @FXML private VBox reviewsSection;
   @FXML private ReviewsSectionController reviewsSectionController;  // assegnazione automatica tramite fx:include
@@ -68,7 +70,15 @@ public class BookController implements Routable {
 
   @FXML
   public void initialize() {
+
     setHandleLayoutChange();
+
+    myReviewSection.visibleProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
+    myReviewSection.managedProperty().bind(
+        AuthContext.userProperty().isNotNull()
+    );
   }
 
   /**

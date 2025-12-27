@@ -12,8 +12,7 @@
    <VBox styleClass="search-page-container">
       <VBox styleClass="search-page" VBox.vgrow="ALWAYS">
 
-         <VBox minHeight="-Infinity">
-
+         <VBox>
             <Label text="Ricerca"
                    styleClass="italic-30"
                    style="-fx-text-fill: #8f8f8f;" />

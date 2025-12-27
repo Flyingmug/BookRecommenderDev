@@ -42,6 +42,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // libri
   //
 
+  /**
+   * todo documentation
+  * */
+  @Override
   public PageResult<Libro> cercaLibro(SearchRequest richiesta, int indicePagina)
       throws RemoteException, DataAccessException {
 
@@ -75,21 +79,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   }
 
 
-  public PageResult<Libro> searchAutore(String autore)
-      throws RemoteException, DataAccessException {
-
-    return null;
-  }
-
-  public PageResult<Libro> searchAnnoAutore(String annoAutore)
-      throws RemoteException, DataAccessException {
-
-      return null;
-  }
-
   /**
-   *
+   * todo doc
    * */
+  @Override
   public Libro getLibro(int idLibro)
       throws RemoteException, NotFoundException, DataAccessException {
     try {
@@ -97,20 +90,22 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
           .orElseThrow(() -> new NotFoundException("Libro non trovato: " + idLibro));
 
     } catch (SQLException e) {
+      e.printStackTrace();
       throw new DataAccessException("Errore DB durante getLibro(" + idLibro + ")", e);
     }
 
   }
 
   /**
-   *
+   * todo documentation
    * */
+  @Override
   public PaginaLibro getPaginaLibro(int idLibro)
       throws RemoteException, NotFoundException, DataAccessException {
     try {
       Libro l = libri.getComplete(idLibro)
           .orElseThrow(() -> new NotFoundException("Libro non trovato: " + idLibro));
-      double[] v = valutazioni.getAverage(idLibro);
+      double[] v = valutazioni.getAverageScores(idLibro).orElse(null);
       return new PaginaLibro(l, v);
 
     } catch(SQLException e) {
@@ -125,7 +120,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    /**
     *
     * */
-  public List<LibraryResult> getListLibrerie(long idUtente)
+  public List<LibraryResult> getListLibrerie(int idUtente)
       throws RemoteException, DataAccessException {
     try {
       return librerie.getLibrerie(idUtente);
@@ -134,12 +129,12 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     }
   }
 
-  public PaginaLibriRisultati searchAllLibrerie(long idUtente, String query, int pageNumber)
+  public PaginaLibriRisultati searchAllLibrerie(int idUtente, String query, int pageNumber)
       throws RemoteException, DataAccessException {
     return null;
   }
 
-  public PaginaLibriRisultati searchLibreria(long idUtente, String nomeLibreria,  int pageNumber)
+  public PaginaLibriRisultati searchLibreria(int idUtente, String nomeLibreria,  int pageNumber)
       // todo eneds to throw notfound aswell
       throws RemoteException, NotFoundException, DataAccessException {
     try {
@@ -159,7 +154,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
   }
 
-  public void deleteLibreria(String nome, long idUtente)
+  public void deleteLibreria(String nome, int idUtente)
       throws RemoteException {
 
   }
@@ -169,51 +164,59 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // Valutazioni
   //
 
+  /**
+   * todo doc
+   * */
   @Override
   public Valutazione getValutazione(int idLibro, int idUtente)
-      throws RemoteException {
+      throws RemoteException, DataAccessException {
     try {
-      return valutazioni.get(idLibro, idUtente);
+      return valutazioni.get(idLibro, idUtente).orElse(null);
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return null;
-      // throw new RemoteException("Error in list obtaining"); // Replace with better error
+      throw new DataAccessException("Errore (DB) nell'ottenimento della valutazione.", e);
     }
   }
 
-  public PaginaValutazioni getValutazioni(long idLibro, int indicePagina)
-      throws RemoteException {
-    PaginaValutazioni elenco;
+  /**
+   * todo doc
+   * */
+  @Override
+  public PaginaValutazioni cercaValutazioni(int idLibro, int indicePagina)
+      throws RemoteException, DataAccessException {
     try {
-      elenco = valutazioni.getPage(indicePagina, idLibro);
-      return elenco;
+      return valutazioni.getPage(indicePagina, idLibro);
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return null;
+      throw new DataAccessException("Errore (DB) nella ricerca delle valutazioni.", e);
     }
   }
 
+  /**
+   * todo doc
+   * */
   @Override
   public boolean inserisciValutazione(Valutazione valutazione)
-      throws RemoteException {
+      throws RemoteException, DataAccessException {
     try {
       return valutazioni.save(valutazione);
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
+      throw new DataAccessException("Errore (DB) nell'inserimento della valutazione.", e);
     }
   }
 
+  /**
+   * todo doc
+   */
   @Override
   public boolean deleteValutazione(int idLibro, int idUtente)
-      throws RemoteException {
+      throws RemoteException, DataAccessException {
     try {
       return valutazioni.delete(idLibro, idUtente);
-      // todo gestione true/false per valutazione inesistente o rimossa
-      // todo POSSIBILE SOLUZIONE: usare false come "database intoccato"
+
     } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
+      throw new DataAccessException("Errore (DB) nella cancellazione della valutazione.", e);
     }
   }
 
@@ -222,7 +225,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // Consigli
   //
 
-  public List<Libro> getConsigli(long idLibro)
+  public List<Libro> getConsigli(int idLibro)
       throws RemoteException {
 
     return List.of();

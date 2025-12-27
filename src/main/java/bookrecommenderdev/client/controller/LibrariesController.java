@@ -48,7 +48,7 @@ public class LibrariesController implements Routable {
   private void resolve(int pageIndex) {
 
     if (!AuthContext.isAuthenticated()) return;   // router shouldn't allow to be here regardless
-    long userId = AuthContext.getUser().getId_utente();
+    int userId = AuthContext.getUser().getId_utente();
 
     try {
 

@@ -1,6 +1,7 @@
 package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.factory.ReviewItemFactory;
+import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.Valutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
@@ -15,12 +16,13 @@ import java.rmi.RemoteException;
 
 public class UserReviewSectionController {
 
-  @FXML private Parent root;
   @FXML private VBox content;
   @FXML private VBox mainArea;
-  @FXML private Button removeButton;
+  @FXML private Button deleteButton;
   @FXML private Label titleLabel;
   @FXML private Button reviewButton;
+
+  @FXML private ErrorBannerController errorBannerController;
 
   private int idLibro;
   private AppContext context;
@@ -30,82 +32,90 @@ public class UserReviewSectionController {
     this.context = context;
     this.idLibro = idLibro;
 
-    if (context == null || !AuthContext.isAuthenticated()) {
-      System.out.println("context is null or user not authenticated.");
-      hideSection();
-      return; // todo behaviour needed at all?
-    }
-
-    try {
-      Valutazione v = context.server()
-          .getValutazione(idLibro, AuthContext.getUser().getId_utente());
-
-      if (v != null) {
-        // valutazione presente -> mostra valutazione
-        // mostra pulsante di eliminazione recensione
-        showExistingReview(v);
-      } else {
-        showCreateReview();
-      }
-
-      showSection();
-
-    } catch (RemoteException e) {
-      System.out.println("Errore nel reperimento della valutazione.");
-      e.printStackTrace();
-      hideSection();
-    }
+    refresh();
   }
 
   @FXML
   private void onReview() {
-    Router.go("/review/" + idLibro);
+    Router.go("/book/" + idLibro + "/review");
   }
 
   @FXML
-  private void onRemoveReview() {
+  private void onDeleteReview() {
     try {
-      if (!AuthContext.isAuthenticated() || context == null) {
-        System.out.println("ERR2 context is null or user not authenticated.");
-        return;
-      }
+      if (context == null || !AuthContext.isAuthenticated()) return;
 
-      boolean result = context.server().deleteValutazione(
-          idLibro,
-          AuthContext.getUser().getId_utente()
+      // valore di ritorno gestito tramite refresh del componente
+      context.server().deleteValutazione(idLibro, AuthContext.getUser().getId_utente());
+      refresh();
+    } catch (DataAccessException | RemoteException e) {
+
+      // no "hideSection"
+      errorBannerController.show(
+          "Errore nel reperimento della valutazione (DB).",
+          this::refresh,
+          null
       );
-
-      System.out.println(result ?
-          "success: review removed" : "failure: db unaffected");
-
-      // Refresh section
-      showCreateReview();
-    } catch (RemoteException e) {
-      e.printStackTrace();
     }
   }
 
+  private void refresh() {
+
+    if (context == null || !AuthContext.isAuthenticated()) {
+      hideSection();
+      return;
+    }
+
+    try {
+      int userId = AuthContext.getUser().getId_utente();
+      Valutazione v = context.server().getValutazione(idLibro, userId);
+
+      if (v != null) showExistingReview(v);
+      else showCreateReview();
+
+      showSection();
+      notifyLayoutChange();
+
+    } catch (DataAccessException e) {
+
+      hideSection();
+      errorBannerController.show(
+          "Errore nel reperimento della valutazione (DB).",
+          this::refresh,
+          null
+      );
+    } catch (RemoteException e) {
+
+      hideSection();
+      errorBannerController.show(
+          "Errore di comunicazione con il server.",
+          this::refresh,
+          null
+      );
+    }
+  }
 
   private void showExistingReview(Valutazione v) {
+
     mainArea.getChildren().setAll(
         ReviewItemFactory.createReviewNode(v)
     );
 
-    removeButton.setVisible(true);
-    removeButton.setManaged(true);
+    deleteButton.setVisible(true);
+    deleteButton.setManaged(true);
   }
 
   private void showCreateReview() {
     showIntro();
-    removeButton.setVisible(false);
-    removeButton.setManaged(false);
+    deleteButton.setVisible(false);
+    deleteButton.setManaged(false);
 
     notifyLayoutChange();
   }
 
   private void showSection() {
-    root.setVisible(true);
-    root.setManaged(true);
+    content.setVisible(true);
+    content.setManaged(true);
   }
 
   private void showIntro() {
@@ -117,8 +127,8 @@ public class UserReviewSectionController {
   }
 
   private void hideSection() {
-    root.setVisible(false);
-    root.setManaged(false);
+    content.setVisible(false);
+    content.setManaged(false);
   }
 
   /** Notifica un cambiamento di layout. */

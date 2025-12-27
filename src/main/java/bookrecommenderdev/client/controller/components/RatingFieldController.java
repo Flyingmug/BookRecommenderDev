@@ -52,20 +52,25 @@ public class RatingFieldController {
     toggleIcon.setIconLiteral(show ? "mdi2m-minus" : "mdi2p-plus");
   }
 
-  /* API exposed to parent */
+  /* Metodi esposti */
 
   public void setTitle(String title) {
     titleLabel.setText(title);
   }
 
-  public int getScore() {
-    return scoreBox.getValue() == null ? -1 : scoreBox.getValue();
+  public Integer getScore() {
+    return scoreBox.getValue();
   }
 
+  /** <p>Restituisce il valore del campo di testo senza spazi agli estremi.
+   *  <p>Restituisce null se la stringa è composta da soli spazi. */
   public String getTextReview() {
-    return textReviewArea.getText();
+    if (textReviewArea.getText() == null) return null;
+    String t = textReviewArea.getText().trim();
+    return t.isBlank() ? null : t;
   }
 
+  /** Imposta la visibilità dell'elemento di scelta del punteggio. */
   public void setScoreBoxVisible(boolean visible) {
     scoreBox.setVisible(visible);
     scoreBox.setManaged(visible);

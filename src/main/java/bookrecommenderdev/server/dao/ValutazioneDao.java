@@ -9,69 +9,33 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static bookrecommenderdev.Constants.REVIEWS_PAGE_SIZE;
 
-public class ValutazioneDao
-{
+public class ValutazioneDao {
+
   private final DataSource datasource;
   public ValutazioneDao(DataSource ds) { this.datasource = ds; }
 
   /**
-   * Calcola le medie delle valutazioni dei punteggi di un libro
-   *
-   * @param id_libro id di un libro
-   * @return array di 5 float contenente le cinque medie
-   */
-  public double[] getAverage(int id_libro) throws SQLException {
-
-    System.out.println("Chiave ricevuta: " + id_libro);
-    double[] averageScores = new double[5];
-
-
-    String q = "SELECT AVG(stile) as stile, AVG(contenuto) as contenuto, AVG(gradevolezza) as gradevolezza, AVG(originalita) as originalita, AVG(edizione) as edizione FROM ValutazioniLibri WHERE id_libro = ?";
-
-    try (Connection conn = datasource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(q)) {
-
-      ps.setInt(1, id_libro);
-      ResultSet rs = ps.executeQuery();
-
-      while (rs.next()) {
-        averageScores[0] = rs.getInt("stile");
-        averageScores[1] = rs.getInt("contenuto");
-        averageScores[2] = rs.getInt("gradevolezza");
-        averageScores[3] = rs.getInt("originalita");
-        averageScores[4] = rs.getInt("edizione");
-      }
-
-      System.out.println("VAL DAO punteggi risultanti: " +
-          averageScores[0] +
-          averageScores[1] +
-          averageScores[2] +
-          averageScores[3] +
-          averageScores[4]);
-
-      return averageScores[0] > 0 ? averageScores : null;
-    }
-  }
-
-  public Valutazione get(int id_libro, int id_utente) throws SQLException {
-    Valutazione valutazione = null;
-    System.out.println("Chiave ricevuta: " + id_libro);
-    String q = "SELECT * FROM valutazionilibri WHERE id_libro = ? AND id_utente = ?";
+   * todo documentation
+   * */
+  public Optional<Valutazione> get(int id_libro, int id_utente) throws SQLException {
+    final String q = "SELECT * FROM valutazionilibri WHERE id_libro = ? AND id_utente = ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
       ps.setInt(1, id_libro);
       ps.setInt(2, id_utente);
-      ResultSet rs = ps.executeQuery();
 
-      while (rs.next()) {
-        valutazione = new Valutazione(rs.getInt("id_libro"),
+      try (ResultSet rs = ps.executeQuery()) {
+        if (!rs.next()) return Optional.empty();
+
+        Valutazione v = new Valutazione(
+            rs.getInt("id_libro"),
             rs.getInt("id_utente"),
             rs.getInt("stile"),
             rs.getInt("contenuto"),
@@ -83,23 +47,35 @@ public class ValutazioneDao
             rs.getString("recensione_gradevolezza"),
             rs.getString("recensione_originalita"),
             rs.getString("recensione_edizione"),
-            rs.getString("recensione_generale"));
+            rs.getString("recensione_generale")
+        );
+        return Optional.of(v);
       }
 
-      System.out.println("Valutazione presente: " + (valutazione != null));
-
     }
-
-    return valutazione;
   }
 
-
+  /**
+  * todo doc
+  * aggiunge o aggiorna se presente ...
+  * */
   public boolean save(Valutazione valutazione) throws SQLException {
-    System.out.println("Chiavi ricevute: id libro: " + valutazione.getIdLibro() + ", id utente: " + valutazione.getIdUtente()); // DEBUG
-    String q = "INSERT INTO valutazionilibri (" +
-      "id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione, " +
-      "recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione, recensione_generale) " +
-      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    final String q = "INSERT INTO valutazionilibri (" +
+      " id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione," +
+      " recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione, recensione_generale)" +
+      " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+      " ON CONFLICT (id_utente, id_libro) DO UPDATE SET" +
+      " stile = EXCLUDED.stile," +
+      " contenuto = EXCLUDED.contenuto," +
+      " gradevolezza = EXCLUDED.gradevolezza," +
+      " originalita = EXCLUDED.originalita," +
+      " edizione = EXCLUDED.edizione," +
+      " recensione_stile = EXCLUDED.recensione_stile," +
+      " recensione_contenuto = EXCLUDED.recensione_contenuto," +
+      " recensione_gradevolezza = EXCLUDED.recensione_gradevolezza," +
+      " recensione_originalita = EXCLUDED.recensione_originalita," +
+      " recensione_edizione = EXCLUDED.recensione_edizione," +
+      " recensione_generale = EXCLUDED.recensione_generale;";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -121,109 +97,116 @@ public class ValutazioneDao
       ps.setString(12, valutazione.getRecensioneEdizione());
       ps.setString(13, valutazione.getRecensioneGenerale());
 
-      int rowsAffected = ps.executeUpdate();
-      System.out.println("Righe modificate: " + rowsAffected);
-      return rowsAffected > 0;
+      return ps.executeUpdate() > 0;
     }
   }
 
+  /**
+   * todo doc
+   * */
   public boolean delete(int id_libro, int id_utente) throws SQLException {
-
-    String q = "DELETE FROM valutazionilibri WHERE id_libro = ? AND id_utente = ?";
-
-    try (Connection conn = datasource.getConnection();
-    PreparedStatement ps = conn.prepareStatement(q)) {
-
-      ps.setInt(1, id_libro);
-      ps.setInt(2, id_utente);
-
-      int rowsAffected = ps.executeUpdate();
-
-      System.out.println("Right modificate: " + rowsAffected);
-      return rowsAffected>0;
-    }
-  }
-
-  public PaginaValutazioni getPage(int pageNumber, long idLibro) throws SQLException {
-    System.out.println("DAO chiave ricevuta: " + idLibro);
-    List<Valutazione> valutazioni = new ArrayList<>();
-    int totalCount = 0;
-
-    String q = "SELECT *, COUNT(*) OVER() as numero_risultati FROM valutazionilibri WHERE id_libro = ? OFFSET ? LIMIT ?";
+    final String q =
+        "DELETE FROM valutazionilibri WHERE id_libro = ? AND id_utente = ?";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
-      ps.setLong(1, idLibro); // fixme int? long?
-      ps.setInt(2, pageNumber * REVIEWS_PAGE_SIZE);
+      ps.setInt(1, id_libro);
+      ps.setInt(2, id_utente);
+
+      return ps.executeUpdate() > 0;
+    }
+  }
+
+  /**
+   * Calcola le medie delle valutazioni dei punteggi di un libro.
+   * todo doc
+   * @param id_libro Id di un libro.
+   * @return Array di 5 float contenente le cinque medie.
+   */
+  public Optional<double[]> getAverageScores(int id_libro) throws SQLException {
+    final String q =
+        "SELECT Count(*) as totalCount," +
+        " AVG(stile) as stile," +
+        " AVG(contenuto) as contenuto," +
+        " AVG(gradevolezza) as gradevolezza," +
+        " AVG(originalita) as originalita," +
+        " AVG(edizione) as edizione" +
+        " FROM ValutazioniLibri" +
+        " WHERE id_libro = ?";
+
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setInt(1, id_libro);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (!rs.next()) return Optional.empty();
+
+        int totalCount = rs.getInt("totalCount");
+        if (totalCount == 0) return Optional.empty();
+
+        double[] avg = new double[5];
+        avg[0] = rs.getDouble("stile");
+        avg[1] = rs.getDouble("contenuto");
+        avg[2] = rs.getDouble("gradevolezza");
+        avg[3] = rs.getDouble("originalita");
+        avg[4] = rs.getDouble("edizione");
+
+        return Optional.of(avg);
+      }
+
+    }
+  }
+
+  /**
+   * todo doc
+   * */
+  public PaginaValutazioni getPage(int indicePagina, int id_libro) throws SQLException {
+    final String q =
+        "SELECT *, COUNT(*) OVER() as numero_risultati" +
+        " FROM valutazionilibri" +
+        " WHERE id_libro = ?" +
+        " OFFSET ? LIMIT ?";
+
+    List<Valutazione> valutazioni = new ArrayList<>();
+    int totalCount = 0;
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setInt(1, id_libro);
+      ps.setInt(2, indicePagina * REVIEWS_PAGE_SIZE);
       ps.setInt(3, REVIEWS_PAGE_SIZE);
 
-      ResultSet rs = ps.executeQuery();
+      try (ResultSet rs = ps.executeQuery()) {
 
-      if (rs.next()) {
-        totalCount = rs.getInt("numero_risultati");
+        if (rs.next()) {
 
-        do {
-          valutazioni.add(new Valutazione(
-              rs.getInt("stile"),
-              rs.getInt("contenuto"),
-              rs.getInt("gradevolezza"),
-              rs.getInt("originalita"),
-              rs.getInt("edizione"),
-              rs.getString("recensione_stile"),
-              rs.getString("recensione_contenuto"),
-              rs.getString("recensione_gradevolezza"),
-              rs.getString("recensione_originalita"),
-              rs.getString("recensione_edizione"),
-              rs.getString("recensione_generale")
-          ));
-        } while (rs.next());
+          totalCount = rs.getInt("numero_risultati");
+          do {
+            valutazioni.add(new Valutazione(
+                rs.getInt("id_libro"),
+                rs.getInt("id_utente"),
+                rs.getInt("stile"),
+                rs.getInt("contenuto"),
+                rs.getInt("gradevolezza"),
+                rs.getInt("originalita"),
+                rs.getInt("edizione"),
+                rs.getString("recensione_stile"),
+                rs.getString("recensione_contenuto"),
+                rs.getString("recensione_gradevolezza"),
+                rs.getString("recensione_originalita"),
+                rs.getString("recensione_edizione"),
+                rs.getString("recensione_generale")
+            ));
+          } while (rs.next());
+        }
       }
     }
 
-    System.out.println("VAL DAO Numero risultati: " + valutazioni.size());
     return new PaginaValutazioni(valutazioni, totalCount);
   }
-
-
-//
-//  public List<Valutazione> getAll (int id_libro){
-//    List<Valutazione> elenco = new LinkedList<>();
-//
-//    System.out.println("Chiave ricevuta: " + id_libro);
-//
-//    String q = "SELECT stile, contenuto, gradevolezza, originalita, edizione, " +
-//        "recensione_stile, recensione_contenuto, recensione_gradevolezza, " +
-//        "recensione_originalita, recensione_edizione, recensione_generale " +
-//        "FROM Valutazioni WHERE id_libro = ?";
-//
-//    try (Connection conn = datasource.getConnection();
-//         PreparedStatement ps = conn.prepareStatement(q)) {
-//
-//      ps.setInt(1, id_libro);
-//      ResultSet rs = ps.executeQuery();
-//
-//      while (rs.next()) {
-//        elenco.add(new Valutazione(rs.getInt("stile"),
-//            rs.getInt("contenuto"),
-//            rs.getInt("gradevolezza"),
-//            rs.getInt("originalita"),
-//            rs.getInt("edizione"),
-//            rs.getString("recensione_stile"),
-//            rs.getString("recensione_contenuto"),
-//            rs.getString("recensione_gradevolezza"),
-//            rs.getString("recensione_originalita"),
-//            rs.getString("recensione_edizione"),
-//            rs.getString("recensione_generale")));
-//      }
-//
-//      System.out.println("Numero risultati: "+ elenco.size());
-//
-//    } catch (SQLException e) {
-//      System.out.println("Errore nelle connessione al database.");
-//      e.printStackTrace();
-//    }
-//    return elenco;
-//  }
 
 }

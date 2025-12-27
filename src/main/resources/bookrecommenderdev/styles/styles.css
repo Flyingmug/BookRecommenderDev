@@ -555,6 +555,7 @@
     -fx-font-size: 14;
 }
 .review-key-score {
+    -fx-min-height: 23;
     -fx-font-size: 17;
 }
 .review-value {
@@ -580,6 +581,15 @@
     -fx-spacing: 5;
     -fx-padding: 0 10 5 10;
 }
+.user-review-main {
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+.user-review-title {
+    -fx-alignment: center;
+    -fx-wrap-text: true;
+    -fx-padding: 10 0 0 0;
+}
 .user-review-add-button {
     -fx-background-color: transparent;
     -fx-cursor: hand;
@@ -603,9 +613,21 @@
     -fx-background-color: #2f2f2f;
 }
 .user-review-bg-icons-container {
+    -fx-alignment: center;
     -fx-padding: 0 0 30 0;
 }
-
+.user-review-delete-button {
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: transparent;
+    -fx-underline: true;
+    -fx-text-fill: black;
+    -fx-cursor: hand;
+}
+.user-review-delete-button:hover {
+    -fx-background-color: #942723;
+    -fx-text-fill: white;
+}
 
 
 

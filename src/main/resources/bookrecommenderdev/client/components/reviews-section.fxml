@@ -8,8 +8,10 @@
       fx:id="reviewsSectionContainer">
 
    <HBox alignment="BOTTOM_LEFT">
-      <Label fx:id="resultReviewIndexCounter" styleClass="results-index-counter" text="/ risultati" />
+      <Label fx:id="resultReviewIndexCounter" styleClass="results-index-counter" text="Nessun risultato..." />
    </HBox>
+
+   <fx:include source="error-banner.fxml" fx:id="errorBanner"/>
 
    <VBox styleClass="reviews-section">
       <HBox fx:id="reviewsTopSeparator" styleClass="reviews-control-separator" managed="false" visible="false" >

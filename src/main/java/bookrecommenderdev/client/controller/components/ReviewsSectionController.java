@@ -1,6 +1,7 @@
 package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.factory.ReviewItemFactory;
+import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.Valutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.server.dto.PaginaValutazioni;
@@ -19,13 +20,15 @@ import static bookrecommenderdev.Constants.REVIEWS_PAGE_SIZE;
 
 public class ReviewsSectionController {
 
-  @FXML VBox reviewsSectionContainer;
-  @FXML public Label resultReviewIndexCounter;
-  @FXML public HBox reviewsTopSeparator;
-  @FXML public HBox reviewsBottomSeparator;
-  @FXML public Button nextReviewsButton;
-  @FXML public Button previousReviewsButton;
-  @FXML public VBox reviewsContainer;
+  @FXML private VBox reviewsSectionContainer;
+  @FXML private Label resultReviewIndexCounter;
+  @FXML private HBox reviewsTopSeparator;
+  @FXML private HBox reviewsBottomSeparator;
+  @FXML private Button nextReviewsButton;
+  @FXML private Button previousReviewsButton;
+  @FXML private VBox reviewsContainer;
+
+  @FXML private ErrorBannerController errorBannerController;
 
   AppContext context;
   private int idLibro;
@@ -49,34 +52,39 @@ public class ReviewsSectionController {
    * */
   private void resolveReviews(int pageIndex) {
     try {
-      PaginaValutazioni data = context.server().cercaValutazioni(idLibro, pageIndex);
-      if (data == null) {
-        System.out.println("ERROR received null from DB: " + idLibro); // temp fixme
-        return;
-      }
+      PaginaValutazioni data = context.server().cercaValutazioni(idLibro, pageIndex); // never null now
 
       List<Valutazione> reviews = data.results();
       int totalResults = data.totalCount();
 
-      if (reviews.isEmpty() || totalResults == 0) {
-        System.out.println("Empty result set."); // DEBUG
+      totalResultCount = totalResults;
+
+      if (totalResults == 0 || reviews.isEmpty()) {
         showNoResults();
+        // riabilitazione comandi
+        setResultsControlsDisabled(false);
+        showDisabled(previousReviewsButton, false);
+        showDisabled(nextReviewsButton, false);
         return;
       }
 
-      totalResultCount = totalResults;
+      // mostra sezione (serve in caso di "riprova")
+      reviewsSectionContainer.setVisible(true);
+      reviewsSectionContainer.setManaged(true);
+      errorBannerController.hide();
 
-      resultReviewIndexCounter.setText(formatIndexCounter()); // should NOT happen everytime
-
-      System.out.println("Numero di risultati: " + totalResults); // DEBUG
+      resultReviewIndexCounter.setText(formatIndexCounter());
 
       load(reviews);
 
-    } catch(RemoteException e) {
-      System.out.println("SEARCHERR Error while fetching data");
-      e.printStackTrace();
-    }
+    } catch (DataAccessException e) {
+      // DB reachable but failed
+      showErrorState("Errore database durante il caricamento delle recensioni.", () -> resolveReviews(pageIndex));
 
+    } catch (RemoteException e) {
+      // server unreachable
+      showErrorState("Server non raggiungibile. Impossibile caricare le recensioni.", () -> resolveReviews(pageIndex));
+    }
   }
 
   /**
@@ -186,4 +194,18 @@ public class ReviewsSectionController {
     }
   }
 
+  private void showErrorState(String message, Runnable retry) {
+    // Keep section visible OR hide it — your choice.
+    // I recommend keeping it visible so the page doesn't "collapse".
+    reviewsSectionContainer.setVisible(true);
+    reviewsSectionContainer.setManaged(true);
+
+    // Re-enable buttons so user isn't stuck
+    setResultsControlsDisabled(false);
+    showDisabled(previousReviewsButton, false);
+    showDisabled(nextReviewsButton, false);
+
+    // If you have an ErrorBanner in this section:
+    errorBannerController.show(message, retry, null);
+  }
 }

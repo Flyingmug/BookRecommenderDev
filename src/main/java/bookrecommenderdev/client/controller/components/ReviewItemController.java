@@ -22,11 +22,6 @@ public class ReviewItemController {
       return;
     }
 
-    System.out.println("review: " + review.getIdUtente() + "\n" +
-        review.getIdLibro() + "\n" +
-        review.getStile() + " " + review.getRecensioneStile() + "\n" +
-        review.getContenuto() + " " + review.getRecensioneContenuto());
-
     // voto finale
     reviewHeaderScoreContainer.getChildren().setAll(
         new Label(String.format("%.1f", review.getVotoFinale())),

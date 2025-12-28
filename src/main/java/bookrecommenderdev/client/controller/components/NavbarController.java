@@ -1,16 +1,17 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.client.controller.components.controls.SearchbarController;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class NavbarController {
 
-  @FXML private VBox searchbar;
+  @FXML private VBox searchbarContainer;
+  @FXML private SearchbarController searchbarController;
 
   @FXML private Button loginButton;
   @FXML private Button registerButton;
@@ -18,8 +19,8 @@ public class NavbarController {
   @FXML private Parent profileButton;
 
   public void setSearchbarVisible(boolean visible) {
-    searchbar.setVisible(visible);
-    searchbar.setVisible(visible);
+    searchbarContainer.setVisible(visible);
+    searchbarContainer.setManaged(visible);
   }
 
   @FXML
@@ -63,6 +64,8 @@ public class NavbarController {
     profileButton.disableProperty().bind(
         AuthContext.userProperty().isNull()
     );
+
+    searchbarController.setOnSearch(req -> Router.go("/search", req));
   }
 
   @FXML public void onRegister() { Router.go("/registration"); }
@@ -70,7 +73,5 @@ public class NavbarController {
   @FXML public void onLogin() { Router.go("/login"); }
 
   @FXML public void onLibraries() { Router.go("/libraries"); }
-
-  @FXML public void onProfile() { Router.go("/profile"); }
 
 }

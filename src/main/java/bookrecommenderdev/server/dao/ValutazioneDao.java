@@ -34,25 +34,46 @@ public class ValutazioneDao {
       try (ResultSet rs = ps.executeQuery()) {
         if (!rs.next()) return Optional.empty();
 
-        Valutazione v = new Valutazione(
-            rs.getInt("id_libro"),
-            rs.getInt("id_utente"),
-            rs.getInt("stile"),
-            rs.getInt("contenuto"),
-            rs.getInt("gradevolezza"),
-            rs.getInt("originalita"),
-            rs.getInt("edizione"),
-            rs.getString("recensione_stile"),
-            rs.getString("recensione_contenuto"),
-            rs.getString("recensione_gradevolezza"),
-            rs.getString("recensione_originalita"),
-            rs.getString("recensione_edizione"),
-            rs.getString("recensione_generale")
-        );
+        Valutazione v = mapValutazione(rs);
         return Optional.of(v);
       }
 
     }
+  }
+
+  /**
+   * todo doc
+   * */
+  public PaginaValutazioni getPage(int indicePagina, int id_libro) throws SQLException {
+    final String q =
+        "SELECT *, COUNT(*) OVER() as numero_risultati" +
+            " FROM valutazionilibri" +
+            " WHERE id_libro = ?" +
+            " OFFSET ? LIMIT ?";
+
+    List<Valutazione> valutazioni = new ArrayList<>();
+    int totalCount = 0;
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setInt(1, id_libro);
+      ps.setInt(2, indicePagina * REVIEWS_PAGE_SIZE);
+      ps.setInt(3, REVIEWS_PAGE_SIZE);
+
+      try (ResultSet rs = ps.executeQuery()) {
+
+        if (rs.next()) {
+
+          totalCount = rs.getInt("numero_risultati");
+          do {
+            valutazioni.add(mapValutazione(rs));
+          } while (rs.next());
+        }
+      }
+    }
+
+    return new PaginaValutazioni(valutazioni, totalCount);
   }
 
   /**
@@ -160,53 +181,21 @@ public class ValutazioneDao {
     }
   }
 
-  /**
-   * todo doc
-   * */
-  public PaginaValutazioni getPage(int indicePagina, int id_libro) throws SQLException {
-    final String q =
-        "SELECT *, COUNT(*) OVER() as numero_risultati" +
-        " FROM valutazionilibri" +
-        " WHERE id_libro = ?" +
-        " OFFSET ? LIMIT ?";
-
-    List<Valutazione> valutazioni = new ArrayList<>();
-    int totalCount = 0;
-
-    try (Connection conn = datasource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(q)) {
-
-      ps.setInt(1, id_libro);
-      ps.setInt(2, indicePagina * REVIEWS_PAGE_SIZE);
-      ps.setInt(3, REVIEWS_PAGE_SIZE);
-
-      try (ResultSet rs = ps.executeQuery()) {
-
-        if (rs.next()) {
-
-          totalCount = rs.getInt("numero_risultati");
-          do {
-            valutazioni.add(new Valutazione(
-                rs.getInt("id_libro"),
-                rs.getInt("id_utente"),
-                rs.getInt("stile"),
-                rs.getInt("contenuto"),
-                rs.getInt("gradevolezza"),
-                rs.getInt("originalita"),
-                rs.getInt("edizione"),
-                rs.getString("recensione_stile"),
-                rs.getString("recensione_contenuto"),
-                rs.getString("recensione_gradevolezza"),
-                rs.getString("recensione_originalita"),
-                rs.getString("recensione_edizione"),
-                rs.getString("recensione_generale")
-            ));
-          } while (rs.next());
-        }
-      }
-    }
-
-    return new PaginaValutazioni(valutazioni, totalCount);
+  private Valutazione mapValutazione(ResultSet rs) throws SQLException {
+    return new Valutazione(
+        rs.getInt("id_libro"),
+        rs.getInt("id_utente"),
+        rs.getInt("stile"),
+        rs.getInt("contenuto"),
+        rs.getInt("gradevolezza"),
+        rs.getInt("originalita"),
+        rs.getInt("edizione"),
+        rs.getString("recensione_stile"),
+        rs.getString("recensione_contenuto"),
+        rs.getString("recensione_gradevolezza"),
+        rs.getString("recensione_originalita"),
+        rs.getString("recensione_edizione"),
+        rs.getString("recensione_generale")
+    );
   }
-
 }

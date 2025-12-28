@@ -1,6 +1,6 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.client.controller.components.ErrorBannerController;
+import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.ReviewsSectionController;
 import bookrecommenderdev.client.controller.components.UserReviewSectionController;
 import bookrecommenderdev.client.factory.StarIconFactory;
@@ -21,8 +21,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -58,7 +56,7 @@ public class BookController implements Routable {
   int idLibro;
 
   @Override
-  public void onRoute(Map<String, String> params, AppContext context) {
+  public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
 
     idLibro = (Integer.parseInt(params.get("id")));
@@ -139,8 +137,6 @@ public class BookController implements Routable {
           () -> loadBookPage(idLibro),
           () -> Router.go("/")
       );
-
-      e.printStackTrace();  // fixme DEBUG
     }
   }
 

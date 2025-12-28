@@ -7,5 +7,5 @@ import bookrecommenderdev.routing.animation.TransitionAnimation;
  * @param path Percorso
  * @param transition Transizione utilizzata
  */
-public record RouteEntry(String path, TransitionAnimation transition) {
+public record RouteEntry(String path, TransitionAnimation transition, Object state) {
 }

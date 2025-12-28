@@ -13,22 +13,29 @@
       prefHeight="65.0" prefWidth="1000.0"
       styleClass="navbar" BorderPane.alignment="CENTER"
 >
+
    <fx:include source="controls/history-controls.fxml" />
-   <VBox fx:id="searchbar" styleClass="navbar-searchbar-container" visible="false">
-      <fx:include source="controls/searchbar.fxml" />
+
+   <VBox fx:id="searchbarContainer" styleClass="navbar-searchbar-container" visible="false">
+      <fx:include source="controls/searchbar.fxml" fx:id="searchbar" />
    </VBox>
+
    <Region HBox.hgrow="ALWAYS" />
+
    <HBox styleClass="navbar-buttons-container" minWidth="-Infinity">
+
       <Button fx:id="loginButton" onAction="#onLogin" styleClass="login-button, navbar-button" text="Accedi">
          <tooltip>
             <Tooltip text="Login" />
          </tooltip>
       </Button>
+
       <Button fx:id="registerButton" onAction="#onRegister" styleClass="register-button, navbar-button" text="Registrati">
          <tooltip>
             <Tooltip text="Registrazione" />
          </tooltip>
       </Button>
+
       <Button fx:id="librariesButton" managed="false" onAction="#onLibraries" styleClass="libraries-button, navbar-button" text="Librerie">
          <tooltip>
             <Tooltip text="Librerie personali" />
@@ -37,7 +44,10 @@
             <Font size="15.0" />
          </font>
       </Button>
+
       <fx:include source="controls/home-link.fxml" />
+
       <fx:include fx:id="profileButton" source="controls/profile-control.fxml" />
+
    </HBox>
 </HBox>

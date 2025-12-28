@@ -40,4 +40,23 @@ public final class SearchRequest implements Serializable {
   public String getTitolo() { return titolo; }
   public String getAutore() { return autore; }
   public Integer getAnno() { return anno; }
+
+  public boolean isValid() {
+    return switch (getTipo()) {
+      case TITOLO -> getTitolo() != null && !getTitolo().trim().isBlank();
+      case AUTORE -> getAutore() != null && !getAutore().trim().isBlank();
+      case AUTORE_ANNO -> getAutore() != null && !getAutore().trim().isBlank()
+          && getAnno() != null;
+    };
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof SearchRequest b)) return false;
+    return tipo == b.tipo
+        && java.util.Objects.equals(titolo, b.titolo)
+        && java.util.Objects.equals(autore, b.autore)
+        && java.util.Objects.equals(anno, b.anno);
+  }
 }

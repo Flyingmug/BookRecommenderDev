@@ -1,4 +1,4 @@
-package bookrecommenderdev.client.controller.components;
+package bookrecommenderdev.client.controller.errors.components;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

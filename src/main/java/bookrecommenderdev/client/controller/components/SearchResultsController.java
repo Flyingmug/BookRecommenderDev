@@ -1,15 +1,14 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
-import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -43,7 +42,6 @@ public class SearchResultsController {
 
   public void setSource(PageFetcher<Libro> pageFetcher, SearchRequest req) {
     request = req;
-
     this.pageFetcher = pageFetcher;
 
     search();
@@ -224,7 +222,7 @@ public class SearchResultsController {
   /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
   private void setNoResultsTitle() {
     setNoResultsTitleVisible(true);
-    resultsNotFoundQuery.setText("Nessun risultato trovato per!");
+    resultsNotFoundQuery.setText("Nessun risultato trovato!");
   }
   private void setNoResultsTitleVisible(boolean b) {
     resultsNotFoundTitle.setVisible(b);

@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static bookrecommenderdev.routing.auth.AuthStatus.*;
 import static bookrecommenderdev.routing.auth.RegisterStatus.FISCAL_CODE_ALREADY_USED;
-import static bookrecommenderdev.utils.InputVerifiers.pulisci;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
@@ -54,26 +53,9 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     }
 
     try {
-      return switch(richiesta.getTipo()) {
-        case TITOLO -> {
-          String titolo = pulisci(richiesta.getTitolo());
-          if (titolo.isBlank()) yield new PaginaLibriRisultati(List.of(), 0);
-          yield libri.searchTitolo(indicePagina, titolo);
-        }
-        case AUTORE -> {
-          String autori = pulisci(richiesta.getAutore());
-          if (autori.isBlank()) yield new PaginaLibriRisultati(List.of(), 0);
-          yield libri.searchAutori(indicePagina, autori);
-        }
-        case AUTORE_ANNO -> {
-          String autori = pulisci(richiesta.getAutore());
-          Integer anno = richiesta.getAnno();
-          if (autori.isBlank() || anno == null) yield new PaginaLibriRisultati(List.of(), 0);
-          yield libri.searchAutoriAnno(indicePagina, autori, anno);
-        }
-      };
-    } catch (SQLException e) {
+      return libri.search(richiesta, indicePagina);
 
+    } catch (SQLException e) {
       throw new DataAccessException("Errore DB durante searchTitolo", e);
     }
   }
@@ -90,7 +72,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
           .orElseThrow(() -> new NotFoundException("Libro non trovato: " + idLibro));
 
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new DataAccessException("Errore DB durante getLibro(" + idLibro + ")", e);
     }
 
@@ -117,45 +98,76 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   //
   // librerie
   //
+
    /**
-    *
+    * todo doc
     * */
-  public List<LibraryResult> getListLibrerie(int idUtente)
+  @Override
+   public List<LibraryResult> getListLibrerie(int idUtente, int indicePagina)
       throws RemoteException, DataAccessException {
     try {
-      return librerie.getLibrerie(idUtente);
+      return librerie.getPageLibrerie(idUtente, indicePagina);
+
     } catch(SQLException e) {
+      e.printStackTrace();
       throw new DataAccessException("DB error", e);
     }
   }
 
-  public PaginaLibriRisultati searchAllLibrerie(int idUtente, String query, int pageNumber)
+  /**
+   * todo doc
+   */
+  @Override
+  public PaginaLibriRisultati searchAllLibrerie(int idUtente, SearchRequest richiesta, int indicePagina)
       throws RemoteException, DataAccessException {
-    return null;
+    try {
+      return librerie.searchAll(idUtente, richiesta, indicePagina);
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  public PaginaLibriRisultati searchLibreria(int idUtente, String nomeLibreria,  int pageNumber)
-      // todo eneds to throw notfound aswell
-      throws RemoteException, NotFoundException, DataAccessException {
+  /**
+   * todo doc
+   */
+  @Override
+  public PaginaLibriRisultati searchInLibreria(int idLibreria, int indicePagina)
+      throws RemoteException, DataAccessException {
     try {
-      return librerie.getLibraryPage(idUtente, nomeLibreria, pageNumber);
+      return librerie.searchIn(idLibreria, indicePagina);
+
     } catch (SQLException e) {
       throw new DataAccessException("DB error", e);
     }
   }
 
-  public void createLibreria(Libreria lib)
+  /**
+   * todo doc
+   */
+  @Override
+  public int createLibreria(int idUtente, String nomeLibreria, List<Integer> idList)
       throws RemoteException, InsertDBException {
+    try {
+      return librerie.creaLibreria(idUtente, nomeLibreria, idList);
 
+    } catch (SQLException e) {
+      throw new DataAccessException("Database Error", e);
+    }
   }
 
-  public void deleteLibreria(Libreria lib)
-      throws RemoteException {
+  /**
+   * todo doc
+   */
+  @Override
+  public boolean deleteLibreria(int id_libreria)
+      throws RemoteException, DataAccessException {
+    try {
+      return librerie.deleteLibreria(id_libreria);
 
-  }
-
-  public void deleteLibreria(String nome, int idUtente)
-      throws RemoteException {
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore durante la comunicazione con il database.", e);
+    }
 
   }
 
@@ -271,8 +283,8 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       utenti.save(u);
 
       return RegisterStatus.SUCCESS;
+
     } catch (SQLException e) {
-      e.printStackTrace();
       return RegisterStatus.DB_ERROR;
     }
   }

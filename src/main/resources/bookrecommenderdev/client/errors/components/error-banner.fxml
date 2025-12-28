@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox fx:id="root"
+      xmlns:fx="http://javafx.com/fxml"
+      xmlns="http://javafx.com/javafx"
+      fx:controller="bookrecommenderdev.client.controller.errors.components.ErrorBannerController"
+      visible="false"
+      managed="false"
+      styleClass="error-banner">
+
+   <Label fx:id="messageLabel"
+          text="Error"
+          styleClass="error-banner-label, regular-16" />
+
+   <Pane HBox.hgrow="ALWAYS"/>
+
+   <Button fx:id="retryButton"
+           text="Riprova"
+           visible="false"
+           managed="false"
+           styleClass="error-banner-control, regular-14">
+      <graphic>
+         <FontIcon iconLiteral="mdi2a-autorenew" iconSize="15" />
+      </graphic>
+   </Button>
+
+   <Button fx:id="backButton"
+           text="Indietro"
+           visible="false"
+           managed="false"
+           styleClass="error-banner-control, regular-14">
+      <graphic>
+         <FontIcon iconLiteral="mdi2k-keyboard-return" iconSize="15" />
+      </graphic>
+   </Button>
+
+</HBox>

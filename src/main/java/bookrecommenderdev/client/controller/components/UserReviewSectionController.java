@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.ReviewItemFactory;
 import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.Valutazione;
@@ -7,7 +8,6 @@ import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;

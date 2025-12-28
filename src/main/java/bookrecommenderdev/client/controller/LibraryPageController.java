@@ -8,6 +8,8 @@ import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
+import bookrecommenderdev.routing.route.Route;
+import bookrecommenderdev.routing.route.RouteMatch;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -21,7 +23,7 @@ public class LibraryPageController implements Routable {
   @FXML private SearchResultsController resultsSectionController;
 
   @Override
-  public void onRoute(Map<String, String> params, AppContext context) {
+  public void onRoute(Map<String, String> params, AppContext context, Object state) {
 
     if (resultsSectionController == null) return;
 
@@ -29,8 +31,10 @@ public class LibraryPageController implements Routable {
 
     Utente u = AuthContext.getUser();
 
+    SearchRequest req = SearchRequest.perTitolo(query);
+
     PageFetcher<Libro> source = page ->
-        context.server().searchLibreria(u.getId_utente(), query, page);
+        context.server().searchAllLibrerie(u.getId_utente(), req, page);
 
     resultsSectionController.setSource(source, SearchRequest.perTitolo(query));
   }

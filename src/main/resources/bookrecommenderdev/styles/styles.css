@@ -40,6 +40,10 @@
     -fx-font-family: "Montserrat Light";
     -fx-font-size: 13;
 }
+.light-16 {
+    -fx-font-family: "Montserrat Light";
+    -fx-font-size: 16;
+}
 .light-17 {
     -fx-font-family: "Montserrat Light";
     -fx-font-size: 17;
@@ -349,7 +353,7 @@
     -fx-icon-color: #454b94;
 }
 .searchbar-mode {
-  -fx-background-color: #f0f0f0;
+  -fx-background-color: #daf5fe;
   -fx-padding: 6 10;
   -fx-background-radius: 999;
 }
@@ -363,6 +367,14 @@
 }
 .home-searchbar-container .searchbar {
     -fx-pref-height: 60;
+    -fx-border-width: 1;
+    -fx-border-color: lightgrey;
+    -fx-pref-width: 640;
+}
+.libraries-search-searchbar-container {
+    -fx-spacing: 5;
+}
+.libraries-search-searchbar-container .searchbar {
     -fx-border-width: 1;
     -fx-border-color: lightgrey;
     -fx-pref-width: 640;
@@ -799,15 +811,15 @@
 }
 .libraries-container {
     -fx-pref-wrap-length: 280;
-    -fx-hgap: 20;
-    -fx-vgap: 20;
+    -fx-hgap: 12;
+    -fx-vgap: 12;
     -fx-padding: 10;
 }
 
 /* items */
 .library-item-button {
-    -fx-min-height: 120;
-    -fx-max-height: 120;
+    -fx-min-height: 60;
+    -fx-max-height: 60;
     -fx-min-width: 280;
     -fx-max-width: 280;
     -fx-background-insets: 0, 1;
@@ -876,6 +888,31 @@
 
 
 
+/* Error Banner */
+
+.error-banner {
+    -fx-background-color: #fef0ef;
+    -fx-border-color: #fbb2b2;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-spacing: 12;
+    -fx-padding: 12;
+}
+.error-banner-label {
+    -fx-alignment: center;
+    -fx-text-fill: #b71c1c;
+}
+.error-banner-control {
+    -fx-background-color: transparent;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #f28484;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+}
+.error-banner-control:hover {
+    -fx-background-color: #ef8888;
+}
 
 /* Temporary */
 

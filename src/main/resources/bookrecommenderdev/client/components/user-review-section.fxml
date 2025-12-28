@@ -9,10 +9,9 @@
 <VBox xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="bookrecommenderdev.client.controller.components.UserReviewSectionController">
 
-   <fx:include source="error-banner.fxml" fx:id="errorBanner"/>
+   <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner"/>
 
    <VBox fx:id="content" styleClass="user-review-container">
-
       <VBox fx:id="mainArea"
             styleClass="user-review-main"
             minHeight="-Infinity">

@@ -1,6 +1,6 @@
 package bookrecommenderdev.client.controller;
 
-import bookrecommenderdev.client.controller.components.ErrorBannerController;
+import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.RatingFieldController;
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.routing.AppContext;
@@ -31,7 +31,7 @@ public class ReviewFormController implements Routable {
   AppContext context;
 
   @Override
-  public void onRoute(Map<String, String> params, AppContext context) {
+  public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
 
     String idLibro = params.get("id");

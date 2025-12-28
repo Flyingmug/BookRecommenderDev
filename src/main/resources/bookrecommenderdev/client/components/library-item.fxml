@@ -12,10 +12,10 @@
     styleClass="library-item-button">
    <graphic>
       <VBox styleClass="library-item">
-         <Label fx:id="itemTitleLabel" styleClass="library-item-title, regular-19" />
+         <Label fx:id="itemTitleLabel" styleClass="library-item-title, regular-16" />
          <HBox>
             <FontIcon iconLiteral="mdi2b-bookshelf" styleClass="library-item-count-icon" />
-            <Label fx:id="itemCountLabel" styleClass="light-17" />
+            <Label fx:id="itemCountLabel" styleClass="light-16" />
          </HBox>
       </VBox>
    </graphic>

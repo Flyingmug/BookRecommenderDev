@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.ReviewItemFactory;
 import bookrecommenderdev.model.DataAccessException;
 import bookrecommenderdev.model.Valutazione;
@@ -78,11 +79,10 @@ public class ReviewsSectionController {
       load(reviews);
 
     } catch (DataAccessException e) {
-      // DB reachable but failed
-      showErrorState("Errore database durante il caricamento delle recensioni.", () -> resolveReviews(pageIndex));
 
+      showErrorState("Errore database durante il caricamento delle recensioni.", () -> resolveReviews(pageIndex));
     } catch (RemoteException e) {
-      // server unreachable
+
       showErrorState("Server non raggiungibile. Impossibile caricare le recensioni.", () -> resolveReviews(pageIndex));
     }
   }

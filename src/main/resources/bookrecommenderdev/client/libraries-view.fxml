@@ -19,7 +19,7 @@
          <VBox styleClass="libraries-searchbar-section">
             <Label text="Ricerca tra i libri salvati" styleClass="light-19" />
             <HBox styleClass="library-searchbar-wrapper">
-               <fx:include source="components/controls/searchbar.fxml" />
+               <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
             </HBox>
             <Separator prefWidth="Infinity" styleClass="libraries-searchbar-section-separator" />
          </VBox>

@@ -1,14 +1,17 @@
 package bookrecommenderdev.client.controller.components.controls;
 
+import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import static bookrecommenderdev.Constants.MAX_SEARCH_LENGTH;
-import static bookrecommenderdev.utils.InputVerifiers.numericOnlyAndLimit;
-import static bookrecommenderdev.utils.InputVerifiers.preventMultipleSpacesAndLimit;
+import static bookrecommenderdev.utils.InputVerifiers.*;
 
 public class SearchbarController {
 
@@ -32,29 +35,36 @@ public class SearchbarController {
   @FXML private Label modeLabel;
 
   private SearchType tipo = SearchType.TITOLO;
+  private Consumer<SearchRequest> onSearch;
+
+  public void setOnSearch(java.util.function.Consumer<SearchRequest> onSearch) {
+    this.onSearch = (onSearch == null) ? (req -> {}) : onSearch;
+  }
 
   @FXML
   public void search() {
-    String input = searchInput.getText() == null ? "" : searchInput.getText().trim();
-    if (input.isBlank()) return;
+    buildRequest().ifPresent(onSearch);
+  }
 
-    switch (tipo) {
-      case TITOLO -> Router.go("/search/title/" + input);
-      case AUTORE -> Router.go("/search/author/" + input);
+  private Optional<SearchRequest> buildRequest() {
+    String input = notNull(searchInput.getText());
+    if (input.isBlank()) return Optional.empty();
+
+    return switch (tipo) {
+      case TITOLO -> Optional.of(SearchRequest.perTitolo(input));
+      case AUTORE -> Optional.of(SearchRequest.perAutore(input));
       case AUTORE_ANNO -> {
-        String yearTxt = yearInput.getText() == null ? "" : yearInput.getText().trim();
-        if (yearTxt.isBlank()) return;
+        String yearTxt = notNull(yearInput.getText());
+        if (yearTxt.isBlank()) yield Optional.empty();
 
-        int year;
         try {
-          year = Integer.parseInt(yearTxt);
+          int year = Integer.parseInt(yearTxt);
+          yield Optional.of(SearchRequest.perAutoreAnno(input, year));
         } catch (NumberFormatException e) {
-          return;
+          yield Optional.empty();
         }
-
-        Router.go("/search/author/" + input + "/year/" + year);
       }
-    }
+    };
   }
 
   @FXML
@@ -71,25 +81,34 @@ public class SearchbarController {
 
   private void updateSearchBar() {
     switch (tipo) {
+
       case TITOLO -> {
         modeLabel.setText("Titolo");
+        modeLabel.setStyle("-fx-background-color: #daf5fe;");
         searchInput.setPromptText("Cerca per titolo...");
         yearInput.setVisible(false);
         yearInput.setManaged(false);
       }
+
       case AUTORE -> {
         modeLabel.setText("Autore");
+        modeLabel.setStyle("-fx-background-color: #dae1fe;");
+
         searchInput.setPromptText("Cerca per autore...");
         yearInput.setVisible(false);
         yearInput.setManaged(false);
       }
+
       case AUTORE_ANNO -> {
         modeLabel.setText("Autore & Anno");
+        modeLabel.setStyle("-fx-background-color: #e9dafe;");
+
         searchInput.setPromptText("Cerca per autore...");
         yearInput.setVisible(true);
         yearInput.setManaged(true);
         yearInput.setPromptText("Anno");
       }
+
     }
   }
 }

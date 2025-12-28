@@ -39,7 +39,7 @@
 
          </VBox>
 
-         <fx:include source="components/error-banner.fxml" fx:id="errorBanner"/>
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner"/>
 
          <HBox alignment="CENTER_LEFT" spacing="15">
             <Button text="Invia recensione" styleClass="control-button, control-button-border"

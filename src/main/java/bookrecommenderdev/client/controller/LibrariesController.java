@@ -1,11 +1,14 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.components.controls.SearchbarController;
 import bookrecommenderdev.client.factory.LibraryItemFactory;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
 import bookrecommenderdev.routing.route.Routable;
+import bookrecommenderdev.routing.route.Route;
+import bookrecommenderdev.routing.route.RouteMatch;
 import bookrecommenderdev.server.dto.LibraryResult;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,16 +28,14 @@ public class LibrariesController implements Routable {
   @FXML private Button nextPageButton;
   @FXML private VBox prevPageControl;
   @FXML private VBox nextPageControl;
-
+  @FXML private SearchbarController searchbarController;
 
   AppContext context;
   int currentPageIndex;
-  List<LibraryResult> libraries;
   int totalResultCount;
 
-
   @Override
-  public void onRoute(Map<String, String> params, AppContext context) {
+  public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
     resolve(0);
   }
@@ -43,6 +44,8 @@ public class LibrariesController implements Routable {
   private void initialize() {
     currentPageIndex = 0;
     totalResultCount = 0;
+
+    searchbarController.setOnSearch(req -> Router.go("/libraries/search", req));
   }
 
   private void resolve(int pageIndex) {
@@ -52,7 +55,7 @@ public class LibrariesController implements Routable {
 
     try {
 
-      List<LibraryResult> results = context.server().getListLibrerie(userId);
+      List<LibraryResult> results = context.server().getListLibrerie(userId, currentPageIndex);
 
       if (results == null) {
         System.out.println("UI error retrieving libraries");
@@ -66,7 +69,6 @@ public class LibrariesController implements Routable {
       }
 
       totalResultCount = results.size();
-      libraries = results;
 
       load(results, pageIndex);
 

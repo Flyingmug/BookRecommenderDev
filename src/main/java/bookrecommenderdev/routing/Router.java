@@ -75,15 +75,27 @@ public class Router {
    * Consente la navigazione tra pagine.
    * @param path Percorso della pagina interessata
    */
-  public static void go(String path) { resolve(path, TransitionAnimation.DEFAULT, true); }
+  public static void go(String path) {
+    resolve(path, TransitionAnimation.DEFAULT, true, null);
+  }
 
   /**
-   * Consente la navigazione tra pagine e la selezione del tipo di transizione da utilizzare.
+   * Consente la navigazione tra pagine con il passaggio di un parametro di navigazione.
+   * @param path Percorso della pagina interessata
+   * @param state Oggetto passato come parametro
+   */
+  public static void go(String path, Object state) {
+    resolve(path, TransitionAnimation.DEFAULT, true, state);
+  }
+
+  /**
+   * Consente la navigazione tra pagine, passaggio di parametro e la selezione del tipo di transizione da utilizzare.
    * @param path Percorso della pagina interessata
    * @param transition Tipologia di animazione da utilizzare
+   * @param state Oggetto passato come parametro.
    */
-  public static void go(String path, TransitionAnimation transition) {
-    resolve(path, transition, true);
+  public static void go(String path, TransitionAnimation transition, Object state) {
+    resolve(path, transition, true, state);
   }
 
   /** Torna alla pagina successiva con transizione a scorrimento verso sinistra. */
@@ -91,7 +103,7 @@ public class Router {
     if(navigationLocked.get()) return;
 
     history.forward().ifPresent(entry ->
-        resolve(entry.path(), entry.transition(), false)
+        resolve(entry.path(), entry.transition(), false, entry.state())
     );
   }
 
@@ -105,7 +117,7 @@ public class Router {
         .orElse(TransitionAnimation.DEFAULT);
 
     history.back().ifPresent(entry ->
-        resolve(entry.path(), reverseTransition(transition), false)
+        resolve(entry.path(), reverseTransition(transition), false, entry.state())
     );
   }
 
@@ -123,10 +135,14 @@ public class Router {
    * @param transition Animazione di transizione da utilizzare
    * @param pushHistory Memorizzazione della visita al percorso
    */
-  private static void resolve(String path, TransitionAnimation transition, boolean pushHistory) {
+  private static void resolve(String path, TransitionAnimation transition, boolean pushHistory, Object state) {
 
     if (navigationLocked.get()) return;
-    if (loadedEntry != null && loadedEntry.path().equals(path)) return;
+    if (loadedEntry != null
+        && loadedEntry.path().equals(path)
+        && Objects.equals(loadedEntry.state(), state)) {
+      return;
+    }
 
     RouteMatch match = routes.stream()
         .map(r -> matchRoute(r.pathPattern(), path)
@@ -138,22 +154,19 @@ public class Router {
 
     // Route guarding -> verifica delle policy di accesso
     if (!isAccessAllowed(match.route())) {
-      System.out.println("ROUTER: Access Denied");  // DEBUG
       handleAccessDenied(match.route());
       return;
     }
 
-    System.out.println("ROUTER: Access Allowed"); // DEBUG
-
     navigationLocked.set(true);
 
     try {
-      Parent page = loadPage(match.route().fxml(), match.params());
+      Parent page = loadPage(match.route().fxml(), match.params(), state);
 
       if (match.route().layout() != currentLayout) {
-        switchLayout(match.route().layout(), page, transition, path, pushHistory);
+        switchLayout(match.route().layout(), page, transition, path, pushHistory, state);
       } else {
-        switchPage(page, transition, path, pushHistory);
+        switchPage(page, transition, path, pushHistory, state);
       }
     } catch (IOException ex) {
       navigationLocked.set(false);
@@ -206,7 +219,8 @@ public class Router {
       Parent page,
       TransitionAnimation transition,
       String path,
-      boolean pushHistory
+      boolean pushHistory,
+      Object state
   ) throws IOException {
 
     FXMLLoader loader =
@@ -224,7 +238,7 @@ public class Router {
         rootContainer,
         layoutRoot,
         transition,
-        () -> finalizeNavigation(path, transition, pushHistory, layout, controller)
+        () -> finalizeNavigation(path, transition, pushHistory, layout, controller, state)
     );
   }
 
@@ -239,13 +253,14 @@ public class Router {
       Parent page,
       TransitionAnimation transition,
       String path,
-      boolean pushHistory
+      boolean pushHistory,
+      Object state
   ) {
     transition(
         currentLayoutHandle.controller().getContent(),
         page,
         transition,
-        () -> finalizeNavigation(path, transition, pushHistory, currentLayout, currentLayoutHandle.controller())
+        () -> finalizeNavigation(path, transition, pushHistory, currentLayout, currentLayoutHandle.controller(), state)
     );
   }
 
@@ -264,9 +279,10 @@ public class Router {
       TransitionAnimation transition,
       boolean pushHistory,
       LayoutType layout,
-      LayoutController controller
+      LayoutController controller,
+      Object state
   ) {
-    RouteEntry entry = new RouteEntry(path, transition);
+    RouteEntry entry = new RouteEntry(path, transition, state);
 
     if (pushHistory) history.visit(entry);
 
@@ -285,7 +301,7 @@ public class Router {
    * @return Nodo caricato
    * @throws IOException Errore nel reperimento del file
    */
-  private static Parent loadPage(String fxml, Map<String, String> params)
+  private static Parent loadPage(String fxml, Map<String, String> params, Object state)
       throws IOException {
 
     FXMLLoader loader =
@@ -297,7 +313,7 @@ public class Router {
 
     Object controller = loader.getController();
     if (controller instanceof Routable r) {
-      r.onRoute(params, appContext);
+      r.onRoute(params, appContext, state);
     }
 
     return page;

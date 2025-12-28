@@ -24,6 +24,9 @@ module com.example.bookrecommenderdev {
   opens bookrecommenderdev.client.controller.components to javafx.fxml;
   exports bookrecommenderdev.client.controller.errors;
   opens bookrecommenderdev.client.controller.errors to javafx.fxml;
+  opens bookrecommenderdev.client.errors.components to javafx.fxml;
+  opens bookrecommenderdev.client.errors to javafx.fxml;
+
 
   opens bookrecommenderdev.server to javafx.fxml;
   exports bookrecommenderdev.server;
@@ -48,4 +51,6 @@ module com.example.bookrecommenderdev {
   exports bookrecommenderdev.client.controller.components.controls;
   opens bookrecommenderdev.client.controller.components.controls to javafx.fxml;
   exports bookrecommenderdev.routing.auth;
+  exports bookrecommenderdev.client.controller.errors.components;
+  opens bookrecommenderdev.client.controller.errors.components to javafx.fxml;
 }

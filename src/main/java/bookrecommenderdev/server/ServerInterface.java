@@ -23,12 +23,11 @@ public interface ServerInterface extends Remote {
   PaginaLibro getPaginaLibro(int idLibro) throws RemoteException, DataAccessException;
 
   // librerie
-  PaginaLibriRisultati searchAllLibrerie(int idUtente, String query,  int pageNumber) throws RemoteException, DataAccessException;
-  PaginaLibriRisultati searchLibreria(int idUtente, String nomeLibreria,  int pageNumber) throws RemoteException, DataAccessException;
-  List<LibraryResult> getListLibrerie(int idUtente) throws RemoteException, DataAccessException;
-  void createLibreria(Libreria lib) throws RemoteException, DataAccessException;
-  void deleteLibreria(Libreria lib) throws RemoteException, DataAccessException;
-  void deleteLibreria(String nome, int idUtente) throws RemoteException, DataAccessException;
+  List<LibraryResult> getListLibrerie(int idUtente, int indicePagina) throws RemoteException, DataAccessException;
+  PaginaLibriRisultati searchAllLibrerie(int idUtente, SearchRequest richiesta,  int indicePagina) throws RemoteException, DataAccessException;
+  PaginaLibriRisultati searchInLibreria(int idLibreria,  int indicePagina) throws RemoteException, DataAccessException;
+  int createLibreria(int idUtente, String nomeLibreria, List<Integer> idList) throws RemoteException, DataAccessException;
+  boolean deleteLibreria(int idLibreria) throws RemoteException, DataAccessException;
 
   // valutazioni
   Valutazione getValutazione(int idLibro, int userId) throws RemoteException, DataAccessException;

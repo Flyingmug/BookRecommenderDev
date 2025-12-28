@@ -89,7 +89,7 @@ public class InputVerifiers {
     }));
   }
 
-  public static String pulisci(String s) {
+  public static String notNull(String s) {
     return s == null ? "" : s.trim();
   }
 }

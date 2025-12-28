@@ -26,7 +26,7 @@
 
       </HBox>
 
-      <fx:include source="error-banner.fxml" fx:id="errorBanner" />
+      <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner" />
 
       <VBox fx:id="booksResultSection">
 

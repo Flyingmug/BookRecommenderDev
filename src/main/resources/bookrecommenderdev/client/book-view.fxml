@@ -14,7 +14,7 @@
    <VBox styleClass="book-page-container">
       <VBox styleClass="book-page" VBox.vgrow="ALWAYS">
 
-         <fx:include source="components/error-banner.fxml" fx:id="errorBanner"/>
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner"/>
 
          <VBox fx:id="content" styleClass="book-page-content" VBox.vgrow="ALWAYS" >
 

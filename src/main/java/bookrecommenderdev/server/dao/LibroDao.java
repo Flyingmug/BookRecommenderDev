@@ -1,7 +1,7 @@
 package bookrecommenderdev.server.dao;
 
 import bookrecommenderdev.model.Libro;
-import bookrecommenderdev.model.data.PageResult;
+import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 
 import javax.sql.DataSource;
@@ -11,21 +11,23 @@ import java.util.List;
 import java.util.Optional;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
+import static bookrecommenderdev.utils.InputVerifiers.notNull;
 
 public class LibroDao {
-
   private final DataSource datasource;
-  public LibroDao(DataSource ds) {
-    this.datasource = ds;
-  }
+  public LibroDao(DataSource ds) { this.datasource = ds; }
 
-  final String baseSearchQuery = "SELECT " +
-      "l.id_libro, l.titolo, a.nome_autore AS autori, l.anno_pubblicazione, " +
-      "COUNT(*) OVER() AS numero_risultati " +
-      "FROM Libri l " +
-      "JOIN Autori a ON l.id_autore = a.id_autore ";
+  final String baseSearchQuery =
+      "SELECT id_libro," +
+          " titolo," +
+          " autori," +
+          " anno_pubblicazione," +
+          " COUNT(*) OVER() AS totalCount " +
+      "FROM vw_libri_ricerca l ";
 
-
+  /**
+   * todo doc
+   * */
   public Optional<Libro> getBasic(int id_libro) throws SQLException {
     final String q = "SELECT " +
         "id_libro, " +
@@ -52,6 +54,9 @@ public class LibroDao {
     }
   }
 
+  /**
+   * todo doc
+   * */
   public Optional<Libro> getComplete(int id_libro) throws SQLException {
     final String q = "SELECT " +
         "l.id_libro, " +
@@ -94,95 +99,88 @@ public class LibroDao {
     }
   }
 
+  /**
+   * todo doc
+   * */
+  public PaginaLibriRisultati search(SearchRequest req, int indicePagina) throws SQLException {
 
-  public PaginaLibriRisultati searchTitolo(int indicePagina, String titolo) throws SQLException {
-    final String q = baseSearchQuery +
-            "WHERE l.titolo ILIKE ? " +
-            "ORDER BY l.titolo, l.id_libro " +
+    // controllo validità richiesta
+    if (req == null || req.getTipo() == null) {
+      return new PaginaLibriRisultati(List.of(), 0);
+    }
+
+    // calcolo offset
+    int offset = Math.max(0, indicePagina) * PAGE_SIZE;
+
+    return switch (req.getTipo()) {
+
+      case TITOLO -> {
+        String titolo = notNull(req.getTitolo());
+        if (titolo.isBlank()) yield new PaginaLibriRisultati(List.of(), 0);
+
+        String q = baseSearchQuery + "WHERE l.titolo ILIKE ? " +
+            "ORDER BY titolo, id_libro " +
             "OFFSET ? LIMIT ?";
 
-    List<Libro> items = new ArrayList<>();
-    int totalCount = 0;
-
-    try (Connection conn = datasource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(q)) {
-
-      ps.setString(1, "%" + titolo.toLowerCase() + "%");
-      ps.setInt(2, Math.max(0, indicePagina) * PAGE_SIZE);
-      ps.setInt(3, PAGE_SIZE);
-
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          totalCount = rs.getInt("numero_risultati");
-          do {
-            items.add(new Libro(
-                rs.getInt("id_libro"),
-                rs.getString("titolo"),
-                rs.getString("autori"),
-                rs.getInt("anno_pubblicazione")
-            ));
-          } while (rs.next());
-        }
+        yield runSearchQuery(q, ps -> {
+          ps.setString(1, "%" + titolo.trim() + "%");
+          ps.setInt(2, offset);
+          ps.setInt(3, PAGE_SIZE);
+        });
       }
-    }
 
-    return new PaginaLibriRisultati(items, totalCount);
-  }
+      case AUTORE -> {
+        String autori = notNull(req.getAutore());
+        if (autori.isBlank()) yield new PaginaLibriRisultati(List.of(), 0);
 
-  public PageResult<Libro> searchAutori(int indicePagina, String autori) throws SQLException {
-    final String q = baseSearchQuery +
-            "WHERE a.nome_autore ILIKE ? " +
-            "ORDER BY l.titolo, l.id_libro " +
+        String q = baseSearchQuery +
+            "WHERE autori ILIKE ? " +
+            "ORDER BY titolo, id_libro " +
             "OFFSET ? LIMIT ?";
 
-    List<Libro> items = new ArrayList<>();
-    int totalCount = 0;
-
-    try (Connection conn = datasource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(q)) {
-
-      ps.setString(1, "%" + autori.toLowerCase() + "%");
-      ps.setInt(2, Math.max(0, indicePagina) * PAGE_SIZE);
-      ps.setInt(3, PAGE_SIZE);
-
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          totalCount = rs.getInt("numero_risultati");
-          do {
-            items.add(new Libro(
-                rs.getInt("id_libro"),
-                rs.getString("titolo"),
-                rs.getString("autori"),
-                rs.getInt("anno_pubblicazione")
-            ));
-          } while (rs.next());
-        }
+        yield runSearchQuery(q, ps -> {
+          ps.setString(1, "%" + autori.trim() + "%");
+          ps.setInt(2, offset);
+          ps.setInt(3, PAGE_SIZE);
+        });
       }
-    }
 
-    return new PaginaLibriRisultati(items, totalCount);
+      case AUTORE_ANNO -> {
+        String autori = notNull(req.getAutore());
+        Integer anno = req.getAnno();
+        if (autori.isBlank() || anno == null) { yield new  PaginaLibriRisultati(List.of(), 0); }
+
+        String q = baseSearchQuery +
+            "WHERE autori ILIKE ? AND anno_pubblicazione = ? " +
+            "ORDER BY titolo, id_libro " +
+            "OFFSET ? LIMIT ?";
+
+        yield runSearchQuery(q, ps -> {
+          ps.setString(1, "%" + autori.trim() + "%");
+          ps.setInt(2, anno);
+          ps.setInt(3, offset);
+          ps.setInt(4, PAGE_SIZE);
+        });
+      }
+
+    };
   }
 
-  public PageResult<Libro> searchAutoriAnno(int indicePagina, String autori, int anno) throws SQLException {
-    final String q = baseSearchQuery +
-        "WHERE a.nome_autore ILIKE ? AND anno_pubblicazione = ? " +
-        "ORDER BY l.titolo, l.id_libro " +
-        "OFFSET ? LIMIT ?";
-
+  /**
+   * todo doc
+   * */
+  private PaginaLibriRisultati runSearchQuery(String sql, Binder fieldBinder) throws SQLException {
     List<Libro> items = new ArrayList<>();
-    int totalCount = 0;
+    int total = 0;
 
     try (Connection conn = datasource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(q)) {
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-      ps.setString(1, "%" + autori.toLowerCase() + "%");
-      ps.setInt(2, anno);
-      ps.setInt(3, Math.max(0, indicePagina) * PAGE_SIZE);
-      ps.setInt(4, PAGE_SIZE);
+      fieldBinder.bind(ps);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          totalCount = rs.getInt("numero_risultati");
+          total = rs.getInt("totalCount");
           do {
             items.add(new Libro(
                 rs.getInt("id_libro"),
@@ -194,7 +192,7 @@ public class LibroDao {
         }
       }
     }
-
-    return new PaginaLibriRisultati(items, totalCount);
+    return new PaginaLibriRisultati(items, total);
   }
 }
+

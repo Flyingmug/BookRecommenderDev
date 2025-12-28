@@ -5,6 +5,8 @@ import bookrecommenderdev.routing.auth.AuthStorage;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.routing.Router;
+import bookrecommenderdev.routing.route.Route;
+import bookrecommenderdev.routing.route.RouteMatch;
 import bookrecommenderdev.server.dto.AuthResult;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,7 +32,7 @@ public class LoginController implements Routable {
   private AppContext context;
 
   @Override
-  public void onRoute(Map<String, String> params, AppContext context) { this.context = context; }
+  public void onRoute(Map<String, String> params, AppContext context, Object state) { this.context = context; }
 
   @FXML
   public void initialize() {

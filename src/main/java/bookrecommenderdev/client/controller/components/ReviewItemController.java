@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
-import static bookrecommenderdev.utils.InputVerifiers.pulisci;
+import static bookrecommenderdev.utils.InputVerifiers.notNull;
 
 public class ReviewItemController {
 
@@ -29,7 +29,7 @@ public class ReviewItemController {
     );
 
     // aggiunta recensione generale (se presente)
-    String generale = pulisci(review.getRecensioneGenerale());
+    String generale = notNull(review.getRecensioneGenerale());
     if(!generale.isEmpty()) {
       show(reviewGenerale);
       reviewGenerale.setText(review.getRecensioneGenerale());
@@ -43,7 +43,7 @@ public class ReviewItemController {
     for (CampoValutazione campo : CampoValutazione.values()) {
       if (campo == CampoValutazione.GENERALE) continue;
 
-      String valueText = pulisci(getReviewField(campo, review));
+      String valueText = notNull(getReviewField(campo, review));
       int score = (int) getReviewScore(campo, review);
 
       addRow(campo.label(), score, valueText, row);

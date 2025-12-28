@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.components.controls.SearchbarController;
 import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -17,24 +18,12 @@ import java.net.URL;
 public class HomeController {
 
   @FXML private StackPane welcomePane;
-  @FXML
-  private Label welcomeText;
-  @FXML
-  private StackPane centerStackContainer;
-  @FXML
-  private VBox homePage;
-  @FXML
-  private TextField searchbar;
-  @FXML
-  private StackPane homeSearchbarWrapper;
-  @FXML
-  private Button searchButton;
-  @FXML
-  private Region mainPageSpacer;
+  @FXML private SearchbarController searchbarController;
 
   @FXML
   private void initialize() {
     setTitleBackground();
+    searchbarController.setOnSearch(req -> Router.go("/search", req));
   }
 
   private void setTitleBackground() {

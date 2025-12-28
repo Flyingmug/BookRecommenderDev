@@ -7,6 +7,8 @@ import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.routing.route.Route;
+import bookrecommenderdev.routing.route.RouteMatch;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -42,7 +44,7 @@ public class RegistrationController implements Routable {
 
 
   @Override
-  public void onRoute(Map<String, String> params, AppContext context) { this.context = context; }
+  public void onRoute(Map<String, String> params, AppContext context, Object state) { this.context = context; }
 
   @FXML
   public void initialize() {

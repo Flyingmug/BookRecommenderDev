@@ -47,6 +47,12 @@ public class SearchResultsController {
     search();
   }
 
+  public void setSource(PageFetcher<Libro> pageFetcher) {
+    this.pageFetcher = pageFetcher;
+
+    search();
+  }
+
 
   @FXML
   private void onBookPage(Integer idLibro) {

@@ -91,11 +91,11 @@ public class ReviewFormController implements Routable {
       );
 
     } catch (DataAccessException e) {
-
       showError("Errore database. Riprova.");
-    } catch (java.rmi.RemoteException e) {
 
+    } catch (java.rmi.RemoteException e) {
       showError("Server non raggiungibile. Riprova.");
+
     }
 
   }

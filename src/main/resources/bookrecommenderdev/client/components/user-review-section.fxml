@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import javafx.scene.shape.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="bookrecommenderdev.client.controller.components.UserReviewSectionController">
@@ -40,12 +39,18 @@
 
       </VBox>
 
-      <Button fx:id="deleteButton"
-              text="Rimuovi recensione"
-              visible="false"
-              managed="false"
-              onAction="#onDeleteReview"
-              styleClass="user-review-delete-button"/>
+      <HBox alignment="CENTER_LEFT">
+         <Button fx:id="deleteButton"
+                 text="Rimuovi recensione"
+                 visible="false"
+                 managed="false"
+                 onAction="#onDeleteReview"
+                 styleClass="confirm-dialog-control, confirm-dialog-initial"/>
+
+         <fx:include source="controls/confirm-dialog.fxml" fx:id="deleteConfirm"
+                     visible="false" managed="false" />
+      </HBox>
+
 
    </VBox >
 

@@ -103,10 +103,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     * todo doc
     * */
   @Override
-   public List<LibraryResult> getListLibrerie(int idUtente, int indicePagina)
+   public List<PaginaLibreria> getListLibrerie(int idUtente, int indicePagina)
       throws RemoteException, DataAccessException {
     try {
-      return librerie.getPageLibrerie(idUtente, indicePagina);
+      return librerie.getPageListLibrerie(idUtente, indicePagina);
 
     } catch(SQLException e) {
       e.printStackTrace();
@@ -132,13 +132,25 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    * todo doc
    */
   @Override
-  public PaginaLibriRisultati searchInLibreria(int idLibreria, int indicePagina)
+  public PaginaLibriRisultati searchInLibreria(int idUtente, int idLibreria, int indicePagina)
       throws RemoteException, DataAccessException {
     try {
-      return librerie.searchIn(idLibreria, indicePagina);
+      return librerie.searchIn(idUtente, idLibreria, indicePagina);
 
     } catch (SQLException e) {
       throw new DataAccessException("DB error", e);
+    }
+  }
+
+  @Override
+  public Libreria getLibreriaById(int idUtente, int idLibreria)
+      throws RemoteException, NotFoundException, DataAccessException {
+    try {
+      return librerie.getLibreria(idUtente, idLibreria)
+          .orElseThrow(() -> new NotFoundException("Libreria non trovata"));
+
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore nell'ottenimento delle libreria", e);
     }
   }
 
@@ -160,13 +172,15 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    * todo doc
    */
   @Override
-  public boolean deleteLibreria(int id_libreria)
-      throws RemoteException, DataAccessException {
+  public void deleteLibreria(int idUtente, int idLibreria)
+      throws RemoteException, NotFoundException, DataAccessException {
     try {
-      return librerie.deleteLibreria(id_libreria);
+      if (!librerie.deleteLibreria(idUtente, idLibreria)) {
+        throw new NotFoundException("Libreria non trovata");
+      }
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore durante la comunicazione con il database.", e);
+      throw new DataAccessException("Errore il reperimento dati (DB).", e);
     }
 
   }
@@ -222,10 +236,12 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    * todo doc
    */
   @Override
-  public boolean deleteValutazione(int idLibro, int idUtente)
-      throws RemoteException, DataAccessException {
+  public void deleteValutazione(int idLibro, int idUtente)
+      throws RemoteException, NotFoundException, DataAccessException {
     try {
-      return valutazioni.delete(idLibro, idUtente);
+      if (!valutazioni.delete(idLibro, idUtente)) {
+        throw new NotFoundException("Valutazione non trovata");
+      }
 
     } catch (SQLException e) {
       throw new DataAccessException("Errore (DB) nella cancellazione della valutazione.", e);

@@ -1,13 +1,16 @@
 package bookrecommenderdev.client.controller.components;
 
+import bookrecommenderdev.client.controller.components.controls.ConfirmDialogController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.ReviewItemFactory;
 import bookrecommenderdev.model.DataAccessException;
+import bookrecommenderdev.model.NotFoundException;
 import bookrecommenderdev.model.Valutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -19,6 +22,8 @@ public class UserReviewSectionController {
   @FXML private VBox content;
   @FXML private VBox mainArea;
   @FXML private Button deleteButton;
+  @FXML private Parent deleteConfirm;
+  @FXML private ConfirmDialogController deleteConfirmController;
   @FXML private Label titleLabel;
   @FXML private Button reviewButton;
 
@@ -28,6 +33,8 @@ public class UserReviewSectionController {
   private AppContext context;
   Runnable onLayoutChange;
 
+  /**Imposta il contesto e l'id del libro riferito.
+   * @param idLibro id libro*/
   public void setContext(AppContext context, int idLibro) {
     this.context = context;
     this.idLibro = idLibro;
@@ -36,33 +43,37 @@ public class UserReviewSectionController {
   }
 
   @FXML
+  private void initialize() {
+
+    // Configurazione del dialog di conferma
+    if (deleteConfirmController != null) {
+      deleteConfirmController.setOnConfirm(this::deleteLibraryConfirmed);
+      deleteConfirmController.setOnCancel(this::hideDeleteConfirm);
+    }
+  }
+
+  /**Reindirizza al form di creazione di valutazione {@code /book/:id/review}*/
+  @FXML
   private void onReview() {
     Router.go("/book/" + idLibro + "/review");
   }
 
   @FXML
   private void onDeleteReview() {
-    try {
-      if (context == null || !AuthContext.isAuthenticated()) return;
-
-      // valore di ritorno gestito tramite refresh del componente
-      context.server().deleteValutazione(idLibro, AuthContext.getUser().getId_utente());
-      refresh();
-    } catch (DataAccessException | RemoteException e) {
-
-      // no "hideSection"
-      errorBannerController.show(
-          "Errore nel reperimento della valutazione (DB).",
-          this::refresh,
-          null
-      );
-    }
+    showDeleteConfirm();
   }
 
+  /**<p>Gestisce l'aggiornamento dello stato della pagina.
+   * <p>Verifica lo stato di autenticazione, per poi eventualmente verificare
+   * la presenza di una valutazione dell'utente per il libro corrente.
+   * <p>Questa viene mostrata se esiste, altrimenti viene caricato il link al form di recensione.
+   * <p>Notifica un cambiamento di layout.
+   * <p>In caso di errore viene mostrato un banner con l'opzione di refresh della sezione. */
   private void refresh() {
 
     if (context == null || !AuthContext.isAuthenticated()) {
       hideSection();
+      hideDeleteConfirm();
       return;
     }
 
@@ -77,21 +88,47 @@ public class UserReviewSectionController {
       notifyLayoutChange();
 
     } catch (DataAccessException e) {
-
       hideSection();
-      errorBannerController.show(
+      showError(
           "Errore nel reperimento della valutazione (DB).",
           this::refresh,
           null
       );
-    } catch (RemoteException e) {
 
+    } catch (RemoteException e) {
       hideSection();
-      errorBannerController.show(
+      showError(
           "Errore di comunicazione con il server.",
           this::refresh,
           null
       );
+
+    }
+  }
+
+  /**
+   * todo doc
+   */
+  private void deleteLibraryConfirmed() {
+    try {
+      if (context == null || !AuthContext.isAuthenticated()) return;
+
+      context.server().deleteValutazione(idLibro, AuthContext.getUser().getId_utente());
+      deleteConfirmController.setOnCancel(() -> {}); // rimozione del controllo dell'input
+      refresh();
+
+    } catch (NotFoundException e) {
+      showError(
+          "Errore nell'identificare la valutazione.",
+          this::refresh, null
+      );
+
+    } catch (DataAccessException | RemoteException e) {
+      showError(
+          "Errore nel reperimento della valutazione (DB).",
+          this::refresh,null
+      );
+
     }
   }
 
@@ -107,15 +144,11 @@ public class UserReviewSectionController {
 
   private void showCreateReview() {
     showIntro();
+    hideDeleteConfirm();
     deleteButton.setVisible(false);
     deleteButton.setManaged(false);
 
     notifyLayoutChange();
-  }
-
-  private void showSection() {
-    content.setVisible(true);
-    content.setManaged(true);
   }
 
   private void showIntro() {
@@ -124,6 +157,11 @@ public class UserReviewSectionController {
         titleLabel,
         reviewButton
     );
+  }
+
+  private void showSection() {
+    content.setVisible(true);
+    content.setManaged(true);
   }
 
   private void hideSection() {
@@ -138,6 +176,34 @@ public class UserReviewSectionController {
     }
   }
 
+  /** Mostra il dialogo di conferma e vi imposta il focus. */
+  private void showDeleteConfirm() {
+    deleteButton.setVisible(false);
+    deleteButton.setManaged(false);
+
+    deleteConfirm.setVisible(true);
+    deleteConfirm.setManaged(true);
+
+    deleteConfirmController.requestInitialFocus();
+  }
+
+  /** Nasconde il dialogo di conferma. */
+  private void hideDeleteConfirm() {
+    deleteButton.setVisible(true);
+    deleteButton.setManaged(true);
+
+    deleteConfirm.setVisible(false);
+    deleteConfirm.setManaged(false);
+  }
+
+  /** Mostra il banner d'errore.
+   * @param message Messaggio
+   * @param retry callback
+   * @param back callback*/
+  private void showError(String message, Runnable retry, Runnable back) {
+    errorBannerController.show(message, retry, back);
+  }
+
   // Metodi Esposti
 
   /** Imposta un <i>callback</i> eseguito in seguito al cambiamento di layout.
@@ -145,6 +211,5 @@ public class UserReviewSectionController {
   public void setOnLayoutChange(Runnable r) {
     this.onLayoutChange = r;
   }
-
 
 }

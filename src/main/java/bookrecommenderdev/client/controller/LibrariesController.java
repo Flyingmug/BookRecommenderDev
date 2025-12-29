@@ -7,9 +7,7 @@ import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
 import bookrecommenderdev.routing.route.Routable;
-import bookrecommenderdev.routing.route.Route;
-import bookrecommenderdev.routing.route.RouteMatch;
-import bookrecommenderdev.server.dto.LibraryResult;
+import bookrecommenderdev.server.dto.PaginaLibreria;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
@@ -55,7 +53,7 @@ public class LibrariesController implements Routable {
 
     try {
 
-      List<LibraryResult> results = context.server().getListLibrerie(userId, currentPageIndex);
+      List<PaginaLibreria> results = context.server().getListLibrerie(userId, currentPageIndex);
 
       if (results == null) {
         System.out.println("UI error retrieving libraries");
@@ -79,7 +77,7 @@ public class LibrariesController implements Routable {
 
   }
 
-  private void load(List<LibraryResult> libraries, int pageIndex) {
+  private void load(List<PaginaLibreria> libraries, int pageIndex) {
     int fromIndex = pageIndex * LIBRARIES_PAGE_SIZE;
 
     if (fromIndex >= totalResultCount) {
@@ -90,17 +88,17 @@ public class LibrariesController implements Routable {
 
     int toIndex = Math.min(fromIndex + LIBRARIES_PAGE_SIZE, totalResultCount);
 
-    List<LibraryResult> pagedResults = libraries.subList(fromIndex, toIndex);
+    List<PaginaLibreria> pagedResults = libraries.subList(fromIndex, toIndex);
 
     librariesContainer.getChildren().clear();
 
-    for (LibraryResult lib : pagedResults) {
+    for (PaginaLibreria lib : pagedResults) {
       librariesContainer.getChildren().add(
           LibraryItemFactory.createLibraryItem(
               lib.library(),
               lib.bookCount(),
               () -> {
-                Router.go("/libraries/" + lib.library().getNome(), TransitionAnimation.LEFT_SLIDE);
+                Router.go("/libraries/" + lib.library().getIdLibreria(), TransitionAnimation.LEFT_SLIDE);
               }
           )
       );

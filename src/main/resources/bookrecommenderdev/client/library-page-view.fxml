@@ -5,26 +5,33 @@
 
 <ScrollPane fx:id="libraryPage"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="bookrecommenderdev.client.controller.SearchLibrariesController"
+            fx:controller="bookrecommenderdev.client.controller.LibraryPageController"
             fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
             styleClass="scrollable-pane">
 
-   <VBox styleClass="search-page-container">
-      <VBox styleClass="search-page" VBox.vgrow="ALWAYS">
+   <VBox styleClass="library-page-container">
+      <VBox styleClass="library-page" VBox.vgrow="ALWAYS">
 
          <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner" />
 
-         <VBox styleClass="libraries-search-searchbar-container">
-            <Label text="Ricerca tra i tuoi libri salvati"
+         <VBox>
+            <Label text="Libreria"
                    styleClass="italic-30, page-header-title" />
 
-            <Label fx:id="searchedTitle"
+            <Label fx:id="libraryTitle"
                    minHeight="-Infinity"
-                   wrapText="true"
                    styleClass="regular-30" />
-
-            <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
          </VBox>
+
+         <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="deleteButton"
+                    onAction="#onDeleteLibrary"
+                    text="Elimina"
+                    styleClass="confirm-dialog-control, confirm-dialog-initial" />
+
+            <fx:include source="components/controls/confirm-dialog.fxml" fx:id="deleteConfirm"
+               managed="false" visible="false" />
+         </HBox>
 
          <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
 

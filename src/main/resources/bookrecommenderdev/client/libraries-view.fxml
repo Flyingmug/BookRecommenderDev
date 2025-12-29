@@ -17,37 +17,58 @@
          <Label text="Librerie" styleClass="italic-40" />
 
          <VBox styleClass="libraries-searchbar-section">
-            <Label text="Ricerca tra i libri salvati" styleClass="light-19" />
+            <Label text="Ricerca tra i libri salvati"
+                   styleClass="light-19" />
+
             <HBox styleClass="library-searchbar-wrapper">
                <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
             </HBox>
-            <Separator prefWidth="Infinity" styleClass="libraries-searchbar-section-separator" />
+
+            <Separator prefWidth="Infinity"
+                       styleClass="libraries-searchbar-section-separator" />
          </VBox>
 
          <HBox>
-
-            <VBox fx:id="prevPageControl" HBox.hgrow="NEVER" styleClass="libraries-items-control-container" visible="false">
-               <Separator orientation="vertical" VBox.vgrow="ALWAYS" styleClass="libraries-items-section-separator" />
-               <Button fx:id="prevPageButton" styleClass="control-button-round, control-button-border" onAction="#onPrev">
+            <VBox fx:id="prevPageControl"
+                  HBox.hgrow="NEVER"
+                  visible="false"
+                  styleClass="libraries-items-control-container">
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
+               <Button fx:id="prevPageButton"
+                       onAction="#onPrev"
+                       styleClass="control-button-round, control-button-border">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-left" />
                   </graphic>
                </Button>
-               <Separator orientation="vertical" VBox.vgrow="ALWAYS" styleClass="libraries-items-section-separator" />
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
             </VBox>
 
             <FlowPane fx:id="librariesContainer"
                       styleClass="libraries-container"
                       HBox.hgrow="ALWAYS"/>
 
-            <VBox fx:id="nextPageControl" HBox.hgrow="NEVER" styleClass="libraries-items-control-container" visible="false">
-               <Separator orientation="vertical" VBox.vgrow="ALWAYS" styleClass="libraries-items-section-separator" />
-               <Button fx:id="nextPageButton" styleClass="control-button-round, control-button-border" onAction="#onNext">
+            <VBox fx:id="nextPageControl"
+                  HBox.hgrow="NEVER"
+                  visible="false"
+                  styleClass="libraries-items-control-container">
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
+               <Button fx:id="nextPageButton"
+                       onAction="#onNext"
+                       styleClass="control-button-round, control-button-border">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-right" />
                   </graphic>
                </Button>
-               <Separator orientation="vertical" VBox.vgrow="ALWAYS" styleClass="libraries-items-section-separator" />
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
             </VBox>
          </HBox>
 

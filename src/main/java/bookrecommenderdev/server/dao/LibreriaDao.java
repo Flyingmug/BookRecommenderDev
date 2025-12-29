@@ -3,7 +3,7 @@ package bookrecommenderdev.server.dao;
 import bookrecommenderdev.model.Libreria;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.server.dto.LibraryResult;
+import bookrecommenderdev.server.dto.PaginaLibreria;
 import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 
 import javax.sql.DataSource;
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static bookrecommenderdev.Constants.LIBRARIES_PAGE_SIZE;
 import static bookrecommenderdev.Constants.PAGE_SIZE;
@@ -32,11 +33,33 @@ public class LibreriaDao {
           "  WHERE ll.id_utente = ? AND ll.id_libro = b.id_libro" +
           ") ";
 
+  public Optional<Libreria> getLibreria(int idUtente, int idLibreria) throws SQLException {
+    final String q = "SELECT id_libreria, nome FROM Librerie WHERE id_libreria = ? AND id_utente = ? ";
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+
+      ps.setInt(1, idLibreria);
+      ps.setInt(2, idUtente);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return Optional.of(new Libreria(
+              rs.getInt("id_libreria"),
+              rs.getString("nome")
+          ));
+        }
+      }
+    }
+
+    return Optional.empty();
+  }
+
   /*
   * todo doc
   * Restituisce anche le librerie vuote.
   * */
-  public List<LibraryResult> getPageLibrerie (int id_utente, int indicePagina) throws SQLException {
+  public List<PaginaLibreria> getPageListLibrerie(int id_utente, int indicePagina) throws SQLException {
     final String q =
         "SELECT" +
             " l.id_libreria," +
@@ -49,7 +72,7 @@ public class LibreriaDao {
         " ORDER BY l.nome" +
         " OFFSET ? LIMIT ?";
 
-    List<LibraryResult> elenco = new LinkedList<>();
+    List<PaginaLibreria> elenco = new LinkedList<>();
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -60,9 +83,9 @@ public class LibreriaDao {
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          elenco.add(new LibraryResult(
+          elenco.add(new PaginaLibreria(
               new Libreria(
-                  rs.getLong("id_libreria"),
+                  rs.getInt("id_libreria"),
                   id_utente,
                   rs.getString("nome_libreria")
               ),
@@ -80,7 +103,7 @@ public class LibreriaDao {
   /*
   * todo doc
   * */
-  public PaginaLibriRisultati searchAll (int id_utente, SearchRequest req, int indicePagina) throws SQLException {
+  public PaginaLibriRisultati searchAll(int id_utente, SearchRequest req, int indicePagina) throws SQLException {
 
     if (req == null || req.getTipo() == null) {
       return new PaginaLibriRisultati(List.of(), 0);
@@ -176,23 +199,26 @@ public class LibreriaDao {
   /**
    * todo doc
    */
-  public PaginaLibriRisultati searchIn (int id_libreria, int indicePagina) throws SQLException {
+  public PaginaLibriRisultati searchIn(int id_utente, int id_libreria, int indicePagina) throws SQLException {
     String q =
         "SELECT *," +
             " COUNT(*) OVER() as totalCount" +
             " FROM vw_librerie_libri" +
-            " WHERE id_libreria = ?" +
+            " WHERE id_libreria = ? AND id_utente = ? " +
             " OFFSET ? LIMIT ?";
 
     List<Libro> elenco = new LinkedList<>();
     int totalCount = 0;
 
+    int offset = Math.max(0, indicePagina) * PAGE_SIZE;
+
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
       ps.setInt(1, id_libreria);
-      ps.setInt(2, indicePagina * PAGE_SIZE);
-      ps.setInt(3, PAGE_SIZE);
+      ps.setInt(2, id_utente);
+      ps.setInt(3, offset);
+      ps.setInt(4, PAGE_SIZE);
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -271,13 +297,14 @@ public class LibreriaDao {
    * @param id_libreria Id libreria
    * @return booleano per verificare se la cancellazione ha avuto successo
    */
-  public boolean deleteLibreria(int id_libreria) throws SQLException {
-    String q = "DELETE FROM Librerie WHERE id_libreria = ?;";
+  public boolean deleteLibreria(int id_utente, int id_libreria) throws SQLException {
+    String q = "DELETE FROM Librerie WHERE id_libreria = ? AND id_utente = ?;";
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
 
       ps.setInt(1, id_libreria);
+      ps.setInt(2, id_utente);
       return ps.executeUpdate() > 0;
     }
   }

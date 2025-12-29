@@ -55,7 +55,7 @@ public class RootController {
     routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries/search", "search-libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
-    routes.add(new Route("/libraries/:id", "library-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/libraries/:id", "library-page-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/library/create", "library-creator-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     routes.add(new Route("/not-found", "errors/not-found-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));

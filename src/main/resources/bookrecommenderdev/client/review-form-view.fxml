@@ -19,8 +19,7 @@
 
          <VBox>
             <Label text="Valuta"
-                   styleClass="italic-30"
-                   style="-fx-text-fill: #8f8f8f;" />
+                   styleClass="italic-30, page-header-title" />
 
             <Label fx:id="titleLabel"
                    minHeight="-Infinity"

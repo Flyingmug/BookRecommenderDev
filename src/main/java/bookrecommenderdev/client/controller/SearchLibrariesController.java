@@ -41,13 +41,12 @@ public class SearchLibrariesController implements Routable {
     }
 
     if (req == null) {
-      // resultsController.showEmptyState("Inserisci una ricerca.");
+      showError("Inserisci una richiesta", null, null);
       return;
     }
 
     if (!req.isValid()) {
-      searchedTitle.setText("Ricerca");
-      // resultsController.showErrorState("Richiesta di ricerca non valida.");
+      showError("Richiesta di ricerca non valida", null, null);
       return;
     }
 

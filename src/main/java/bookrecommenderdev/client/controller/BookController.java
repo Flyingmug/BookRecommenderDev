@@ -115,8 +115,8 @@ public class BookController implements Routable {
       }
 
     } catch (NotFoundException e) {
-
       Platform.runLater(() -> Router.go("/not-found", TransitionAnimation.LEFT_SLIDE));
+
     } catch (DataAccessException e) {
       setContentVisible(false);
       content.setVisible(false);

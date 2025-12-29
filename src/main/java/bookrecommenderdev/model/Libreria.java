@@ -12,8 +12,8 @@ public class Libreria implements Serializable {
   @Serial
   private static final long serialVersionUID = 1L;
 
-  long id_libreria;
-  long id_utente;
+  int id_libreria;
+  int id_utente;
   String nome;
 
   /**
@@ -21,20 +21,21 @@ public class Libreria implements Serializable {
    * @param id_libreria id libreria
    * @param nome nome libreria
    */
-  public Libreria(long id_libreria, long id_utente, String nome) {
+  public Libreria(int id_libreria, int id_utente, String nome) {
     this.id_libreria = id_libreria;
     this.id_utente = id_utente;
     this.nome = nome;
   }
 
-  public Libreria() {
-
+  public Libreria(int id_libreria, String nome) {
+    this.id_libreria = id_libreria;
+    this.nome = nome;
   }
 
   /**
    * @return id libreria
    */
-  public long getIdLibreria() { return id_libreria; }
+  public int getIdLibreria() { return id_libreria; }
 
   /**
    * @return nome libreria

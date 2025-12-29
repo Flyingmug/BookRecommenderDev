@@ -92,7 +92,11 @@
     -fx-font-size: 20;
 }
 
-
+/* Gabriola */
+.gabriola-33 {
+    -fx-font-family: "Gabriola";
+    -fx-font-size: 50;
+}
 
 
 /* Page Title standard class */

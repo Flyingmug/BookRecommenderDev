@@ -19,7 +19,7 @@
          <VBox fx:id="content" styleClass="book-page-content" VBox.vgrow="ALWAYS" >
 
             <VBox>
-               <Label fx:id="titolo" styleClass="book-label-title" wrapText="true" />
+               <Label fx:id="titolo" styleClass="book-label-title" minHeight="-Infinity" wrapText="true" />
 
                <HBox styleClass="book-label-subtitle">
                   <Label text="By" />
@@ -37,7 +37,7 @@
             </VBox>
 
             <HBox alignment="BOTTOM_LEFT">
-               <Label styleClass="italic-33" text="Recensioni &amp; Valutazioni" />
+               <Label styleClass="gabriola-33" text="Recensioni &amp; Suggerimenti" />
             </HBox>
 
             <VBox fx:id="myReviewSection">

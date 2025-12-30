@@ -4,6 +4,7 @@ import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.model.exceptions.AlreadyExistsException;
 import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.LimitExceededException;
 import bookrecommenderdev.model.exceptions.NotFoundException;
 import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.model.data.PageResult;
@@ -34,9 +35,10 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     DataSource datasource = DatabaseConfig.getDataSource();
     libri = new LibroDao(datasource);
     utenti = new UtenteDao(datasource);
+    librerie = new LibreriaDao(datasource);
     valutazioni = new ValutazioneDao(datasource);
     consigli = new ConsiglioLibroDao(datasource);
-    librerie = new LibreriaDao(datasource);
+
   }
 
 
@@ -188,7 +190,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     } catch (SQLException e) {
       throw new DataAccessException("Errore il reperimento dati (DB).", e);
     }
-
   }
 
 
@@ -259,11 +260,53 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   // Consigli
   //
 
-  public List<Libro> getConsigli(int idLibro)
-      throws RemoteException {
+  public List<Libro> getConsigliUtente(int idUtente, int idLibro)
+      throws RemoteException, DataAccessException {
+    try {
+      return consigli.getConsigliUtente(idUtente, idLibro);
 
-    return List.of();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DataAccessException("Errore nell'ottenimento delle consigli.", e);
+    }
   }
+
+  @Override
+  public PaginaConsigliRisultati cercaConsigli(int idLibroBase, int indicePagina)
+      throws RemoteException, DataAccessException {
+    try {
+      return consigli.searchConsigli(idLibroBase, indicePagina);
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DataAccessException("Errore di database", e);
+    }
+  }
+
+  @Override
+  public void inserisciConsiglio(int idUtente, int idLibroBase, int idLibroCons)
+      throws RemoteException, NotFoundException, AlreadyExistsException, LimitExceededException, DataAccessException {
+    try {
+      consigli.inserisciConsiglio(idUtente, idLibroBase, idLibroCons);
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DataAccessException("Errore di database", e);
+    }
+  }
+
+  @Override
+  public void deleteConsiglio(int idUtente, int idLibroBase, int idLibroCons)
+      throws RemoteException, NotFoundException, DataAccessException {
+    try {
+      if (!consigli.deleteConsiglio(idUtente, idLibroBase, idLibroCons))
+         throw new NotFoundException("Consiglio non trovato.");
+
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore di database", e);
+    }
+  }
+
 
   //
   // Utente

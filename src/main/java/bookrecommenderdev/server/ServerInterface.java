@@ -4,6 +4,7 @@ import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.model.exceptions.AlreadyExistsException;
 import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.LimitExceededException;
 import bookrecommenderdev.model.exceptions.NotFoundException;
 import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.model.data.PageResult;
@@ -36,11 +37,14 @@ public interface ServerInterface extends Remote {
   // valutazioni
   Valutazione getValutazione(int idLibro, int userId) throws RemoteException, DataAccessException;
   PaginaValutazioni cercaValutazioni(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
-  boolean inserisciValutazione(Valutazione valutazione) throws RemoteException, DataAccessException;
+  boolean inserisciValutazione(Valutazione valutazione) throws RemoteException, NotFoundException, AlreadyExistsException, LimitExceededException, DataAccessException;
   void deleteValutazione(int idLibro, int id_utente) throws RemoteException, NotFoundException, DataAccessException;
 
   // consigli
-  List<Libro> getConsigli(int idLibro) throws RemoteException;
+  List<Libro> getConsigliUtente(int idUtente, int idLibro) throws RemoteException;
+  PaginaConsigliRisultati cercaConsigli(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
+  void inserisciConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, AlreadyExistsException, DataAccessException;
+  void deleteConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, DataAccessException;
 
   // autenticazione e accesso
   AuthResult login(String nome, String password) throws RemoteException;

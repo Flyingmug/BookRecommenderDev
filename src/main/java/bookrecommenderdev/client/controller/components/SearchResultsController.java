@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
-import bookrecommenderdev.model.DataAccessException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.model.data.SearchRequest;
@@ -14,20 +14,23 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.function.Function;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 
 public class SearchResultsController {
 
-  @FXML private VBox resultsNotFoundTitle;
-  @FXML private Label resultsNotFoundQuery;
-  @FXML private VBox booksResultSection;
-  @FXML private VBox booksResultsContainer;
+  @FXML private StackPane initialPlaceholder;
+  @FXML private VBox noResultsSection;
+  @FXML private Label noResultsText;
+  @FXML private VBox resultSection;
+  @FXML private VBox resultsContainer;
   @FXML private Label resultIndexCounter;
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
@@ -37,35 +40,54 @@ public class SearchResultsController {
 
   int currentPageIndex;
   int totalResultCount;
-  private PageFetcher<Libro> pageFetcher;
+  private PageFetcher<Libro> source;
   private SearchRequest request;
+  private boolean hasSearchedOnce = false;
+  private List<Libro> lastResults;  // test
+  private Function<Libro, Parent> itemRenderer;
 
   public void setSource(PageFetcher<Libro> pageFetcher, SearchRequest req) {
     request = req;
-    this.pageFetcher = pageFetcher;
+    this.source = pageFetcher;
 
-    search();
+    refreshFromStart();
   }
 
   public void setSource(PageFetcher<Libro> pageFetcher) {
-    this.pageFetcher = pageFetcher;
+    this.source = pageFetcher;
+    lastResults = null;
 
-    search();
+    refreshFromStart();
   }
 
+  public void setItemRenderer(Function<Libro, Parent> renderer) {
+    this.itemRenderer = renderer;
 
-  @FXML
-  private void onBookPage(Integer idLibro) {
-    Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
+    // Ricarica gli elementi senza eseguire un refresh dell'intera pagina todo add this note to doc
+    if (lastResults != null && !lastResults.isEmpty() && totalResultCount > 0) {
+      render(lastResults);
+      setControls();
+    }
   }
 
-  /**
-   * Effettua una richiesta di ricerca tramite la chiave fornita.
-   */
-  private void search() {
+  public void refreshView() {
+    if (lastResults != null && totalResultCount > 0) {
+      render(lastResults);
+      setControls();
+    }
+  }
+
+  public void refresh() {
+    if (source == null) return;
+    resolve(currentPageIndex);
+  }
+
+  public void refreshFromStart() {
+    if (source == null) return;
     currentPageIndex = 0;
     totalResultCount = 0;
-
+    lastResults = null;
+    hidePlaceholder();
     resolve(0);
   }
 
@@ -79,40 +101,32 @@ public class SearchResultsController {
    */
   private void resolve(int pageIndex) {
     try {
-
-      PageResult<Libro> data = pageFetcher.fetch(pageIndex);
+      PageResult<Libro> data = source.fetch(pageIndex);
 
       List<Libro> books = data.results();
       totalResultCount = data.totalCount();
 
+      lastResults = books;
+
       if (books.isEmpty() || totalResultCount == 0) {
-        setNoResultsTitle();
+        showNoResultsText();
         setResultsVisible(false);
         return;
       }
 
-      setNoResultsTitleVisible(false);
+      hideNoResultsText();
       setResultsVisible(true);
-      load(books);
+      render(books);
       setControls();
 
     } catch (DataAccessException e) {
-
       setResultsVisible(false);
-      errorBannerController.show(
-          "Errore durante la ricerca (database)",
-          () -> resolve(pageIndex),
-          null
-      );
+      showError("Errore durante la ricerca (database)", () -> resolve(pageIndex), null);
 
     } catch(RemoteException e) {
-
       setResultsVisible(false);
-      errorBannerController.show(
-          "Server non raggiungibile.",
-          () -> resolve(pageIndex),
-          null
-      );
+      showError("Server non raggiungibile.", () -> resolve(pageIndex), null);
+
     }
   }
 
@@ -121,34 +135,39 @@ public class SearchResultsController {
    * <p>I nodi sono spaziati da nodi {@link Separator}.
    * @param results lista di dati risultanti
    */
-  private void load(List<Libro> results) {
+  private void render(List<Libro> results) {
 
     // Rimozione di eventuali elementi precedenti
-    booksResultsContainer.getChildren().clear();
+    resultsContainer.getChildren().clear();
 
     resultIndexCounter.setText(formatIndexCounter());
 
-    for (Libro l: results) {
-      Parent row = BookResultItemFactory.createBookResultItem(l, this::onBookPage);
-      booksResultsContainer.getChildren().add(row);
+    Function<Libro, Parent> renderer =
+        (itemRenderer != null)
+            ? itemRenderer
+            : (l -> BookResultItemFactory.createBookResultItem(l, this::onBookPage));
 
-      if (results.indexOf(l) < results.size() - 1) {
-        Separator line = new Separator();
-        booksResultsContainer.getChildren().add(line);
+    for (int i = 0; i < results.size(); i++) {
+      Parent row = renderer.apply(results.get(i));
+      resultsContainer.getChildren().add(row);
+
+      if (i < results.size() - 1) {
+        resultsContainer.getChildren().add(new Separator());
       }
     }
-
   }
 
+  @FXML
+  private void onBookPage(Integer idLibro) {
+    Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
+  }
 
   /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
   private void onPrevious() {
-    if (request == null) return;
+    if (source == null) return;
     if (currentPageIndex <= 0) return;
-
-    showDisabled(previousPageButton, true);
 
     goToPage(currentPageIndex - 1);
   }
@@ -157,10 +176,8 @@ public class SearchResultsController {
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
   private void onNext() {
-    if (request == null) return;
+    if (source == null) return;
     if ((currentPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
-
-    showDisabled(nextPageButton, true);
 
     goToPage(currentPageIndex + 1);
   }
@@ -175,45 +192,56 @@ public class SearchResultsController {
     resolve(newIndex);
   }
 
-  private void setResultsVisible(boolean visible) {
-    booksResultSection.setVisible(visible);
-    booksResultSection.setManaged(visible);
-  }
-
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
     boolean canPrev = currentPageIndex > 0;
     boolean canNext = (currentPageIndex + 1) * PAGE_SIZE < totalResultCount;
 
-    setPrevControlVisibility(canPrev);
-    setNextControlVisibility(canNext);
+    setControlVisibility(previousPageButton, canPrev);
+    setControlVisibility(nextPageButton, canNext);
     setControlDisabled(previousPageButton, !canPrev);
     setControlDisabled(nextPageButton, !canNext);
-    showDisabled(previousPageButton, !canPrev);
-    showDisabled(nextPageButton, !canNext);
   }
 
   /** Disabilita i comandi di controlli dei risultati. */
   private void setControlDisabled(Button control, boolean disable) {
     control.setDisable(disable);
-  }
-
-  /** Controlla la visibilità del pulsante di pagina precedente. */
-  private void setPrevControlVisibility(boolean visibility) {
-    previousPageButton.setVisible(visibility);
-  }
-
-  /** Controlla la visibilità del pulsante di pagina successiva. */
-  private void setNextControlVisibility(boolean visibility) {
-    nextPageButton.setVisible(visibility);
-  }
-
-  /** Mostra la selezione del pulsante sulla grafica, aggiungendovi la classe rispettiva. */
-  private void showDisabled(Button control, boolean b) {
-    if (b) {
+    if (disable) {
       control.getStyleClass().add("control-button-customdisabled");
     } else {
       control.getStyleClass().remove("control-button-customdisabled");
+    }
+  }
+
+  /** Controlla la visibilità del pulsante. */
+  private void setControlVisibility(Button control, boolean visibility) {
+    control.setVisible(visibility);
+    control.setManaged(visibility);
+  }
+
+  private void setResultsVisible(boolean visible) {
+    resultSection.setVisible(visible);
+    resultSection.setManaged(visible);
+  }
+
+  /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
+  private void showNoResultsText() {
+    noResultsSection.setVisible(true);
+    noResultsSection.setManaged(true);
+  }
+
+  private void hideNoResultsText() {
+    noResultsSection.setVisible(false);
+    noResultsSection.setManaged(false);
+  }
+
+  private void hidePlaceholder() {
+    if (hasSearchedOnce) return;
+    hasSearchedOnce = true;
+
+    if (initialPlaceholder != null) {
+      initialPlaceholder.setVisible(false);
+      initialPlaceholder.setManaged(false);
     }
   }
 
@@ -225,13 +253,7 @@ public class SearchResultsController {
         totalResultCount + " risultati";
   }
 
-  /** Cambia la visibilità del titolo di pagina e del messaggio di "no risultati". */
-  private void setNoResultsTitle() {
-    setNoResultsTitleVisible(true);
-    resultsNotFoundQuery.setText("Nessun risultato trovato!");
-  }
-  private void setNoResultsTitleVisible(boolean b) {
-    resultsNotFoundTitle.setVisible(b);
-    resultsNotFoundTitle.setManaged(b);
+  private void showError(String message, Runnable retry, Runnable back) {
+    errorBannerController.show(message, retry, back);
   }
 }

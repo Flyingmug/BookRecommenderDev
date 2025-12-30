@@ -2,6 +2,9 @@ package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.data.SearchRequest;
+import bookrecommenderdev.model.exceptions.AlreadyExistsException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.NotFoundException;
 import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dto.*;
@@ -27,7 +30,7 @@ public interface ServerInterface extends Remote {
   PaginaLibriRisultati searchAllLibrerie(int idUtente, SearchRequest richiesta,  int indicePagina) throws RemoteException, DataAccessException;
   PaginaLibriRisultati searchInLibreria(int idUtente, int idLibreria, int indicePagina) throws RemoteException, DataAccessException;
   Libreria getLibreriaById(int idUtente, int idLibreria) throws RemoteException, NotFoundException, DataAccessException;
-  int createLibreria(int idUtente, String nomeLibreria, List<Integer> idList) throws RemoteException, DataAccessException;
+  void createLibreria(int idUtente, String nomeLibreria, List<Integer> idList) throws RemoteException, AlreadyExistsException, DataAccessException;
   void deleteLibreria(int idUtente, int idLibreria) throws RemoteException, NotFoundException, DataAccessException;
 
   // valutazioni

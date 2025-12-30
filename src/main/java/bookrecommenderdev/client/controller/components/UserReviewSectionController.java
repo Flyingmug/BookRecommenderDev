@@ -3,8 +3,8 @@ package bookrecommenderdev.client.controller.components;
 import bookrecommenderdev.client.controller.components.controls.ConfirmDialogController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.ReviewItemFactory;
-import bookrecommenderdev.model.DataAccessException;
-import bookrecommenderdev.model.NotFoundException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.NotFoundException;
 import bookrecommenderdev.model.Valutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
@@ -24,8 +24,7 @@ public class UserReviewSectionController {
   @FXML private Button deleteButton;
   @FXML private Parent deleteConfirm;
   @FXML private ConfirmDialogController deleteConfirmController;
-  @FXML private Label titleLabel;
-  @FXML private Button reviewButton;
+  @FXML private VBox createReviewSection;
 
   @FXML private ErrorBannerController errorBannerController;
 
@@ -153,10 +152,7 @@ public class UserReviewSectionController {
 
   private void showIntro() {
     mainArea.getChildren().clear();
-    mainArea.getChildren().addAll(
-        titleLabel,
-        reviewButton
-    );
+    mainArea.getChildren().add(createReviewSection);
   }
 
   private void showSection() {

@@ -20,8 +20,13 @@
             <Label text="Ricerca tra i libri salvati"
                    styleClass="light-19" />
 
-            <HBox styleClass="library-searchbar-wrapper">
-               <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
+            <HBox alignment="CENTER_LEFT">
+               <HBox styleClass="libraries-searchbar-container" HBox.hgrow="ALWAYS">
+                  <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
+               </HBox>
+               <Button text="Aggiungi"
+                       onAction="#onCreate"
+                       styleClass="control-button-black" />
             </HBox>
 
             <Separator prefWidth="Infinity"

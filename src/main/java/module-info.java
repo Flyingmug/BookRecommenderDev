@@ -53,4 +53,5 @@ module com.example.bookrecommenderdev {
   exports bookrecommenderdev.routing.auth;
   exports bookrecommenderdev.client.controller.errors.components;
   opens bookrecommenderdev.client.controller.errors.components to javafx.fxml;
+  exports bookrecommenderdev.model.exceptions;
 }

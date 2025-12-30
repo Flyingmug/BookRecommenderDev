@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.Integer?>
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -11,23 +10,62 @@
     styleClass="library-creator-container">
    <VBox styleClass="library-creator" VBox.vgrow="ALWAYS">
 
-      <HBox styleClass="library-creator-main" VBox.vgrow="ALWAYS">
+      <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner" />
 
-         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
-                     styleClass="scrollable-pane">
-
-            <fx:include fx:id="searchSection" source="components/search-results-view.fxml" />
-
-         </ScrollPane>
-
-         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
-                     styleClass="scrollable-pane">
-
-            <fx:include fx:id="selectionSection" source="components/search-results-view.fxml" />
-
-         </ScrollPane>
-
+      <HBox alignment="CENTER_LEFT" spacing="10">
+         <Label text="Nuova Libreria" styleClass="italic-30" minWidth="-Infinity" />
+         <TextField fx:id="nameField"
+                    promptText="Nome"
+                    styleClass="library-creator-name-field" />
       </HBox>
+
+      <GridPane styleClass="library-creator-main" VBox.vgrow="ALWAYS">
+
+         <columnConstraints>
+            <ColumnConstraints percentWidth="70" />
+            <ColumnConstraints percentWidth="30" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints />
+         </rowConstraints>
+
+         <VBox GridPane.columnIndex="0"
+             VBox.vgrow="ALWAYS"
+             styleClass="library-creator-searchbar-container">
+            <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
+
+            <ScrollPane fitToWidth="true"
+                        fitToHeight="true"
+                        hbarPolicy="NEVER"
+                        styleClass="scrollable-pane" VBox.vgrow="ALWAYS">
+               <fx:include source="components/search-results-view.fxml" fx:id="results" />
+            </ScrollPane>
+
+            <HBox alignment="CENTER">
+               <Button fx:id="confirmButton"
+                       text="Crea"
+                       onAction="#onCreate"
+                       styleClass="control-button-black"/>
+            </HBox>
+         </VBox>
+
+         <VBox GridPane.columnIndex="1"
+               VBox.vgrow="ALWAYS"
+               styleClass="library-creator-selected-section">
+            <HBox spacing="5" alignment="CENTER">
+               <Label text="Libri selezionati" styleClass="italic-26" />
+               <Label fx:id="countLabel" styleClass="regular-23" />
+            </HBox>
+            <ScrollPane fitToWidth="true"
+                        fitToHeight="true"
+                        hbarPolicy="NEVER"
+                        styleClass="scrollable-pane">
+               <VBox fx:id="selectedContainer" styleClass="library-creator-selected-container" />
+            </ScrollPane>
+         </VBox>
+
+      </GridPane>
 
    </VBox>
 </VBox>

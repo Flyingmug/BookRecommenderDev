@@ -92,10 +92,18 @@
     -fx-font-size: 20;
 }
 
-/* Gabriola */
-.gabriola-33 {
+/* GABRIOLA */
+.gabriola-25 {
+    -fx-font-family: "Gabriola";
+    -fx-font-size: 25;
+}
+.gabriola-50 {
     -fx-font-family: "Gabriola";
     -fx-font-size: 50;
+}
+.gabriola-70 {
+    -fx-font-family: "Gabriola";
+    -fx-font-size: 70;
 }
 
 
@@ -107,7 +115,7 @@
 
 /* Control button standard class */
 .control-button {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-background-radius: 9999;
     -fx-background-insets: 0;
     -fx-border-color: transparent;
@@ -142,7 +150,7 @@
 
 /* Control button round specialization */
 .control-button-round {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-background-radius: 9999;
     -fx-background-insets: 0;
     -fx-border-color: transparent;
@@ -169,6 +177,35 @@
 }
 
 
+/* Control button black specialization */
+.control-button-black {
+    -fx-min-height: 45;
+    -fx-max-height: 45;
+    -fx-min-width: 150;
+    -fx-max-width: 150;
+    -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);
+    -fx-background-color: black;
+    -fx-background-radius: 50;
+    -fx-alignment: center;
+    -fx-text-fill: #fefefe;
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 20;
+    -fx-cursor: hand;
+}
+.control-button-black:hover {
+    -fx-background-color: #3f3f3f;
+}
+.control-button-black:pressed {
+    -fx-background-color: #2f2f2f;
+}
+.control-button-black:disabled {
+    -fx-background-color: #fefefe;
+    -fx-text-fill: black;
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-radius: 50;
+}
+
 /* ScrollPane standard class */
 .scrollable-pane {
     -fx-background-color: transparent;
@@ -180,9 +217,9 @@
 /* Result index text standard class */
 
 .results-index-counter {
-    -fx-pref-height: 20;
+    -fx-pref-height: 15;
     -fx-font-family: "Monserrat Regular";
-    -fx-text-fill: #393939;
+    -fx-text-fill: #565656;
     -fx-font-size: 14;
     -fx-padding: 5 0 5 0;
 }
@@ -292,7 +329,7 @@
 }
 
 .context-menu {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-border-color: #b5b5b5;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
@@ -322,7 +359,7 @@
     -fx-padding: 0;
 }
 .searchbar-section {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
 }
 .searchbar-left {
     -fx-alignment: center-left;
@@ -390,6 +427,16 @@
     -fx-border-color: lightgrey;
     -fx-pref-width: 640;
 }
+.library-creator-searchbar-container .searchbar {
+    -fx-border-width: 1;
+    -fx-border-color: lightgrey;
+    -fx-pref-width: 640;
+}
+.libraries-searchbar-container .searchbar {
+        -fx-border-width: 1;
+        -fx-border-color: lightgrey;
+        -fx-pref-width: 640;
+}
 
 
 
@@ -400,8 +447,8 @@
     -fx-alignment: top-center;
 }
 .results-page {
-    -fx-max-width: 1000;
-    -fx-pref-width: 1000;
+    -fx-min-width: 500;
+    -fx-pref-width: 900;
 }
 .result-title-container {
     -fx-content-display: center;
@@ -412,47 +459,110 @@
 }
 .results-books-container {
     -fx-spacing: 10;
-    -fx-background-color: white;
-    -fx-border-width: 2 0 2 0;
-    -fx-border-color: #668bc1;
+    -fx-background-color: #fefefe;
     -fx-padding: 10 10 0 10;
+}
+.results-books-separator .line {
+    -fx-border-color: #668bc1;
+    -fx-border-width: 2;
 }
 .results-books-controls-container {
     -fx-padding: 10;
+}
+.results-books-placeholder {
+    -fx-alignment: center;
+}
+.results-books-placeholder-icon {
+    -fx-icon-size: 80;
+    -fx-icon-color: #d3d4d8;
+}
+.results-books-placeholder-label {
+    -fx-text-fill: #8f8f8f;
+}
+.results-control-icons {    /* What are these for? */
+    -fx-icon-color: black;
+    -fx-icon-size: 38;
 }
 
 /* Search results */
 
 .book-item {
+    -fx-alignment: center;
     -fx-spacing: 4;
     -fx-padding: 10;
 }
-.book-item-button {
+.book-item-link {
     -fx-background-color: transparent;
+    -fx-cursor: hand;
     -fx-padding: 0;
 }
-.book-item-label {
-    -fx-max-width: 750;
-    -fx-font-family: "Montserrat Regular";
-    -fx-font-size: 14;
-}
-.book-item-link {
+.book-item-link-text {
     -fx-text-fill: #1e81c5;
     -fx-max-width: 750;
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 16;
 }
 .book-item-link:hover {
+    -fx-text-fill: #1b679c;
     -fx-underline: true;
+}
+.book-item-label {
+    -fx-max-width: 750;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+}
+.book-item-action-button {
+    -fx-alignment: center;
+    -fx-min-height: 35;
+    -fx-max-height: 35;
+    -fx-min-width: 130;
+    -fx-max-width: 130;
+    -fx-text-fill: #2490da;
+    -fx-background-radius: 5;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 15;
     -fx-cursor: hand;
 }
-.result-page-arrow {    /* What are these for? */
-    -fx-icon-color: black;
-    -fx-icon-size: 38;
+.book-item-action-button:hover {
+    -fx-text-fill: #1b679c;
+    -fx-background-color: rgba(30, 129, 197, 0.3);
+}
+.book-item-action-button:hover .ikonli-font-icon {
+    -fx-icon-color: #1b679c
+}
+.book-item-action-icon {
+    -fx-icon-color: #2490da;
+    -fx-icon-size: 25;
 }
 
 
+/* Book Minimal Item */
 
+.book-minimal {
+    -fx-alignment: center;
+    -fx-min-width: 275;
+    -fx-background-color: #fafafa;
+}
+.book-minimal-title {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14;
+}
+.book-minimal-button {
+    -fx-alignment: center;
+    -fx-min-height: 35;
+    -fx-max-height: 35;
+    -fx-min-width: 35;
+    -fx-max-width: 35;
+    -fx-background-color: transparent;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+.book-minimal-button:hover {
+    -fx-text-fill: #1b679c;
+    -fx-background-color: rgba(30, 129, 197, 0.3);
+}
 
 
 
@@ -475,7 +585,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .search-page {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-spacing: 20;
     -fx-max-width: 1000;
     -fx-min-width: 800;
@@ -493,7 +603,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .book-page {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-max-width: 1000;
     -fx-pref-width: 1000;
     -fx-padding: 20 40 100 40;
@@ -613,28 +723,6 @@
     -fx-wrap-text: true;
     -fx-padding: 10 0 0 0;
 }
-.user-review-add-button {
-    -fx-background-color: transparent;
-    -fx-cursor: hand;
-}
-.user-review-add-button .label {
-    -fx-min-height: 45;
-    -fx-max-height: 45;
-    -fx-min-width: 150;
-    -fx-max-width: 150;
-    -fx-effect: dropshadow(three-pass-box, rgba(50,50,50,0.1), 5, 0, 0, 5);
-    -fx-border-radius: 9999;
-    -fx-background-radius: 9999;
-    -fx-background-color: black;
-    -fx-text-fill: white;
-    -fx-alignment: center;
-}
-.user-review-add-button:hover .label {
-    -fx-background-color: #3f3f3f;
-}
-.user-review-add-button:pressed .label {
-    -fx-background-color: #2f2f2f;
-}
 .user-review-bg-icons-container {
     -fx-alignment: center;
     -fx-padding: 0 0 30 0;
@@ -653,7 +741,7 @@
 }
 .review-page {
         -fx-alignment: top-left;
-        -fx-background-color: white;
+        -fx-background-color: #fefefe;
         -fx-max-width: 1000;
         -fx-pref-width: 1000;
         -fx-spacing: 20;
@@ -776,7 +864,7 @@
     -fx-spacing: 20;
     -fx-max-width: 1100;
     -fx-min-width: 500;
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-padding: 40;
 }
 
@@ -785,7 +873,6 @@
 .libraries-searchbar-section {
     -fx-spacing: 10;
     -fx-alignment: center-left;
-    -fx-fill-width: false;
 }
 .library-searchbar-wrapper {
     -fx-border-radius: 9999;
@@ -827,12 +914,12 @@
     -fx-max-width: 280;
     -fx-background-insets: 0, 1;
     -fx-background-radius: 4, 3;
-    -fx-background-color: lightgrey, white;
+    -fx-background-color: lightgrey, #fefefe;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 5, 0, 0, 3);
     -fx-cursor: hand;
 }
 .library-item-button:hover {
-    -fx-background-color: #79e6fd, white;
+    -fx-background-color: #79e6fd, #fefefe;
     -fx-background-insets: 0, 3;
 }
 .library-item {
@@ -859,7 +946,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .library-page {
-    -fx-background-color: white;
+    -fx-background-color: #fefefe;
     -fx-spacing: 20;
     -fx-max-width: 1100;
     -fx-min-width: 500;
@@ -873,20 +960,39 @@
 /* Library Creator Page */
 .library-creator-container {
     -fx-alignment: top_center;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .library-creator {
+    -fx-alignment: center;
     -fx-spacing: 20;
-    -fx-max-width: 1100;
-    -fx-min-width: 500;
-    -fx-background-color: white;
+    -fx-min-width: 1100;
+    -fx-background-color: #fefefe;
     -fx-padding: 20;
 }
-.library-creator-main {
-    -fx-spacing: 20;
+.library-creator-name-field {
+    -fx-pref-width: 500;
+    -fx-min-width: 300;
+    -fx-pref-height: -1;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 2 0;
+    -fx-background-color: transparent;
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 21;
+    -fx-padding: 4;
 }
-
-
+.library-creator-name-field:focused {
+    -fx-border-color: #3691d4;
+}
+.library-creator-search-container {
+    -fx-alignment: center;
+}
+.library-creator-main {
+    -fx-hgap: 10;
+}
+.library-creator-selected-section {
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color: lightgrey;
+    -fx-padding: 10;
+}
 
 
 
@@ -926,7 +1032,7 @@
 }
 .confirm-dialog-initial:hover {
     -fx-background-color: #c43232;
-    -fx-text-fill: white;
+    -fx-text-fill: #fefefe;
     -fx-underline: false;
 }
 

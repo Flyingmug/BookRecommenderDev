@@ -1,4 +1,4 @@
-package bookrecommenderdev.model;
+package bookrecommenderdev.model.exceptions;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -12,30 +12,27 @@
 
    <VBox fx:id="content" styleClass="user-review-container">
       <VBox fx:id="mainArea"
-            styleClass="user-review-main"
-            minHeight="-Infinity">
+            styleClass="user-review-main">
 
-         <Label fx:id="titleLabel"
-                styleClass="italic-30, user-review-title"
-                text="Fai sapere cosa ne pensi scrivendo una recensione!" />
+         <VBox fx:id="createReviewSection">
+            <Label fx:id="titleLabel"
+                   styleClass="italic-30, user-review-title"
+                   text="Fai sapere cosa ne pensi scrivendo una recensione!" />
 
-         <Button fx:id="reviewButton"
-                 styleClass="user-review-add-button"
-                 onAction="#onReview">
-            <graphic>
-               <StackPane mouseTransparent="true">
-                  <HBox styleClass="user-review-bg-icons-container">
-                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
-                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
-                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#dedede" />
-                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
-                     <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
-                  </HBox>
-
-                  <Label styleClass="medium-21" text="Scrivi" />
-               </StackPane>
-            </graphic>
-         </Button>
+            <StackPane>
+               <HBox mouseTransparent="true" styleClass="user-review-bg-icons-container">
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#dedede" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
+               </HBox>
+               <Button fx:id="reviewButton"
+                       onAction="#onReview"
+                       text="Scrivi"
+                       styleClass="control-button-black" />
+            </StackPane>
+         </VBox>
 
       </VBox>
 

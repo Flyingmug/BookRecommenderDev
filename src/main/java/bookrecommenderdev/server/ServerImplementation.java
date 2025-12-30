@@ -2,6 +2,9 @@ package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.data.SearchRequest;
+import bookrecommenderdev.model.exceptions.AlreadyExistsException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.NotFoundException;
 import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dao.*;
@@ -158,13 +161,16 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    * todo doc
    */
   @Override
-  public int createLibreria(int idUtente, String nomeLibreria, List<Integer> idList)
-      throws RemoteException, InsertDBException {
+  public void createLibreria(int idUtente, String nomeLibreria, List<Integer> idList)
+      throws RemoteException, AlreadyExistsException, DataAccessException {
     try {
-      return librerie.creaLibreria(idUtente, nomeLibreria, idList);
+      librerie.creaLibreria(idUtente, nomeLibreria, idList);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Database Error", e);
+      if ("23505".equals(e.getSQLState())) {
+        throw new AlreadyExistsException("Esiste già una libreria con questo nome.");
+      }
+      throw new DataAccessException("Errore di database", e);
     }
   }
 
@@ -279,7 +285,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
           .orElseGet(() -> new AuthResult(null, NO_SUCH_USER));
 
     } catch (SQLException e) {
-      e.printStackTrace();
       return new AuthResult(null, DB_ERROR);
     }
   }

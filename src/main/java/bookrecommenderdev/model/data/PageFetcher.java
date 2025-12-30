@@ -1,6 +1,6 @@
 package bookrecommenderdev.model.data;
 
-import bookrecommenderdev.model.DataAccessException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
 
 import java.rmi.RemoteException;
 

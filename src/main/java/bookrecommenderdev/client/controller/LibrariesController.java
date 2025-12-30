@@ -106,6 +106,16 @@ public class LibrariesController implements Routable {
     setControls();
   }
 
+  @FXML
+  private void onCreate() {
+    if (!AuthContext.isAuthenticated()) {
+      Router.go("/login");
+      return;
+    }
+
+    Router.go("/libraries/create");
+  }
+
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
     setPrevControlVisibility(currentPageIndex > 0);

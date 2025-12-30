@@ -3,6 +3,8 @@ package bookrecommenderdev.client.controller;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.RatingFieldController;
 import bookrecommenderdev.model.*;
+import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.NotFoundException;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;

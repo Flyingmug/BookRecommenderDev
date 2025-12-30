@@ -10,59 +10,75 @@
     xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
     fx:controller="bookrecommenderdev.client.controller.components.SearchResultsController"
     styleClass="results-page-container" VBox.vgrow="ALWAYS">
-
    <VBox styleClass="results-page" VBox.vgrow="ALWAYS">
 
       <HBox fx:id="resultTitleContainer" styleClass="result-title-container">
-
-         <VBox fx:id="resultsNotFoundTitle" managed="false" visible="false"
+         <VBox fx:id="noResultsSection" managed="false" visible="false"
                alignment="center" style="-fx-spacing: 10;">
-            <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="45" />
-            <Label fx:id="resultsNotFoundQuery" wrapText="true" />
+            <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="65" />
+            <Label fx:id="noResultsText"
+                   text="Nessun risultato..."
+                   wrapText="true"
+                   styleClass="gabriola-50"/>
          </VBox>
          <HBox.margin>
             <Insets bottom="10.0" top="10.0" />
          </HBox.margin>
-
       </HBox>
 
       <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner" />
 
-      <VBox fx:id="booksResultSection">
+      <StackPane fx:id="initialPlaceholder" styleClass="results-books-placeholder" VBox.vgrow="ALWAYS">
+         <FontIcon iconLiteral="mdi2b-book-search-outline" styleClass="results-books-placeholder-icon" />
+         <Label text="Inizia a cercare..." styleClass="gabriola-70, results-books-placeholder-label" />
+      </StackPane>
+
+      <VBox fx:id="resultSection" managed="false" visible="false" VBox.vgrow="ALWAYS">
 
          <HBox alignment="BOTTOM_LEFT">
-            <Label fx:id="resultIndexCounter" styleClass="results-index-counter"
-                   text="Nessun risultato presente." />
+            <Label fx:id="resultIndexCounter"
+                   styleClass="results-index-counter"/>
          </HBox>
 
-         <VBox fx:id="booksResultsContainer" styleClass="results-books-container" VBox.vgrow="ALWAYS" />
+         <Separator styleClass="results-books-separator" />
+
+         <VBox fx:id="resultsContainer" styleClass="results-books-container" VBox.vgrow="ALWAYS">
+
+         </VBox>
+
+         <Separator styleClass="results-books-separator" />
 
          <BorderPane styleClass="results-books-controls-container">
             <left>
-               <Button fx:id="previousPageButton" styleClass="control-button"
+               <Button fx:id="previousPageButton"
                        BorderPane.alignment="CENTER"
                        onAction="#onPrevious"
                        visible="false"
-                       text="Precedente">
+                       text="Precedente"
+                       contentDisplay="RIGHT"
+                       styleClass="control-button">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-left" styleClass="result-page-arrow" />
                   </graphic>
                </Button>
             </left>
             <right>
-               <Button fx:id="nextPageButton" styleClass="control-button"
+               <Button fx:id="nextPageButton"
                        BorderPane.alignment="CENTER"
                        onAction="#onNext"
                        visible="false"
-                       text="Successivo">
+                       text="Successivo"
+                       contentDisplay="LEFT"
+                       styleClass="control-button">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-right" styleClass="result-page-arrow" />
                   </graphic>
                </Button>
             </right>
          </BorderPane>
-      </VBox>
-   </VBox>
 
+      </VBox>
+
+   </VBox>
 </VBox>
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+      fx:controller="bookrecommenderdev.client.controller.components.BookResultMinimalController"
+      styleClass="book-minimal">
+
+   <Label fx:id="title"
+          HBox.hgrow="ALWAYS"
+          maxWidth="Infinity"
+          styleClass="book-minimal-title" />
+
+   <Button fx:id="actionButton"
+           onAction="#onActionClicked"
+           visible="false" managed="false"
+           styleClass="book-minimal-button">
+      <graphic>
+         <FontIcon fx:id="actionIcon" styleClass="book-item-action-icon" />
+      </graphic>
+   </Button>
+</HBox>

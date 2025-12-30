@@ -92,4 +92,8 @@ public class InputVerifiers {
   public static String notNull(String s) {
     return s == null ? "" : s.trim();
   }
+
+  public static boolean isBlank(String s) {
+    return s == null || s.trim().isBlank();
+  }
 }

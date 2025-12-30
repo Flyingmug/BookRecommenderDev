@@ -37,11 +37,11 @@
             </VBox>
 
             <HBox alignment="BOTTOM_LEFT">
-               <Label styleClass="gabriola-33" text="Recensioni &amp; Suggerimenti" />
+               <Label styleClass="gabriola-50" text="Recensioni &amp; Suggerimenti" />
             </HBox>
 
             <VBox fx:id="myReviewSection">
-               <HBox alignment="BOTTOM_LEFT">
+               <HBox alignment="CENTER_LEFT">
                   <Label styleClass="regular-23" text="La mia recensione" />
                </HBox>
 

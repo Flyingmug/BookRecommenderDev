@@ -2,7 +2,7 @@ package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.ReviewItemFactory;
-import bookrecommenderdev.model.DataAccessException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.Valutazione;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.server.dto.PaginaValutazioni;

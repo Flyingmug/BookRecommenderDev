@@ -17,7 +17,7 @@ public class Utente implements Serializable {
   String email;
   String codiceFiscale;
   String password;
-  UUID userId;  // id dell' account
+  String userId;  // id dell' account
 
 
   /**
@@ -37,15 +37,25 @@ public class Utente implements Serializable {
     this.email = email;
     this.codiceFiscale = codiceFiscale;
     this.password = password;
-    this.userId = UUID.fromString(userId);
+    this.userId = userId;
   }
-
-  public Utente(String nome, String cognome, String email, String codiceFiscale, String password) {
+  /**
+   * Costruttore della classe Utente.
+   * I parametri passati vengono utilizzati per creare un'istanza.
+   * @param nome String
+   * @param cognome String
+   * @param codiceFiscale String
+   * @param email String
+   * @param userId String
+   * @param password String
+   */
+  public Utente(String nome, String cognome, String email, String codiceFiscale, String password, String userId ) {
     this.nome = nome;
     this.cognome = cognome;
     this.email = email;
     this.codiceFiscale = codiceFiscale;
     this.password = password;
+    this.userId = userId;
   }
 
   /**
@@ -68,19 +78,10 @@ public class Utente implements Serializable {
   public String getPassword() { return password; }
   /**
    * @return id utente*/
-  public String getUserId() { return userId.toString(); }
+  public String getUserId() { return userId; }
 
   /**
-   * Imposta un userId casuale all'oggetto
-   */
-  public void setUserId() {
-    userId = UUID.randomUUID();
-  }
-
-  /**
-   * Controlla l'uguaglianza controllando l'email e il codice fiscale
-   * @param obj
-   * @return
+   * Verifica l'uguaglianza controllando l'email e il codice fiscale
    */
   @Override
   public boolean equals(Object obj) {

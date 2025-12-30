@@ -108,13 +108,12 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     * todo doc
     * */
   @Override
-   public List<PaginaLibreria> getListLibrerie(int idUtente, int indicePagina)
+   public PaginaLibrerieRisultati getListLibrerie(int idUtente, int indicePagina)
       throws RemoteException, DataAccessException {
     try {
       return librerie.getPageListLibrerie(idUtente, indicePagina);
 
     } catch(SQLException e) {
-      e.printStackTrace();
       throw new DataAccessException("DB error", e);
     }
   }
@@ -192,6 +191,17 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     }
   }
 
+  /**
+   * todo doc
+   */
+  public boolean isLibroInLibrerieUtente(int idUtente, int idLibro)
+      throws RemoteException, DataAccessException {
+    try {
+      return librerie.verificaLibroInLibrerieUtente(idUtente, idLibro);
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore di database", e);
+    }
+  }
 
   //
   // Valutazioni
@@ -314,17 +324,17 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
   /**
    * Utilizza nome e password per verificare la presenza della coppia nel database.
-   * @param email Nome utente.
+   * @param userId Nome utente.
    * @param password Password utente.
    * @return Risultato dell'operazione
    */
-  public AuthResult login(String email, String password) throws RemoteException {
+  public AuthResult login(String userId, String password) throws RemoteException {
     try {
       System.out.println("SERVER login request.");
-      Optional<Utente> user = utenti.findByEmailAndPassword(email, password);
+      Optional<Utente> user = utenti.findByUserIdAndPassword(userId, password);
 
       return user
-          .map(u -> new AuthResult(u, SUCCESS))      // If user exists, wrap in AuthResult
+          .map(u -> new AuthResult(u, SUCCESS))
           .orElseGet(() -> new AuthResult(null, NO_SUCH_USER));
 
     } catch (SQLException e) {
@@ -343,7 +353,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
         return FISCAL_CODE_ALREADY_USED;
       }
 
-      u.setUserId();
       utenti.save(u);
 
       return RegisterStatus.SUCCESS;

@@ -26,7 +26,7 @@
             <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
          </VBox>
 
-         <fx:include source="components/search-results-view.fxml" fx:id="resultsSection" />
+         <fx:include source="components/search-results.fxml" fx:id="results" />
 
       </VBox>
    </VBox>

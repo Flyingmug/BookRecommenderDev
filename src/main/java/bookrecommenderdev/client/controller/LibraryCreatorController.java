@@ -31,12 +31,13 @@ import java.util.Map;
 import java.util.Set;
 
 import static bookrecommenderdev.Constants.MAX_LIBRARY_NAME_LENGTH;
+import static bookrecommenderdev.Constants.PAGE_SIZE;
 import static bookrecommenderdev.utils.InputVerifiers.*;
 
 public class LibraryCreatorController implements Routable {
 
   @FXML private SearchbarController searchbarController;
-  @FXML private SearchResultsController resultsController;
+  @FXML private SearchResultsController<Libro> resultsController;
   @FXML private TextField nameField;
   @FXML private VBox selectedContainer;
   @FXML private Button confirmButton;
@@ -77,7 +78,7 @@ public class LibraryCreatorController implements Routable {
     lastSearchRequest = req;
 
     PageFetcher<Libro> source = indicePagina -> context.server().cercaLibro(req, indicePagina);
-    resultsController.setSource(source);
+    resultsController.setSource(source, PAGE_SIZE);
 
     resultsController.refresh(); // loads first page or re-renders
   }
@@ -88,7 +89,7 @@ public class LibraryCreatorController implements Routable {
     String text = selected ? "Rimuovi" : "Aggiungi";
     String icon = selected ? "mdi2m-minus" : "mdi2p-plus";
 
-    return BookResultItemFactory.createBookResultItem(
+    return BookResultItemFactory.create(
         libro,
         null,
         text,

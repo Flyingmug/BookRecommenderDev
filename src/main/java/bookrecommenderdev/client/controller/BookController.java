@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.components.RecommendationsController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.ReviewsSectionController;
 import bookrecommenderdev.client.controller.components.UserReviewSectionController;
@@ -49,11 +50,13 @@ public class BookController implements Routable {
   @FXML private Parent userReviewSection;
   @FXML private UserReviewSectionController userReviewSectionController;
 
-  @FXML private ErrorBannerController errorBannerController;
+  @FXML private RecommendationsController recommendationsController;
 
+  @FXML private ErrorBannerController errorBannerController;
 
   AppContext context;
   int idLibro;
+  boolean canShowUserReview = false;
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
@@ -62,6 +65,7 @@ public class BookController implements Routable {
     idLibro = (Integer.parseInt(params.get("id")));
 
     userReviewSectionController.setContext(context, idLibro);
+    recommendationsController.setContext(context, idLibro);
 
     loadBookPage(idLibro);
   }
@@ -70,13 +74,6 @@ public class BookController implements Routable {
   public void initialize() {
 
     setHandleLayoutChange();
-
-    myReviewSection.visibleProperty().bind(
-        AuthContext.userProperty().isNotNull()
-    );
-    myReviewSection.managedProperty().bind(
-        AuthContext.userProperty().isNotNull()
-    );
   }
 
   /**
@@ -97,6 +94,14 @@ public class BookController implements Routable {
       setTextValue(annoPubblicazione, Integer.toString(l.getAnnoPubblicazione()));
       setTextValue(editore, l.getEditore());
       setTextValue(categorie, l.getCategorie());
+
+      if (AuthContext.isAuthenticated()) {
+        int userId = AuthContext.getUser().getId_utente();
+        canShowUserReview = context.server().isLibroInLibrerieUtente(userId, idLibro);
+      }
+
+      myReviewSection.setVisible(canShowUserReview);
+      myReviewSection.setManaged(canShowUserReview);
 
       double[] scores = pagina.getValutazioniAggregate();
       if (scoresPresent(pagina.getValutazioniAggregate())) {

@@ -49,8 +49,8 @@ public class RootController {
     routes.add(new Route("/book/:id", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
     routes.add(new Route("/book/:id/review", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
-    routes.add(new Route("/login", "login-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
-    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.DEFAULT, AccessPolicy.GUEST_ONLY));
+    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
+    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
 
     routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
     routes.add(new Route("/libraries/search", "search-libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
@@ -98,7 +98,7 @@ public class RootController {
       try {
 
         AuthResult result = context.server().login(
-            credentials.email(), credentials.password()
+            credentials.userId(), credentials.password()
         );
 
         if (result.authStatus() == AuthStatus.SUCCESS) {

@@ -2,5 +2,10 @@ package bookrecommenderdev.server.dto;
 
 import bookrecommenderdev.model.Libro;
 
-public record LibroConsigliato(Libro libro, int numConsigliato) {
+import java.io.Serial;
+import java.io.Serializable;
+
+public record LibroConsigliato(Libro libro, int countConsigliato)
+  implements Serializable {
+  @Serial private static final long serialVersionUID = 1L;
 }

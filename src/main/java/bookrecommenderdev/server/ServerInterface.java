@@ -27,12 +27,13 @@ public interface ServerInterface extends Remote {
   PaginaLibro getPaginaLibro(int idLibro) throws RemoteException, DataAccessException;
 
   // librerie
-  List<PaginaLibreria> getListLibrerie(int idUtente, int indicePagina) throws RemoteException, DataAccessException;
+  PaginaLibrerieRisultati getListLibrerie(int idUtente, int indicePagina) throws RemoteException, DataAccessException;
   PaginaLibriRisultati searchAllLibrerie(int idUtente, SearchRequest richiesta,  int indicePagina) throws RemoteException, DataAccessException;
   PaginaLibriRisultati searchInLibreria(int idUtente, int idLibreria, int indicePagina) throws RemoteException, DataAccessException;
   Libreria getLibreriaById(int idUtente, int idLibreria) throws RemoteException, NotFoundException, DataAccessException;
   void createLibreria(int idUtente, String nomeLibreria, List<Integer> idList) throws RemoteException, AlreadyExistsException, DataAccessException;
   void deleteLibreria(int idUtente, int idLibreria) throws RemoteException, NotFoundException, DataAccessException;
+  boolean isLibroInLibrerieUtente(int idUtente, int idLibro) throws RemoteException, NotFoundException, DataAccessException;
 
   // valutazioni
   Valutazione getValutazione(int idLibro, int userId) throws RemoteException, DataAccessException;
@@ -47,7 +48,7 @@ public interface ServerInterface extends Remote {
   void deleteConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, DataAccessException;
 
   // autenticazione e accesso
-  AuthResult login(String nome, String password) throws RemoteException;
+  AuthResult login(String userId, String password) throws RemoteException;
   RegisterStatus registrazione(Utente u) throws RemoteException, InsertDBException;
 
   // ping

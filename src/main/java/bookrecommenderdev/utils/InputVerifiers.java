@@ -3,6 +3,9 @@ package bookrecommenderdev.utils;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 
+import static bookrecommenderdev.Constants.MAX_EMAIL_LENGTH;
+import static bookrecommenderdev.Constants.MAX_NAME_LENGTH;
+
 public class InputVerifiers {
   private static final String FISCAL_REGEX = "^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]";
 
@@ -20,7 +23,7 @@ public class InputVerifiers {
    * todo documentation
    * */
   public static boolean verifyName(String name) {
-    return name != null && !name.isEmpty() && name.length() <= 64;
+    return name != null && !name.isEmpty() && name.length() <= MAX_NAME_LENGTH;
   }
 
 
@@ -28,7 +31,7 @@ public class InputVerifiers {
    * todo documentation
    * */
   public static boolean verifyPassword(String password) {
-    return password != null && password.length() >= 8 && password.length() <= 64;
+    return password != null && password.length() >= 8 && password.length() <= MAX_NAME_LENGTH;
   }
 
 
@@ -36,7 +39,7 @@ public class InputVerifiers {
    * todo documentation
    * */
   public static boolean verifyEmail(String email) {
-    return email != null && !email.isEmpty() && email.length() <= 255;
+    return email != null && !email.isEmpty() && email.length() <= MAX_EMAIL_LENGTH;
   }
 
   /**

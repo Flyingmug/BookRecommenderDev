@@ -23,7 +23,7 @@ import static bookrecommenderdev.utils.InputVerifiers.*;
 public class LoginController implements Routable {
 
   @FXML private Label loginFeedback;
-  @FXML private TextField loginEmail;
+  @FXML private TextField loginUserId;
   @FXML private TextField loginPassword;
   @FXML private Button loginButton;
   @FXML private Button confirmLoginButton;
@@ -37,7 +37,7 @@ public class LoginController implements Routable {
   @FXML
   public void initialize() {
     // login fields
-    preventMultipleSpacesAndLimit(loginEmail, MAX_REVIEW_LENGTH);
+    preventMultipleSpacesAndLimit(loginUserId, MAX_REVIEW_LENGTH);
     preventMultipleSpacesAndLimit(loginPassword, MAX_PASSWORD_LENGTH);
   }
 
@@ -48,16 +48,16 @@ public class LoginController implements Routable {
   @FXML
   protected void onLogin() {
 
-    String email = loginEmail.getText();
+    String userId = loginUserId.getText();
     String password = loginPassword.getText();
 
     // validazione + feedback
-    if (!validateLoginInput(email, password))
+    if (!validateLoginInput(userId, password))
       return;
 
     try {
-      AuthResult res = context.server().login(email, password);
-      handleLoginResult(res, email, password);
+      AuthResult res = context.server().login(userId, password);
+      handleLoginResult(res, userId, password);
 
     } catch(RemoteException e) {
       setLoginFeedback("Errore nella connessione al server");
@@ -70,14 +70,14 @@ public class LoginController implements Routable {
    * richiesta di autenticazione.
    * @param res Risposta dal server.
    */
-  private void handleLoginResult(AuthResult res, String email, String password) {
+  private void handleLoginResult(AuthResult res, String userId, String password) {
 
     switch(res.authStatus()) {
       case SUCCESS -> {
         AuthContext.login(res.user());
 
         if (loginRicordaCredenziali.isSelected())
-          AuthStorage.save(email, password);
+          AuthStorage.save(userId, password);
 
         setLoginFeedback("Login avvenuto con successo");
 
@@ -92,13 +92,13 @@ public class LoginController implements Routable {
   /**
    * Valuta il rispetto delle condizioni poste sui campi di login.
    * Inoltre utilizza la casella di feedback per mostrare sulla UI eventuali violazioni delle condizioni.
-   * @param email Email dell'utente.
+   * @param userId Email dell'utente.
    * @param password Password dell'utente.
    * @return {@code true} se il controllo è superato, {@code false} altrimenti.
    */
-  private boolean validateLoginInput(String email, String password) {
-    if (!verifyEmail(email)) {
-      setLoginFeedback("Nome utente deve essere tra 1 e 64 caratteri");
+  private boolean validateLoginInput(String userId, String password) {
+    if (!verifyPassword(userId)) {
+      setLoginFeedback("User id deve essere tra 8 e 64 caratteri");
       return false;
     }
     if (!verifyPassword(password)) {

@@ -20,6 +20,7 @@
          <TextField fx:id="registerName" styleClass="login-field, regular-17" promptText="Nome" />
          <TextField fx:id="registerSurname" styleClass="login-field, regular-17" promptText="Cognome" />
       </HBox>
+      <TextField fx:id="registerUserId" styleClass="login-field, regular-17" promptText="User id" />
       <TextField fx:id="registerEmail" styleClass="login-field, regular-17" promptText="Email" />
       <TextField fx:id="registerPassword" styleClass="login-field, regular-17" promptText="Password" />
       <TextField fx:id="registerCodiceFiscale" styleClass="login-field, regular-17" promptText="Codice fiscale" />

@@ -26,10 +26,8 @@ public class BookResultItemController {
     this.onOpen = (onClickOpen == null) ? (_ -> {}) : onClickOpen;
 
     titleLabel.setText(l.getTitolo());
-    titleLabel.setEllipsisString("...");
 
     authorLabel.setText(l.getAutori());
-    authorLabel.setEllipsisString("...");
 
     yearLabel.setText(l.getAnnoPubblicazione() > 0 ?
         Integer.toString(l.getAnnoPubblicazione()) : "");

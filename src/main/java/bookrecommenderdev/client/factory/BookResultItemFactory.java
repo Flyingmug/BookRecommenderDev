@@ -1,14 +1,11 @@
 package bookrecommenderdev.client.factory;
 
 import bookrecommenderdev.client.controller.components.BookResultItemController;
-import bookrecommenderdev.client.controller.components.ReviewItemController;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.utils.LabelCustomizer;
 import bookrecommenderdev.utils.Size;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -23,8 +20,8 @@ public class BookResultItemFactory {
    * @param onClick
    * @return
    */
-  public static Parent createBookResultItem(Libro l, Consumer<Integer> onClick) {
-    return createBookResultItem(l, onClick, null, null, null);
+  public static Parent create(Libro l, Consumer<Integer> onClick) {
+    return create(l, onClick, null, null, null);
   }
 
   /**
@@ -35,7 +32,7 @@ public class BookResultItemFactory {
    * @param onAction
    * @return
    */
-  public static Parent createBookResultItem(
+  public static Parent create(
       Libro l,
       Consumer<Integer> onOpen,
       String actionText,

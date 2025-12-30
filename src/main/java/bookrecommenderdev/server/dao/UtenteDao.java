@@ -15,45 +15,6 @@ public class UtenteDao {
     this.datasource = ds;
   }
 
-
-//  /**
-//   *
-//   * @param email
-//   * @param fiscalCode
-//   * @return ottiene la lista di utenti con email e password/codiceFiscale corrispondenti
-//   */
-//        public List<Utente> getComplete(String email, String key, boolean fiscalCode) throws SQLException {
-//    List<Utente> utenti = new LinkedList<>();
-//
-//    String q = "SELECT u.* FROM UtentiRegistrati u WHERE u.email = ?" + (fiscalCode ? " OR u.codice_fiscale = ?;" : " AND u.password = ?;");
-//
-//    try (Connection conn = datasource.getConnection();
-//         PreparedStatement ps = conn.prepareStatement(q)) {
-//
-//      ps.setString(1, email);
-//      ps.setString(2, key);
-//
-//      ResultSet rs = ps.executeQuery();
-//
-//      while (rs.next()) {
-//        utenti.add(new Utente(
-//          rs.getInt("id_utente"),
-//          rs.getString("nome"),
-//          rs.getString("cognome"),
-//          rs.getString("email"),
-//          rs.getString("codice_fiscale"),
-//          rs.getString("password"),
-//          rs.getString("userId")
-//        ));
-//      }
-//
-//    }
-//
-//    System.out.println("Numero risultati: " + utenti.size());
-//
-//    return utenti;
-//  }
-
   public Optional<Utente> findByFiscalCode(String codiceFiscale) throws SQLException {
     String q = "SELECT * FROM UtentiRegistrati WHERE codice_fiscale = ?";
 
@@ -67,13 +28,13 @@ public class UtenteDao {
     }
   }
 
-  public Optional<Utente> findByEmailAndPassword(String email, String password) throws SQLException {
-    String q = "SELECT * FROM UtentiRegistrati WHERE email = ? AND password = ?";
+  public Optional<Utente> findByUserIdAndPassword(String userId, String password) throws SQLException {
+    String q = "SELECT * FROM UtentiRegistrati WHERE userId = ? AND password = ?";
 
     try (Connection c = datasource.getConnection();
          PreparedStatement ps = c.prepareStatement(q)) {
 
-      ps.setString(1, email);
+      ps.setString(1, userId);
       ps.setString(2, password);
       ResultSet rs = ps.executeQuery();
 

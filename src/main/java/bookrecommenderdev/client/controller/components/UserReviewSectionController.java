@@ -12,7 +12,6 @@ import bookrecommenderdev.routing.auth.AuthContext;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
@@ -134,7 +133,7 @@ public class UserReviewSectionController {
   private void showExistingReview(Valutazione v) {
 
     mainArea.getChildren().setAll(
-        ReviewItemFactory.createReviewNode(v)
+        ReviewItemFactory.create(v)
     );
 
     deleteButton.setVisible(true);
@@ -207,5 +206,4 @@ public class UserReviewSectionController {
   public void setOnLayoutChange(Runnable r) {
     this.onLayoutChange = r;
   }
-
 }

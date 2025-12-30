@@ -14,17 +14,21 @@
 
       <HBox fx:id="resultTitleContainer" styleClass="result-title-container">
          <VBox fx:id="noResultsSection" managed="false" visible="false"
-               alignment="center" style="-fx-spacing: 10;">
-            <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="65" />
+               styleClass="results-empty-wrapper">
+            <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="65" styleClass="results-empty-icon" />
             <Label fx:id="noResultsText"
                    text="Nessun risultato..."
                    wrapText="true"
-                   styleClass="gabriola-50"/>
+                   styleClass="gabriola-50, results-empty-label"/>
          </VBox>
          <HBox.margin>
             <Insets bottom="10.0" top="10.0" />
          </HBox.margin>
       </HBox>
+
+      <VBox fx:id="noRendererBox" visible="false" managed="false">
+         <Label text="Renderer non configurato" />
+      </VBox>
 
       <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner" />
 
@@ -52,6 +56,7 @@
             <left>
                <Button fx:id="previousPageButton"
                        BorderPane.alignment="CENTER"
+                       focusTraversable="false"
                        onAction="#onPrevious"
                        visible="false"
                        text="Precedente"
@@ -65,6 +70,7 @@
             <right>
                <Button fx:id="nextPageButton"
                        BorderPane.alignment="CENTER"
+                       focusTraversable="false"
                        onAction="#onNext"
                        visible="false"
                        text="Successivo"

@@ -99,7 +99,7 @@ public class ReviewsSectionController {
     reviewsContainer.getChildren().clear();
 
     for (Valutazione v: results) {
-      Parent row = ReviewItemFactory.createReviewNode(v);
+      Parent row = ReviewItemFactory.create(v);
       reviewsContainer.getChildren().add(row);
 
       if (results.indexOf(v) < results.size() - 1) {

@@ -1,3 +1,3 @@
 package bookrecommenderdev.model;
 
-public record Credentials(String email, String password) {}
+public record Credentials(String userId, String password) {}

@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class ReviewItemFactory {
 
-  public static Parent createReviewNode(Valutazione v) {
+  public static Parent create(Valutazione v) {
 
     try {
         FXMLLoader loader = new FXMLLoader(

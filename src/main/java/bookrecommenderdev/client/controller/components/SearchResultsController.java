@@ -24,7 +24,7 @@ import java.util.function.Function;
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 
-public class SearchResultsController {
+public class SearchResultsController<T> {
 
   @FXML private StackPane initialPlaceholder;
   @FXML private VBox noResultsSection;
@@ -34,40 +34,47 @@ public class SearchResultsController {
   @FXML private Label resultIndexCounter;
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
+  @FXML private VBox noRendererBox;
 
   @FXML private ErrorBannerController errorBannerController;
 
-
   int currentPageIndex;
   int totalResultCount;
-  private PageFetcher<Libro> source;
+  private int pageSize = PAGE_SIZE; // default
+  private PageFetcher<T> source;
   private SearchRequest request;
   private boolean hasSearchedOnce = false;
-  private List<Libro> lastResults;  // test
-  private Function<Libro, Parent> itemRenderer;
+  private List<T> lastResults;
+  private Function<T, Parent> itemRenderer;
 
-  public void setSource(PageFetcher<Libro> pageFetcher, SearchRequest req) {
-    request = req;
+  public void setSource(PageFetcher<T> pageFetcher, int pageSize) {
     this.source = pageFetcher;
-
-    refreshFromStart();
-  }
-
-  public void setSource(PageFetcher<Libro> pageFetcher) {
-    this.source = pageFetcher;
+    if (pageSize <= 0) throw new IllegalArgumentException("pageSize must be > 0");
+    this.pageSize = pageSize;
     lastResults = null;
 
     refreshFromStart();
   }
 
-  public void setItemRenderer(Function<Libro, Parent> renderer) {
+  public void setItemRenderer(Function<T, Parent> renderer) {
     this.itemRenderer = renderer;
 
     // Ricarica gli elementi senza eseguire un refresh dell'intera pagina todo add this note to doc
     if (lastResults != null && !lastResults.isEmpty() && totalResultCount > 0) {
       render(lastResults);
-      setControls();
     }
+  }
+
+  private boolean verificaRenderer() {
+    boolean isSet = itemRenderer != null;
+
+    if (noRendererBox != null) {
+      noRendererBox.setVisible(!isSet);
+      noRendererBox.setManaged(!isSet);
+    }
+
+    if (!isSet) setResultsVisible(false);
+    return isSet;
   }
 
   public void refreshView() {
@@ -91,6 +98,16 @@ public class SearchResultsController {
     resolve(0);
   }
 
+  public void hidePlaceholder() {
+    if (hasSearchedOnce) return;
+    hasSearchedOnce = true;
+
+    if (initialPlaceholder != null) {
+      initialPlaceholder.setVisible(false);
+      initialPlaceholder.setManaged(false);
+    }
+  }
+
   /** <p>Gestisce la richiesta al server utilizzando la chiave data {@code query}.
    * <p>L'indice di pagina {@code pageIndex} viene utilizzato per avere un <i>offset</i> sui risultati,
    * <i>limitati</i> a una quantità fissa.
@@ -101,14 +118,14 @@ public class SearchResultsController {
    */
   private void resolve(int pageIndex) {
     try {
-      PageResult<Libro> data = source.fetch(pageIndex);
+      PageResult<T> data = source.fetch(pageIndex);
 
-      List<Libro> books = data.results();
+      List<T> items = data.results();
       totalResultCount = data.totalCount();
 
-      lastResults = books;
+      lastResults = items;
 
-      if (books.isEmpty() || totalResultCount == 0) {
+      if (items.isEmpty() || totalResultCount == 0) {
         showNoResultsText();
         setResultsVisible(false);
         return;
@@ -116,7 +133,7 @@ public class SearchResultsController {
 
       hideNoResultsText();
       setResultsVisible(true);
-      render(books);
+      render(items);
       setControls();
 
     } catch (DataAccessException e) {
@@ -131,24 +148,20 @@ public class SearchResultsController {
   }
 
   /**
-   * <p>Costruisce dinamicamente dei nodi per mostrare i dati di ciascun Libro.
+   * <p>Costruisce dinamicamente dei nodi per mostrare i dati di ciascun elemento.
    * <p>I nodi sono spaziati da nodi {@link Separator}.
    * @param results lista di dati risultanti
    */
-  private void render(List<Libro> results) {
+  private void render(List<T> results) {
+    // Controllo della presenza di un elemento di render
+    if (!verificaRenderer()) return;
 
     // Rimozione di eventuali elementi precedenti
     resultsContainer.getChildren().clear();
-
-    resultIndexCounter.setText(formatIndexCounter());
-
-    Function<Libro, Parent> renderer =
-        (itemRenderer != null)
-            ? itemRenderer
-            : (l -> BookResultItemFactory.createBookResultItem(l, this::onBookPage));
+    setIndexCounter();
 
     for (int i = 0; i < results.size(); i++) {
-      Parent row = renderer.apply(results.get(i));
+      Parent row = itemRenderer.apply(results.get(i));
       resultsContainer.getChildren().add(row);
 
       if (i < results.size() - 1) {
@@ -157,6 +170,10 @@ public class SearchResultsController {
     }
   }
 
+  /**
+   * Link di default: reindirizza alla pagina del libro indicato.
+   * @param idLibro Id libro
+   */
   @FXML
   private void onBookPage(Integer idLibro) {
     Router.go("/book/" + idLibro, TransitionAnimation.LEFT_SLIDE);
@@ -177,7 +194,7 @@ public class SearchResultsController {
   @FXML
   private void onNext() {
     if (source == null) return;
-    if ((currentPageIndex + 1) * PAGE_SIZE > totalResultCount) return;
+    if ((currentPageIndex + 1) * pageSize > totalResultCount) return;
 
     goToPage(currentPageIndex + 1);
   }
@@ -195,7 +212,7 @@ public class SearchResultsController {
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
     boolean canPrev = currentPageIndex > 0;
-    boolean canNext = (currentPageIndex + 1) * PAGE_SIZE < totalResultCount;
+    boolean canNext = (currentPageIndex + 1) * pageSize < totalResultCount;
 
     setControlVisibility(previousPageButton, canPrev);
     setControlVisibility(nextPageButton, canNext);
@@ -206,11 +223,6 @@ public class SearchResultsController {
   /** Disabilita i comandi di controlli dei risultati. */
   private void setControlDisabled(Button control, boolean disable) {
     control.setDisable(disable);
-    if (disable) {
-      control.getStyleClass().add("control-button-customdisabled");
-    } else {
-      control.getStyleClass().remove("control-button-customdisabled");
-    }
   }
 
   /** Controlla la visibilità del pulsante. */
@@ -235,22 +247,13 @@ public class SearchResultsController {
     noResultsSection.setManaged(false);
   }
 
-  private void hidePlaceholder() {
-    if (hasSearchedOnce) return;
-    hasSearchedOnce = true;
-
-    if (initialPlaceholder != null) {
-      initialPlaceholder.setVisible(false);
-      initialPlaceholder.setManaged(false);
-    }
-  }
-
-  /** Genera una stringa di testo per mostrare il numero di risultati visualizzati contro il totale. */
-  private String formatIndexCounter() {
-    return Math.min(
-        PAGE_SIZE*currentPageIndex+1, totalResultCount) +"-"+
-        Math.min(PAGE_SIZE*(1+currentPageIndex), totalResultCount) +" di "+
-        totalResultCount + " risultati";
+  /** Mostra il numero di risultati visualizzati contro il totale. */
+  private void setIndexCounter() {
+    resultIndexCounter.setText(
+        Math.min(pageSize*currentPageIndex+1, totalResultCount) +"-"+
+        Math.min(pageSize*(1+currentPageIndex), totalResultCount) +" di "+
+        totalResultCount + " risultati"
+    );
   }
 
   private void showError(String message, Runnable retry, Runnable back) {

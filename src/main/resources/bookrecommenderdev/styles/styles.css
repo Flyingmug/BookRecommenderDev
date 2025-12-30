@@ -135,11 +135,12 @@
 }
 .control-button:disabled {
     -fx-opacity: 1;
-}
-.control-button-customdisabled {
     -fx-background-color: #f2f2f2;
     -fx-border-width: 2;
     -fx-border-color: #668bc1;
+}
+.control-button-customdisabled {
+
 }
 
 /* Control button specializations */
@@ -455,7 +456,17 @@
     -fx-alignment: center;
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 30;
-    -fx-padding: 10;
+}
+.results-empty-wrapper {
+    -fx-alignment: center;
+    -fx-spacing: 5;
+}
+.results-empty-icon {
+    -fx-icon-color: #848484;
+    -fx-icon-size: 65;
+}
+.results-empty-label {
+    -fx-text-fill: #848484;
 }
 .results-books-container {
     -fx-spacing: 10;
@@ -488,7 +499,7 @@
 
 .book-item {
     -fx-alignment: center;
-    -fx-spacing: 4;
+    -fx-spacing: 6;
     -fx-padding: 10;
 }
 .book-item-link {
@@ -673,8 +684,8 @@
 }
 
 .review-section-separator .line {
-    -fx-border-color: black;
-    -fx-border-width: 1.5;
+    -fx-border-color: lightgrey;
+    -fx-border-width: 1;
 }
 .review-item {
     -fx-hgap: 5;
@@ -728,7 +739,10 @@
     -fx-padding: 0 0 30 0;
 }
 
-
+/* Recommendations Subpage */
+.recommendations-container {
+    -fx-padding: 0 10 5 10;
+}
 
 
 
@@ -849,7 +863,7 @@
     -fx-border-color: #7377d5;
     -fx-border-width: 1;
     -fx-border-radius: 20;
-    -fx-padding: 75 100 75 100;
+    -fx-padding: 60 90 60 90;
 }
 
 
@@ -891,9 +905,6 @@
     -fx-border-width: 1;
 }
 /* items container */
-.libraries-items-section {
-    /* unused */
-}
 .libraries-items-control-container {
     -fx-alignment: center;
     -fx-spacing: 10;
@@ -1036,6 +1047,17 @@
     -fx-underline: false;
 }
 
+
+/* Recommendations */
+.recommend-item-count-icon {
+    -fx-icon-color: #b3b3b3;
+    -fx-icon-size: 25;
+}
+.recommend-item-count-label {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 21;
+    -fx-text-fill: #b3b3b3;
+}
 
 
 

@@ -39,7 +39,7 @@
                         fitToHeight="true"
                         hbarPolicy="NEVER"
                         styleClass="scrollable-pane" VBox.vgrow="ALWAYS">
-               <fx:include source="components/search-results-view.fxml" fx:id="results" />
+               <fx:include source="components/search-results.fxml" fx:id="results" />
             </ScrollPane>
 
             <HBox alignment="CENTER">

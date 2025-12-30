@@ -3,6 +3,7 @@ package bookrecommenderdev.client.controller;
 import bookrecommenderdev.client.controller.components.SearchResultsController;
 import bookrecommenderdev.client.controller.components.controls.ConfirmDialogController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
+import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.exceptions.NotFoundException;
@@ -21,6 +22,8 @@ import javafx.scene.control.Label;
 import java.rmi.RemoteException;
 import java.util.Map;
 
+import static bookrecommenderdev.Constants.PAGE_SIZE;
+
 public class LibraryPageController implements Routable {
 
   @FXML private Button deleteButton;
@@ -28,7 +31,7 @@ public class LibraryPageController implements Routable {
   @FXML private ConfirmDialogController deleteConfirmController;
   @FXML private Label libraryTitle;
   @FXML private Parent resultsSection;
-  @FXML private SearchResultsController resultsSectionController;
+  @FXML private SearchResultsController<Libro> resultsController;
 
   @FXML private ErrorBannerController errorBannerController;
 
@@ -57,7 +60,7 @@ public class LibraryPageController implements Routable {
 
     int idUtente = AuthContext.getUser().getId_utente();
 
-    fetchTitle(idUtente);
+    resolve(idUtente);
   }
 
   /**
@@ -140,7 +143,7 @@ public class LibraryPageController implements Routable {
   /**
    * todo doc
    */
-  private void fetchTitle(int idUtente) {
+  private void resolve(int idUtente) {
     try {
       Libreria lib = context.server().getLibreriaById(idUtente, idLibreria);
       libraryTitle.setText(lib.getNome());
@@ -148,7 +151,8 @@ public class LibraryPageController implements Routable {
       PageFetcher<Libro> source = page ->
           context.server().searchInLibreria(idUtente, idLibreria, page);
 
-      resultsSectionController.setSource(source);
+      resultsController.setItemRenderer(this::renderBookItem);
+      resultsController.setSource(source, PAGE_SIZE);
 
     } catch (NotFoundException e) {
       Platform.runLater(() -> Router.go("/not-found", TransitionAnimation.LEFT_SLIDE));
@@ -161,6 +165,13 @@ public class LibraryPageController implements Routable {
 
     }
   }
+
+  private Parent renderBookItem(Libro l) {
+    return BookResultItemFactory.create(
+        l, id -> Router.go("/book/" + id, TransitionAnimation.LEFT_SLIDE)
+    );
+  }
+
 
   /**
    * todo doc

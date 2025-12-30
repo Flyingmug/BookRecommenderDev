@@ -18,7 +18,7 @@
 
          <VBox fx:id="content" styleClass="book-page-content" VBox.vgrow="ALWAYS" >
 
-            <VBox>
+            <VBox spacing="10">
                <Label fx:id="titolo" styleClass="book-label-title" minHeight="-Infinity" wrapText="true" />
 
                <HBox styleClass="book-label-subtitle">
@@ -34,6 +34,17 @@
                   <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="categorie" />
                   <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="editore" />
                </GridPane>
+               <Separator styleClass="review-section-separator" />
+            </VBox>
+
+
+            <HBox alignment="CENTER_LEFT">
+               <Label styleClass="gabriola-50" text="Libri consigliati" />
+            </HBox>
+
+            <VBox fx:id="consigliSection">
+               <fx:include source="components/recommendations.fxml" fx:id="recommendations" />
+               <Separator styleClass="review-section-separator" />
             </VBox>
 
             <HBox alignment="BOTTOM_LEFT">
@@ -46,6 +57,7 @@
                </HBox>
 
                <fx:include source="components/user-review-section.fxml" fx:id="userReviewSection" />
+               <Separator styleClass="review-section-separator" />
             </VBox>
 
             <VBox>

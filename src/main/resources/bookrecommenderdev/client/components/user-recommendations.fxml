@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox fx:id="root"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="bookrecommenderdev.client.controller.components.RecommendationsController">
+
+   <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner"/>
+
+   <VBox fx:id="content" styleClass="recommendations-container">
+
+<!--      <HBox alignment="CENTER_LEFT">-->
+<!--         <Label styleClass="gabriola-50" text="Libri consigliati dagli utenti" />-->
+<!--      </HBox>-->
+
+<!--      <fx:include source="search-results.fxml" fx:id="results"/>-->
+
+   </VBox >
+</VBox>

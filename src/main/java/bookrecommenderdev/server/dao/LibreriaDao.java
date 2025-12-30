@@ -4,6 +4,7 @@ import bookrecommenderdev.model.Libreria;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.model.data.SearchRequest;
 import bookrecommenderdev.server.dto.PaginaLibreria;
+import bookrecommenderdev.server.dto.PaginaLibrerieRisultati;
 import bookrecommenderdev.server.dto.PaginaLibriRisultati;
 
 import javax.sql.DataSource;
@@ -59,20 +60,26 @@ public class LibreriaDao {
   * todo doc
   * Restituisce anche le librerie vuote.
   * */
-  public List<PaginaLibreria> getPageListLibrerie(int id_utente, int indicePagina) throws SQLException {
-    final String q =
-        "SELECT" +
-            " l.id_libreria," +
-            " l.nome AS nome_libreria," +
-            " COUNT(c.id_libro) AS totalCount " +
-        " FROM Librerie l" +
-        " LEFT JOIN Libreria_Contiene c ON l.id_libreria = c.id_libreria " +
-        " WHERE l.id_utente = ?" +
-        " GROUP BY l.id_libreria, l.nome" +
-        " ORDER BY l.nome" +
-        " OFFSET ? LIMIT ?";
+  public PaginaLibrerieRisultati getPageListLibrerie(int id_utente, int indicePagina) throws SQLException {
+    final String q ="""
+      SELECT t.id_libreria, t.nome_libreria, t.localCount,
+             COUNT(*) OVER() AS totalCount
+      FROM (
+        SELECT
+          l.id_libreria,
+          l.nome AS nome_libreria,
+          COUNT(c.id_libro) AS localCount
+        FROM Librerie l
+        LEFT JOIN Libreria_Contiene c ON l.id_libreria = c.id_libreria
+        WHERE l.id_utente = ?
+        GROUP BY l.id_libreria, l.nome
+      ) t
+      ORDER BY t.nome_libreria, t.id_libreria
+      OFFSET ? LIMIT ?
+      """;
 
     List<PaginaLibreria> elenco = new LinkedList<>();
+    int totalCount = 0;
 
     try (Connection conn = datasource.getConnection();
          PreparedStatement ps = conn.prepareStatement(q)) {
@@ -82,21 +89,24 @@ public class LibreriaDao {
       ps.setInt(3, LIBRARIES_PAGE_SIZE);
 
       try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          elenco.add(new PaginaLibreria(
-              new Libreria(
-                  rs.getInt("id_libreria"),
-                  id_utente,
-                  rs.getString("nome_libreria")
-              ),
-              rs.getInt("totalCount")
-          ));
+        if(rs.next()) {
+          totalCount = rs.getInt("totalCount");
+
+          do {
+            elenco.add(new PaginaLibreria(
+                new Libreria(
+                    rs.getInt("id_libreria"),
+                    id_utente,
+                    rs.getString("nome_libreria")
+                ),
+                rs.getInt("localCount")
+            ));
+          } while (rs.next());
         }
       }
-
     }
 
-    return elenco;
+    return new PaginaLibrerieRisultati(elenco, totalCount);
   }
 
 
@@ -228,7 +238,7 @@ public class LibreriaDao {
             elenco.add(new Libro(
                 rs.getInt("id_libro"),
                 rs.getString("titolo"),
-                "",//rs.getString("autori"),
+                rs.getString("autori"),
                 rs.getInt("anno_pubblicazione")
             ));
           } while (rs.next());
@@ -309,4 +319,22 @@ public class LibreriaDao {
     }
   }
 
+  public boolean verificaLibroInLibrerieUtente(int idUtente, int idLibro) throws SQLException {
+    final String q = """
+    SELECT 1
+    FROM Librerie l
+    JOIN Libreria_Contiene lc ON lc.id_libreria = l.id_libreria
+    WHERE l.id_utente = ? AND lc.id_libro = ?
+    LIMIT 1
+    """;
+
+    try (Connection conn = datasource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(q)) {
+      ps.setInt(1, idUtente);
+      ps.setInt(2, idLibro);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next();
+      }
+    }
+  }
 }

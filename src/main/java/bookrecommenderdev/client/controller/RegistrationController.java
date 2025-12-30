@@ -7,8 +7,6 @@ import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Utente;
-import bookrecommenderdev.routing.route.Route;
-import bookrecommenderdev.routing.route.RouteMatch;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -28,16 +26,14 @@ import static bookrecommenderdev.utils.InputVerifiers.verifyPassword;
 
 public class RegistrationController implements Routable {
 
-  @FXML private VBox registerPage;
   @FXML private Label registerFeedback;
   @FXML private TextField registerName;
   @FXML private TextField registerSurname;
+  @FXML private TextField registerUserId;
   @FXML private TextField registerEmail;
   @FXML private TextField registerPassword;
   @FXML private TextField registerCodiceFiscale;
-  @FXML private Button registerButton;
-//  @FXML
-//  private Button confirmRegistrationButton;
+
   @FXML private CheckBox saveCredentialsCheck;
 
   private AppContext context;
@@ -51,7 +47,8 @@ public class RegistrationController implements Routable {
     // registration fields
     preventMultipleSpacesAndLimit(registerName, MAX_NAME_LENGTH);
     preventMultipleSpacesAndLimit(registerSurname, MAX_NAME_LENGTH);
-    preventMultipleSpacesAndLimit(registerEmail, MAX_REVIEW_LENGTH);
+    preventMultipleSpacesAndLimit(registerUserId, MAX_NAME_LENGTH);
+    preventMultipleSpacesAndLimit(registerEmail, MAX_EMAIL_LENGTH);
     preventMultipleSpacesAndLimit(registerPassword, MAX_PASSWORD_LENGTH);
     restrictLooseFiscalCodeInput(registerCodiceFiscale);
   }
@@ -64,12 +61,13 @@ public class RegistrationController implements Routable {
   protected void onRegister() {
     String name = registerName.getText();
     String surname = registerSurname.getText();
+    String userId = registerUserId.getText();
     String email = registerEmail.getText();
     String password = registerPassword.getText();
     String codiceFiscale = registerCodiceFiscale.getText();
 
     // validazione + feedback
-    if (!validateRegistrationInput(name, surname, email, password, codiceFiscale))
+    if (!validateRegistrationInput(name, surname, userId, email, password, codiceFiscale))
       return;
 
     try {
@@ -78,7 +76,8 @@ public class RegistrationController implements Routable {
           surname,
           email,
           codiceFiscale,
-          password
+          password,
+          userId
       );
       RegisterStatus res = context.server().registrazione(u);
       handleRegistrationResult(res, u);
@@ -121,7 +120,7 @@ public class RegistrationController implements Routable {
    * @param codiceFiscale Codice fiscale personale.
    * @return {@code true} se il controllo è superato, {@code false} altrimenti.
    */
-  private boolean validateRegistrationInput(String name, String surname, String email, String password, String codiceFiscale) {
+  private boolean validateRegistrationInput(String name, String surname, String userId, String email, String password, String codiceFiscale) {
     if (!verifyName(name)) {
       setRegistrationFeedback("Nome deve essere tra 1 e 64 caratteri");
       return false;
@@ -131,6 +130,12 @@ public class RegistrationController implements Routable {
       setRegistrationFeedback("Cognome deve essere tra 1 e 64 caratteri");
       return false;
     }
+
+    if (!verifyPassword(userId)) {
+      setRegistrationFeedback("UserId deve essere tra 8 e 64 caratteri");
+      return false;
+    }
+
 
     if (!verifyEmail(email)) {
       setRegistrationFeedback("Password deve essere tra 1 e 255 caratteri");

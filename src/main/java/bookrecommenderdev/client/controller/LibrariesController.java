@@ -8,6 +8,7 @@ import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.server.dto.PaginaLibreria;
+import bookrecommenderdev.server.dto.PaginaLibrerieRisultati;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
@@ -28,9 +29,9 @@ public class LibrariesController implements Routable {
   @FXML private VBox nextPageControl;
   @FXML private SearchbarController searchbarController;
 
-  AppContext context;
-  int currentPageIndex;
-  int totalResultCount;
+  private AppContext context;
+  private int currentPageIndex = 0;
+  private int totalResultCount = 0;
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
@@ -48,62 +49,46 @@ public class LibrariesController implements Routable {
 
   private void resolve(int pageIndex) {
 
-    if (!AuthContext.isAuthenticated()) return;   // router shouldn't allow to be here regardless
+    if (!AuthContext.isAuthenticated()) return;
     int userId = AuthContext.getUser().getId_utente();
 
     try {
+      PaginaLibrerieRisultati page = context.server().getListLibrerie(userId, pageIndex);
 
-      List<PaginaLibreria> results = context.server().getListLibrerie(userId, currentPageIndex);
+      List<PaginaLibreria> results = page.results();
+      totalResultCount = page.totalCount();
+      currentPageIndex = Math.max(0, pageIndex);
 
-      if (results == null) {
-        System.out.println("UI error retrieving libraries");
+      if (results == null || results.isEmpty() || totalResultCount == 0) {
+        showNoResults(true);
+        load(List.of());
+        setControls();
         return;
       }
 
-      if (results.isEmpty()) {
-        System.out.println("Empty result set."); // DEBUG
-        showNoResults();
-        return;
-      }
-
-      totalResultCount = results.size();
-
-      load(results, pageIndex);
+      showNoResults(false);
+      load(results);
+      setControls();
 
     } catch (RemoteException e) {
       System.out.println("SEARCHERR Error while fetching data");
       e.printStackTrace();
+      // TODO show banner
     }
-
   }
 
-  private void load(List<PaginaLibreria> libraries, int pageIndex) {
-    int fromIndex = pageIndex * LIBRARIES_PAGE_SIZE;
-
-    if (fromIndex >= totalResultCount) {
-      // Handle empty page (e.g., clear the container and return)
-      librariesContainer.getChildren().clear();
-      return;
-    }
-
-    int toIndex = Math.min(fromIndex + LIBRARIES_PAGE_SIZE, totalResultCount);
-
-    List<PaginaLibreria> pagedResults = libraries.subList(fromIndex, toIndex);
-
+  private void load(List<PaginaLibreria> libraries) {
     librariesContainer.getChildren().clear();
 
-    for (PaginaLibreria lib : pagedResults) {
+    for (PaginaLibreria lib : libraries) {
       librariesContainer.getChildren().add(
-          LibraryItemFactory.createLibraryItem(
+          LibraryItemFactory.create(
               lib.library(),
               lib.bookCount(),
-              () -> {
-                Router.go("/libraries/" + lib.library().getIdLibreria(), TransitionAnimation.LEFT_SLIDE);
-              }
+              () -> Router.go("/libraries/" + lib.library().getIdLibreria(), TransitionAnimation.LEFT_SLIDE)
           )
       );
     }
-    setControls();
   }
 
   @FXML
@@ -118,19 +103,20 @@ public class LibrariesController implements Routable {
 
   /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
   private void setControls() {
-    setPrevControlVisibility(currentPageIndex > 0);
-    setNextControlVisibility((currentPageIndex + 1) * LIBRARIES_PAGE_SIZE < totalResultCount);
-    setResultsControlsDisabled(false);
-    showDisabled(prevPageButton, false);
-    showDisabled(nextPageButton, false);
+    boolean canPrev = currentPageIndex > 0;
+    boolean canNext = (currentPageIndex + 1) * LIBRARIES_PAGE_SIZE < totalResultCount;
+
+    setPrevControlVisibility(canPrev);
+    setNextControlVisibility(canNext);
+
+    prevPageButton.setDisable(!canPrev);
+    nextPageButton.setDisable(!canNext);
   }
   /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
    * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
   @FXML
   private void onPrev() {
     if (totalResultCount <= 0 || currentPageIndex <= 0) return;
-
-    showDisabled(prevPageButton, true);
 
     goToPage(currentPageIndex - 1);
   }
@@ -139,14 +125,11 @@ public class LibrariesController implements Routable {
   @FXML
   private void onNext() {
     if (totalResultCount <= 0 ||
-        (currentPageIndex + 1) * LIBRARIES_PAGE_SIZE > totalResultCount)
+        (currentPageIndex + 1) * LIBRARIES_PAGE_SIZE >= totalResultCount)
       return;
-
-    showDisabled(nextPageButton, true);
 
     goToPage(currentPageIndex + 1);
   }
-
   /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
   private void goToPage(int newIndex) {
     setResultsControlsDisabled(true);
@@ -171,38 +154,9 @@ public class LibrariesController implements Routable {
   }
 
   /** Collassa la pagina e imposta la visibilità a {@code false}. */
-  private void showNoResults() {
-    librariesContainer.setVisible(false);
-  }
-
-  /** Mostra la selezione del pulsante sulla grafica, aggiungendovi la classe rispettiva. */
-  private void showDisabled(Button controlButton, boolean b) {
-    if (b) {
-      controlButton.getStyleClass().add("control-button-customdisabled");
-    } else {
-      controlButton.getStyleClass().remove("control-button-customdisabled");
-    }
-  }
-
-  @FXML
-  protected void onLibraryOpen() {
-
-  }
-
-
-  @FXML
-  protected void onLibraryDelete() {
-
-  }
-
-  @FXML
-  protected void onLibraryCreate() {
-
-  }
-
-  @FXML
-  protected void onLibraryInsert() {
-
+  private void showNoResults(boolean noResults) {
+    librariesContainer.setVisible(!noResults);
+    librariesContainer.setManaged(!noResults);
   }
 
 }

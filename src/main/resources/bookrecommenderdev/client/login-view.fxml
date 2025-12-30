@@ -16,7 +16,7 @@
    <VBox styleClass="login-page" VBox.vgrow="NEVER" fillWidth="false">
       <Label text="Accedi al tuo account" styleClass="regular-30" />
       <Label fx:id="loginFeedback" styleClass="login-feedback-label" />
-      <TextField fx:id="loginEmail" styleClass="login-field, regular-17" promptText="Email" />
+      <TextField fx:id="loginUserId" styleClass="login-field, regular-17" promptText="User id" />
       <TextField fx:id="loginPassword" styleClass="login-field, regular-17" promptText="Password"/>
       <HBox styleClass="login-controls-container">
          <Region prefWidth="75.0" />

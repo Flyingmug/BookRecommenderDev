@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox
+    xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+    fx:controller="bookrecommenderdev.client.controller.errors.NotFoundController"
+   alignment="CENTER">
+
+   <Label text="The page you requested is not available..." styleClass="regular-30" />
+
+</VBox>

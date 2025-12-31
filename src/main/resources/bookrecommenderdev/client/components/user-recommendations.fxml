@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox fx:id="root" visible="false" managed="false"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="bookrecommenderdev.client.controller.components.UserRecommendationsController">
+
+   <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner"/>
+
+   <VBox fx:id="content" styleClass="recommendations-container">
+
+      <HBox spacing="10" alignment="CENTER_LEFT">
+         <Label text="Raccomandati da me" styleClass="regular-23" />
+
+         <Button fx:id="addButton"
+                 onAction="#onAdd"
+                 text="Aggiungi"
+                 styleClass="user-recommended-add-button">
+            <graphic>
+               <FontIcon iconLiteral="mdi2t-text-box-edit-outline" iconSize="15" />
+            </graphic>
+         </Button>
+      </HBox>
+
+      <StackPane fx:id="emptyPlaceholder" visible="false" managed="false" minHeight="100">
+         <FontIcon iconLiteral="mdi2b-bookmark-box-multiple-outline" styleClass="results-empty-icon" />
+         <Label text="Inizia a consigliare agli altri utenti!" styleClass="gabriola-50, results-empty-label" />
+      </StackPane>
+
+      <VBox fx:id="consigliContainer">
+
+      </VBox>
+
+   </VBox >
+</VBox>

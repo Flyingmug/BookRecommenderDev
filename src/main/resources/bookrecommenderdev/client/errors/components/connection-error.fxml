@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="root"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.errors.components.ConnectionErrorController"
+      alignment="CENTER" spacing="10"
+      visible="false" managed="false">
+
+   <Label>
+      <graphic>
+         <FontIcon iconLiteral="mdi2t-tray-alert" iconSize="80" />
+      </graphic>
+   </Label>
+
+   <Label fx:id="titleLabel" styleClass="error-label, medium-27" />
+   <Label fx:id="subtitleLabel" styleClass="error-label, regular-25" />
+
+   <Button fx:id="retryButton"
+           styleClass="conn-err-retry-button">
+      <graphic>
+         <FontIcon iconLiteral="mdi2r-refresh" styleClass="conn-err-retry-icon" />
+      </graphic>
+   </Button>
+</VBox>

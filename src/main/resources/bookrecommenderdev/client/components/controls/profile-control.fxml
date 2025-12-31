@@ -1,0 +1,17 @@
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Button fx:id="menuToggleButton"
+        xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="bookrecommenderdev.client.controller.components.controls.ProfileControlController"
+        managed="false" visible="false"
+        onAction="#toggleMenu"
+        styleClass="profile-picture-button">
+   <tooltip>
+      <Tooltip text="Profilo" />
+   </tooltip>
+   <graphic>
+      <Label fx:id="initials" styleClass="bold-20" wrapText="false" minWidth="-Infinity" minHeight="-Infinity" />
+   </graphic>
+</Button>

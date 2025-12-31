@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane fx:id="bookPage"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.BookController"
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+            styleClass="scrollable-pane">
+
+   <VBox styleClass="book-page-container">
+      <VBox styleClass="book-page" VBox.vgrow="ALWAYS">
+
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner"/>
+
+         <VBox fx:id="content" styleClass="book-page-content" VBox.vgrow="ALWAYS" >
+
+            <VBox spacing="10">
+               <Label fx:id="titolo" styleClass="book-label-title" minHeight="-Infinity" wrapText="true" />
+
+               <HBox styleClass="book-label-subtitle">
+                  <Label text="By" />
+                  <Label fx:id="autori" />
+               </HBox>
+
+               <GridPane styleClass="book-data-entries-container" >
+                  <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="0" text="ANNO" wrapText="true" />
+                  <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="1" text="CATEGORIE" wrapText="true" />
+                  <Label styleClass="book-data-key" GridPane.columnIndex="0" GridPane.rowIndex="2" text="EDITORE" wrapText="true" />
+                  <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="annoPubblicazione" />
+                  <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="categorie" />
+                  <Label styleClass="book-data-value" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="editore" />
+               </GridPane>
+               <Separator styleClass="review-section-separator" />
+            </VBox>
+
+
+            <HBox alignment="CENTER_LEFT">
+               <Label styleClass="gabriola-50" text="Libri consigliati" />
+            </HBox>
+
+            <VBox>
+               <fx:include source="components/user-recommendations.fxml" fx:id="userRecommendations" />
+               <Separator styleClass="review-section-separator" />
+            </VBox>
+
+            <VBox fx:id="consigliSection">
+               <fx:include source="components/recommendations.fxml" fx:id="recommendations" />
+               <Separator styleClass="review-section-separator" />
+            </VBox>
+
+            <HBox alignment="BOTTOM_LEFT">
+               <Label styleClass="gabriola-50" text="Recensioni &amp; Suggerimenti" />
+            </HBox>
+
+            <VBox fx:id="myReviewSection">
+               <HBox alignment="CENTER_LEFT">
+                  <Label styleClass="regular-23" text="La mia recensione" />
+               </HBox>
+
+               <fx:include source="components/user-review-section.fxml" fx:id="userReviewSection" />
+               <Separator styleClass="review-section-separator" />
+            </VBox>
+
+            <VBox>
+               <HBox alignment="BOTTOM_LEFT">
+                  <Label styleClass="regular-23" text="Recensioni della Comunità" />
+               </HBox>
+
+               <VBox styleClass="scores-section">
+                  <TilePane fx:id="scoresContainer" styleClass="scores-container" />
+               </VBox>
+
+               <fx:include fx:id="reviewsSection" source="components/reviews-section.fxml" />
+            </VBox>
+
+         </VBox>
+
+      </VBox>
+   </VBox>
+
+</ScrollPane>

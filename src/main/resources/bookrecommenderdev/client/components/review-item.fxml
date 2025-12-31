@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="reviewContainer"
+   xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+   fx:controller="bookrecommenderdev.client.controller.components.ReviewItemController"
+   minHeight="-Infinity"
+   styleClass="review-item">
+
+   <columnConstraints>
+      <ColumnConstraints percentWidth="20" hgrow="NEVER"/>
+      <ColumnConstraints percentWidth="80" hgrow="NEVER"/>
+   </columnConstraints>
+
+   <VBox styleClass="review-header"
+         GridPane.columnSpan="2" GridPane.rowIndex="0"
+         GridPane.hgrow="ALWAYS" fillWidth="true">
+      <HBox fx:id="reviewHeaderScoreContainer" styleClass="review-header-score" />
+      <Label fx:id="reviewGenerale" styleClass="review-header-text"
+             maxWidth="Infinity" wrapText="true" />
+      <Region VBox.vgrow="ALWAYS"/>
+   </VBox>
+
+</GridPane>

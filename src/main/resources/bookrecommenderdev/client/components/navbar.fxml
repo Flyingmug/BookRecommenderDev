@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.components.NavbarController"
+      alignment="CENTER"
+      prefHeight="65.0" prefWidth="1000.0"
+      styleClass="navbar" BorderPane.alignment="CENTER"
+>
+
+   <fx:include source="controls/history-controls.fxml" />
+
+   <VBox fx:id="searchbarContainer" styleClass="navbar-searchbar-container" visible="false">
+      <fx:include source="controls/searchbar.fxml" fx:id="searchbar" />
+   </VBox>
+
+   <Region HBox.hgrow="ALWAYS" />
+
+   <HBox styleClass="navbar-buttons-container" minWidth="-Infinity">
+
+      <Button fx:id="loginButton" onAction="#onLogin" styleClass="login-button, navbar-button" text="Accedi">
+         <tooltip>
+            <Tooltip text="Login" />
+         </tooltip>
+      </Button>
+
+      <Button fx:id="registerButton" onAction="#onRegister" styleClass="register-button, navbar-button" text="Registrati">
+         <tooltip>
+            <Tooltip text="Registrazione" />
+         </tooltip>
+      </Button>
+
+      <Button fx:id="librariesButton" managed="false" onAction="#onLibraries" styleClass="libraries-button, navbar-button" text="Librerie">
+         <tooltip>
+            <Tooltip text="Librerie personali" />
+         </tooltip>
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+
+      <fx:include source="controls/home-link.fxml" />
+
+      <fx:include fx:id="profileButton" source="controls/profile-control.fxml" />
+
+   </HBox>
+</HBox>

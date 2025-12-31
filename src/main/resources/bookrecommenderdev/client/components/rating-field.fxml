@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ComboBox?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.components.RatingFieldController"
+      styleClass="review-form-field">
+
+   <HBox styleClass="review-form-field-container">
+      <Label fx:id="titleLabel" styleClass="review-form-field, medium-20" />
+      <ComboBox fx:id="scoreBox" styleClass="review-form-field-choicebox, medium-20" />
+   </HBox>
+   <Button fx:id="toggleButton" styleClass="review-form-add-review-button">
+      <graphic>
+         <HBox alignment="CENTER_LEFT">
+            <FontIcon fx:id="toggleIcon" iconLiteral="mdi2p-plus" styleClass="review-add-icon" />
+            <Label text="Recensione" styleClass="regular-17, review-add-label" />
+         </HBox>
+      </graphic>
+   </Button>
+   <StackPane alignment="BOTTOM_RIGHT" maxWidth="-Infinity">
+      <TextArea fx:id="textReviewArea"
+                managed="false" visible="false"
+                promptText="Scrivi la tua recensione..."
+                prefRowCount="4"
+                minHeight="-Infinity"
+                wrapText="true"
+                styleClass="review-textarea, regular-16" />
+      <Label fx:id="charCountLabel"
+             managed="false" visible="false"
+             mouseTransparent="true"
+             styleClass="char-count-label" text="0/256" />
+   </StackPane>
+</VBox>

@@ -1,0 +1,66 @@
+package bookrecommenderdev.client.factory;
+
+import bookrecommenderdev.client.controller.components.BookResultItemController;
+import bookrecommenderdev.model.base.Libro;
+import bookrecommenderdev.model.utils.LabelCustomizer;
+import bookrecommenderdev.model.utils.Size;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+
+import java.io.IOException;
+import java.util.function.Consumer;
+
+public class BookResultItemFactory {
+
+  /**
+   * todo doc
+   * @param l
+   * @param onClick
+   * @return
+   */
+  public static Parent create(Libro l, Consumer<Integer> onClick) {
+    return create(l, onClick, null, null, null);
+  }
+
+  /**
+   * todo doc
+   * @param l
+   * @param onOpen
+   * @param actionText
+   * @param onAction
+   * @return
+   */
+  public static Parent create(
+      Libro l,
+      Consumer<Integer> onOpen,
+      Consumer<Integer> onAction,
+      String actionText,
+      String actionIconLiteral
+  ) {
+    try {
+      FXMLLoader loader = new FXMLLoader(
+          BookResultItemFactory.class.getResource("/bookrecommenderdev/client/components/book-result-item.fxml")
+      );
+      Parent node = loader.load();
+      BookResultItemController controller = loader.getController();
+
+      controller.setBook(l, onOpen);
+
+      if (onAction != null) {
+        controller.enableActionButton(actionText, actionIconLiteral, onAction);
+      }
+
+      return node;
+
+    } catch (IOException e) {
+      VBox node = new VBox();
+      node.getChildren().add(
+          LabelCustomizer.createLabel("Unable to load content", Size.SM, Color.RED)
+      );
+      return node;
+    }
+  }
+
+}

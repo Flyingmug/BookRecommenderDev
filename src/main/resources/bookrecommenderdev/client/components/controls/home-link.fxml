@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<Button
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="bookrecommenderdev.client.controller.components.controls.HomeLinkController"
+    onAction="#onHomepage" styleClass="homepage-button">
+   <tooltip>
+      <Tooltip text="Pagina iniziale" />
+   </tooltip>
+   <graphic>
+      <FontIcon iconLiteral="mdi2h-home" iconSize="32" />
+   </graphic>
+</Button>

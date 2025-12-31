@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fx:id="libraryPage"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.LibraryPageController"
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+            styleClass="scrollable-pane">
+
+   <VBox styleClass="library-page-container">
+      <VBox styleClass="library-page" VBox.vgrow="ALWAYS">
+
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner" />
+
+         <VBox>
+            <Label text="Libreria"
+                   styleClass="italic-30, page-header-title" />
+
+            <Label fx:id="libraryTitle"
+                   minHeight="-Infinity"
+                   styleClass="regular-30" />
+         </VBox>
+
+         <HBox alignment="CENTER_RIGHT">
+<!--            <Button fx:id="deleteButton"-->
+<!--                    onAction="#onDeleteLibrary"-->
+<!--                    text="Elimina"-->
+<!--                    styleClass="confirm-dialog-control, confirm-dialog-initial" />-->
+
+<!--            <fx:include source="components/controls/confirm-dialog.fxml" fx:id="deleteConfirm"-->
+<!--               managed="false" visible="false" />-->
+            <fx:include fx:id="deleteControl" source="components/controls/confirm-action-dialog.fxml"/>
+         </HBox>
+
+         <fx:include source="components/search-results.fxml" fx:id="results" />
+
+      </VBox>
+   </VBox>
+
+</ScrollPane>

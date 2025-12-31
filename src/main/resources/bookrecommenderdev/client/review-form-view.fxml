@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.Integer?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.ReviewFormController"
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+            styleClass="scrollable-pane">
+
+   <VBox styleClass="review-page-container">
+      <VBox styleClass="review-page" VBox.vgrow="ALWAYS">
+
+         <VBox>
+            <Label text="Valuta"
+                   styleClass="italic-30, page-header-title" />
+
+            <Label fx:id="titleLabel"
+                   minHeight="-Infinity"
+                   wrapText="true"
+                   styleClass="regular-30" />
+         </VBox>
+
+         <VBox styleClass="review-form">
+
+            <fx:include fx:id="generale" source="components/rating-field.fxml"/>
+            <fx:include fx:id="stile" source="components/rating-field.fxml"/>
+            <fx:include fx:id="contenuto" source="components/rating-field.fxml"/>
+            <fx:include fx:id="originalita" source="components/rating-field.fxml"/>
+            <fx:include fx:id="gradevolezza" source="components/rating-field.fxml"/>
+            <fx:include fx:id="edizione" source="components/rating-field.fxml"/>
+
+         </VBox>
+
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner"/>
+
+         <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button text="Invia recensione" styleClass="control-button, control-button-border"
+                    onAction="#conferma"/>
+            <Label fx:id="feedbackLabel" styleClass="regular-19, review-feedback-label" />
+         </HBox>
+
+      </VBox>
+   </VBox>
+
+</ScrollPane>

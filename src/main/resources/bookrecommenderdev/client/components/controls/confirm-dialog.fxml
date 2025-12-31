@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox fx:id="root"
+      managed="true"
+      visible="true"
+      spacing="5"
+      alignment="CENTER"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.components.controls.ConfirmDialogController">
+
+   <Button fx:id="confirmButton"
+           onAction="#onConfirm"
+           focusTraversable="false"
+           text="Conferma"
+           styleClass="confirm-dialog-control, confirm-dialog-y">
+   </Button>
+
+   <Button onAction="#onCancel"
+           focusTraversable="false"
+           text="Annulla"
+           styleClass="confirm-dialog-control, confirm-dialog-n">
+   </Button>
+
+</HBox>

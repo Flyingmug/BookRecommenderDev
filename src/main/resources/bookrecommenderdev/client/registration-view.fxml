@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<VBox fx:id="registerPage" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bookrecommenderdev.client.controller.RegistrationController"
+      alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
+
+   <Region prefHeight="50.0" />
+
+   <VBox alignment="CENTER" styleClass="register-page" VBox.vgrow="NEVER">
+      <Label text="Crea il tuo account" styleClass="regular-30" />
+      <Label fx:id="registerFeedback" styleClass="login-feedback-label" />
+      <HBox spacing="10.0">
+         <TextField fx:id="registerName" styleClass="login-field, regular-17" promptText="Nome" />
+         <TextField fx:id="registerSurname" styleClass="login-field, regular-17" promptText="Cognome" />
+      </HBox>
+      <TextField fx:id="registerUserId" styleClass="login-field, regular-17" promptText="User id" />
+      <TextField fx:id="registerEmail" styleClass="login-field, regular-17" promptText="Email" />
+      <TextField fx:id="registerPassword" styleClass="login-field, regular-17" promptText="Password" />
+      <TextField fx:id="registerCodiceFiscale" styleClass="login-field, regular-17" promptText="Codice fiscale" />
+      <HBox styleClass="login-controls-container">
+         <Region prefWidth="75.0" />
+         <Button fx:id="registerButton" styleClass="control-button, control-button-border, login-control-button, regular-17"
+                 onAction="#onRegister" text="Registrati" />
+         <CheckBox fx:id="saveCredentialsCheck" prefWidth="75.0" text="Ricorda" />
+      </HBox>
+   </VBox>
+
+   <Region VBox.vgrow="ALWAYS" />
+
+   <Region prefHeight="50.0" />
+</VBox>

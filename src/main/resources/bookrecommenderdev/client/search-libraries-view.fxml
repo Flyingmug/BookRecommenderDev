@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fx:id="libraryPage"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.SearchLibrariesController"
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+            styleClass="scrollable-pane">
+
+   <VBox styleClass="search-page-container">
+      <VBox styleClass="search-page" VBox.vgrow="ALWAYS">
+
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner" />
+
+         <VBox styleClass="libraries-search-searchbar-container">
+            <Label text="Ricerca tra i tuoi libri salvati"
+                   styleClass="italic-30, page-header-title" />
+
+            <Label fx:id="searchedTitle"
+                   minHeight="-Infinity"
+                   wrapText="true"
+                   styleClass="regular-30" />
+
+            <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
+         </VBox>
+
+         <fx:include source="components/search-results.fxml" fx:id="results" />
+
+      </VBox>
+   </VBox>
+
+</ScrollPane>

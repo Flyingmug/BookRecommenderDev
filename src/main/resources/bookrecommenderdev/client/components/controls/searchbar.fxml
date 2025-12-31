@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="bookrecommenderdev.client.controller.components.controls.SearchbarController"
+    styleClass="searchbar">
+
+   <HBox styleClass="searchbar-content">
+
+      <HBox styleClass="searchbar-section, searchbar-left" HBox.hgrow="ALWAYS">
+         <Label fx:id="modeLabel"
+                styleClass="searchbar-mode, regular-13"
+                text="Titolo"/>
+
+         <TextField fx:id="searchInput"
+                    styleClass="searchbar-section, regular-19"
+                    focusTraversable="false"
+                    minHeight="-Infinity"
+                    promptText="Cerca..."
+                    HBox.hgrow="ALWAYS" />
+      </HBox>
+
+
+      <TextField fx:id="yearInput"
+                 styleClass="searchbar-section, searchbar-center, regular-19"
+                 maxWidth="90"
+                 focusTraversable="false"
+                 minHeight="-Infinity"
+                 promptText="Cerca..."
+                 HBox.hgrow="NEVER"
+                 visible="false" managed="false"/>
+
+      <HBox styleClass="searchbar-section, searchbar-right"
+            HBox.hgrow="NEVER">
+
+         <Button styleClass="searchbar-control" onAction="#search" HBox.hgrow="NEVER">
+            <tooltip>
+               <Tooltip text="Cerca" />
+            </tooltip>
+            <graphic>
+               <FontIcon iconLiteral="mdi2m-magnify" iconSize="38" />
+            </graphic>
+         </Button>
+         <Button fx:id="swapButton" contentDisplay="CENTER" styleClass="searchbar-control" onAction="#swapCriteria" HBox.hgrow="NEVER">
+            <tooltip>
+               <Tooltip text="Tipo di ricerca" />
+            </tooltip>
+            <graphic>
+               <FontIcon iconLiteral="mdi2t-table-filter" iconSize="32" />
+            </graphic>
+         </Button>
+
+      </HBox>
+
+   </HBox>
+
+</StackPane>

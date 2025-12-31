@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+      fx:controller="bookrecommenderdev.client.controller.components.BookResultItemController"
+      styleClass="book-item">
+
+   <VBox HBox.hgrow="ALWAYS">
+      <Button fx:id="linkButton" styleClass="book-item-link">
+         <graphic>
+            <Label fx:id="titleLabel" styleClass="book-item-link-text" />
+         </graphic>
+      </Button>
+      <Label fx:id="authorLabel" styleClass="book-item-label" />
+      <Label fx:id="yearLabel" styleClass="book-item-label" />
+   </VBox>
+
+   <Button fx:id="actionButton"
+           visible="false" managed="false"
+           onAction="#onActionClicked"
+           styleClass="book-item-action-button">
+      <graphic>
+         <FontIcon fx:id="actionIcon" styleClass="book-item-action-icon" />
+      </graphic>
+   </Button>
+</HBox>

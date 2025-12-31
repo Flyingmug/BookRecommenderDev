@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="bookrecommenderdev.client.controller.components.UserReviewSectionController">
+
+   <fx:include source="../errors/components/error-banner.fxml" fx:id="errorBanner"/>
+
+   <VBox fx:id="content" styleClass="user-review-container">
+      <VBox fx:id="mainArea"
+            styleClass="user-review-main">
+
+         <VBox fx:id="createReviewSection">
+            <Label fx:id="titleLabel"
+                   styleClass="italic-30, user-review-title"
+                   text="Fai sapere cosa ne pensi scrivendo una recensione!" />
+
+            <StackPane>
+               <HBox mouseTransparent="true" styleClass="user-review-bg-icons-container">
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#dedede" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#e2e2e2" />
+                  <FontIcon iconLiteral="mdi2s-star-outline" iconSize="60" iconColor="#eaeaea" />
+               </HBox>
+               <Button fx:id="reviewButton"
+                       onAction="#onReview"
+                       text="Scrivi"
+                       styleClass="control-button-black" />
+            </StackPane>
+         </VBox>
+
+      </VBox>
+
+      <HBox alignment="CENTER_LEFT">
+         <fx:include source="controls/confirm-action-dialog.fxml" fx:id="deleteControl"
+                     visible="false" managed="false" />
+      </HBox>
+
+
+   </VBox >
+
+</VBox>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane fx:id="librariesPage"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="bookrecommenderdev.client.controller.LibrariesController"
+            fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
+            styleClass="scrollable-pane">
+
+   <VBox styleClass="libraries-page-container">
+      <VBox styleClass="libraries-page" VBox.vgrow="ALWAYS">
+
+         <Label text="Librerie" styleClass="italic-40" />
+
+         <VBox styleClass="libraries-searchbar-section">
+            <Label text="Ricerca tra i libri salvati"
+                   styleClass="light-19" />
+
+            <HBox alignment="CENTER_LEFT">
+               <HBox styleClass="libraries-searchbar-container" HBox.hgrow="ALWAYS">
+                  <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
+               </HBox>
+               <Button text="Aggiungi"
+                       onAction="#onCreate"
+                       styleClass="control-button-black" />
+            </HBox>
+
+            <Separator prefWidth="Infinity"
+                       styleClass="libraries-searchbar-section-separator" />
+         </VBox>
+
+         <HBox>
+            <VBox fx:id="prevPageControl"
+                  HBox.hgrow="NEVER"
+                  visible="false"
+                  styleClass="libraries-items-control-container">
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
+               <Button fx:id="prevPageButton"
+                       onAction="#onPrev"
+                       styleClass="control-button-round, control-button-border">
+                  <graphic>
+                     <FontIcon iconLiteral="mdi2a-arrow-left" />
+                  </graphic>
+               </Button>
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
+            </VBox>
+
+            <FlowPane fx:id="librariesContainer"
+                      styleClass="libraries-container"
+                      HBox.hgrow="ALWAYS"/>
+
+            <VBox fx:id="nextPageControl"
+                  HBox.hgrow="NEVER"
+                  visible="false"
+                  styleClass="libraries-items-control-container">
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
+               <Button fx:id="nextPageButton"
+                       onAction="#onNext"
+                       styleClass="control-button-round, control-button-border">
+                  <graphic>
+                     <FontIcon iconLiteral="mdi2a-arrow-right" />
+                  </graphic>
+               </Button>
+               <Separator orientation="vertical"
+                          VBox.vgrow="ALWAYS"
+                          styleClass="libraries-items-section-separator" />
+            </VBox>
+         </HBox>
+
+      </VBox>
+   </VBox>
+
+</ScrollPane>

@@ -1,6 +1,6 @@
 package bookrecommenderdev.routing.auth;
 
-import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.server.dto.UtenteSessione;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -10,16 +10,16 @@ import javafx.beans.property.SimpleObjectProperty;
  * */
 public class AuthContext {
 
-  private static final ObjectProperty<Utente> currentUser =
+  private static final ObjectProperty<UtenteSessione> currentUser =
       new SimpleObjectProperty<>(null);
 
   private AuthContext() {}
 
-  public static ReadOnlyObjectProperty<Utente> userProperty() {
+  public static ReadOnlyObjectProperty<UtenteSessione> userProperty() {
     return currentUser;
   }
 
-  public static Utente getUser() {
+  public static UtenteSessione getUser() {
     return currentUser.get();
   }
 
@@ -27,7 +27,7 @@ public class AuthContext {
     return currentUser.get() != null;
   }
 
-  public static void login(Utente user) {
+  public static void login(UtenteSessione user) {
     currentUser.set(user);
   }
 

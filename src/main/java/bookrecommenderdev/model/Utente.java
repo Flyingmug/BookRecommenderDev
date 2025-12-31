@@ -9,8 +9,7 @@ import java.util.UUID;
  * @author Selimi Sebian
  * @author Moscatelli Alexander*/
 public class Utente implements Serializable {
-  @Serial
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
   int id_utente;  // id nel database
   String nome;
   String cognome;

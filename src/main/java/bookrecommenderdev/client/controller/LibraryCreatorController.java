@@ -122,7 +122,7 @@ public class LibraryCreatorController implements Routable {
       return;
     }
 
-    int userId = AuthContext.getUser().getId_utente();
+    int userId = AuthContext.getUser().idUtente();
 
     try {
       context.server().createLibreria(userId, name, new ArrayList<>(selectedIds));

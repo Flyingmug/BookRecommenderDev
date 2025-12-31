@@ -15,30 +15,30 @@ public class UtenteDao {
     this.datasource = ds;
   }
 
-  public Optional<Utente> findByFiscalCode(String codiceFiscale) throws SQLException {
-    String q = "SELECT * FROM UtentiRegistrati WHERE codice_fiscale = ?";
-
-    try (Connection c = datasource.getConnection();
-         PreparedStatement ps = c.prepareStatement(q)) {
-
-      ps.setString(1, codiceFiscale);
-      ResultSet rs = ps.executeQuery();
-
-      return rs.next() ? Optional.of(mapUtente(rs)) : Optional.empty();
-    }
-  }
-
-  public Optional<Utente> findByUserIdAndPassword(String userId, String password) throws SQLException {
-    String q = "SELECT * FROM UtentiRegistrati WHERE userId = ? AND password = ?";
-
+  public Optional<Utente> findByUserId(String userId) throws SQLException {
+    String q = "SELECT * FROM UtentiRegistrati WHERE userId = ?";
     try (Connection c = datasource.getConnection();
          PreparedStatement ps = c.prepareStatement(q)) {
 
       ps.setString(1, userId);
-      ps.setString(2, password);
-      ResultSet rs = ps.executeQuery();
 
-      return rs.next() ? Optional.of(mapUtente(rs)) : Optional.empty();
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() ? Optional.of(mapUtente(rs)) : Optional.empty();
+      }
+    }
+  }
+
+  public Optional<Utente> findById(int id) throws SQLException {
+    final String q = "SELECT * FROM UtentiRegistrati WHERE id_utente = ?";
+
+    try (Connection c = datasource.getConnection();
+         PreparedStatement ps = c.prepareStatement(q)) {
+
+      ps.setInt(1, id);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() ? Optional.of(mapUtente(rs)) : Optional.empty();
+      }
     }
   }
 
@@ -60,13 +60,6 @@ public class UtenteDao {
 
       int rowsAffected = ps.executeUpdate();
       System.out.println("Righe modificate: " + rowsAffected);  // DEBUG
-
-//      try (ResultSet keys = ps.getGeneratedKeys()) {
-//        if (keys.next()) {
-//          utente.setIdUtente(keys.getInt(1));
-//        }
-//      }
-
     }
   }
 

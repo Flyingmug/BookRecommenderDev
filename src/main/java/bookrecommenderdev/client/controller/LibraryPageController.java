@@ -56,7 +56,7 @@ public class LibraryPageController implements Routable {
       return;
     }
 
-    int idUtente = AuthContext.getUser().getId_utente();
+    int idUtente = AuthContext.getUser().idUtente();
 
     resolve(idUtente);
   }
@@ -84,7 +84,7 @@ public class LibraryPageController implements Routable {
       return;
     }
 
-    int idUtente = AuthContext.getUser().getId_utente();
+    int idUtente = AuthContext.getUser().idUtente();
 
 //    if (deleteButton != null) deleteButton.setDisable(true);
     if (deleteControlController != null) deleteControlController.setDisabled(true);

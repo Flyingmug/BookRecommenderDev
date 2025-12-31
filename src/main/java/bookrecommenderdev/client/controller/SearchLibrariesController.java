@@ -58,7 +58,7 @@ public class SearchLibrariesController implements Routable {
 
     searchedTitle.setText(buildTitle(req));
 
-    int idUtente = AuthContext.getUser().getId_utente();
+    int idUtente = AuthContext.getUser().idUtente();
 
     PageFetcher<Libro> source = indicePagina ->
         context.server().searchAllLibrerie(idUtente, req, indicePagina);

@@ -2,11 +2,7 @@ package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.model.exceptions.AlreadyExistsException;
-import bookrecommenderdev.model.exceptions.DataAccessException;
-import bookrecommenderdev.model.exceptions.LimitExceededException;
-import bookrecommenderdev.model.exceptions.NotFoundException;
-import bookrecommenderdev.routing.auth.RegisterStatus;
+import bookrecommenderdev.model.exceptions.*;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dao.*;
 import bookrecommenderdev.server.db.DatabaseConfig;
@@ -17,18 +13,16 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
-
-import static bookrecommenderdev.routing.auth.AuthStatus.*;
-import static bookrecommenderdev.routing.auth.RegisterStatus.FISCAL_CODE_ALREADY_USED;
 
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
+  private static final java.time.Duration TOKEN_TTL = java.time.Duration.ofDays(30);
   private final LibroDao libri;
   private final UtenteDao utenti;
   private final ValutazioneDao valutazioni;
   private final ConsiglioLibroDao consigli;
   private final LibreriaDao librerie;
+  private final SessioneDao sessioni;
 
   public ServerImplementation() throws RemoteException {
     super();
@@ -38,7 +32,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     librerie = new LibreriaDao(datasource);
     valutazioni = new ValutazioneDao(datasource);
     consigli = new ConsiglioLibroDao(datasource);
-
+    sessioni = new SessioneDao(datasource);
   }
 
 
@@ -236,13 +230,14 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   }
 
   /**
+   * sovrascrive un eventuale review esistente
    * todo doc
    * */
   @Override
-  public boolean inserisciValutazione(Valutazione valutazione)
+  public void inserisciValutazione(Valutazione valutazione)
       throws RemoteException, DataAccessException {
     try {
-      return valutazioni.save(valutazione);
+      valutazioni.save(valutazione);
 
     } catch (SQLException e) {
       throw new DataAccessException("Errore (DB) nell'inserimento della valutazione.", e);
@@ -325,41 +320,103 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
    * @param password Password utente.
    * @return Risultato dell'operazione
    */
-  public AuthResult login(String userId, String password) throws RemoteException {
+  public UtenteSessione login(String userId, String password)
+      throws RemoteException, InvalidCredentialsException, DataAccessException {
     try {
-      System.out.println("SERVER login request.");
-      Optional<Utente> user = utenti.findByUserIdAndPassword(userId, password);
+      Utente u = utenti.findByUserId(userId)
+          .orElseThrow(() -> new InvalidCredentialsException("Credenziali non valide."));
 
-      return user
-          .map(u -> new AuthResult(u, SUCCESS))
-          .orElseGet(() -> new AuthResult(null, NO_SUCH_USER));
+      // demo/plaintext compare (replace with hash verify later)
+      if (!u.getPassword().equals(password)) {
+        throw new InvalidCredentialsException("Credenziali non valide.");
+      }
+
+      return new UtenteSessione(
+          u.getId_utente(),
+          u.getNome(),
+          u.getCognome(),
+          u.getEmail(),
+          u.getUserId()
+      );
 
     } catch (SQLException e) {
-      return new AuthResult(null, DB_ERROR);
+      throw new DataAccessException("Errore di database.", e);
     }
   }
 
   /**
    * todo documentation
    * */
-  public RegisterStatus registrazione(Utente u)
-      throws RemoteException, DataAccessException {
+  public UtenteSessione registrazione(Utente u)
+      throws RemoteException, AlreadyExistsException, DataAccessException {
     try {
-
-      if (utenti.findByFiscalCode(u.getCodiceFiscale()).isPresent()) {
-        return FISCAL_CODE_ALREADY_USED;
-      }
-
       utenti.save(u);
 
-      return RegisterStatus.SUCCESS;
+      return new UtenteSessione(
+          u.getId_utente(),
+          u.getNome(),
+          u.getCognome(),
+          u.getEmail(),
+          u.getUserId()
+      );
 
     } catch (SQLException e) {
-      return RegisterStatus.DB_ERROR;
+      if ("23505".equals(e.getSQLState())) {
+        throw new AlreadyExistsException("Email, UserId o Codice Fiscale già utilizzati.");
+      }
+      throw new DataAccessException("Errore di database.", e);
     }
   }
 
+  @Override
+  public TokenSessione loginWithToken(String userId, String password)
+      throws RemoteException, InvalidCredentialsException, DataAccessException {
 
+    try {
+      Utente u = utenti.findByUserId(userId)
+          .orElseThrow(() -> new InvalidCredentialsException("Credenziali non valide."));
+
+      if (!u.getPassword().equals(password)) {
+        throw new InvalidCredentialsException("Credenziali non valide.");
+      }
+
+      UtenteSessione session = new UtenteSessione(u.getId_utente(), u.getNome(), u.getCognome(), u.getEmail(), u.getUserId());
+
+      String token = sessioni.creaSessione(u.getId_utente(), TOKEN_TTL);
+
+      return new TokenSessione(token, session);
+
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore di database.", e);
+    }
+  }
+
+  @Override
+  public UtenteSessione resumeSessione(String token)
+      throws RemoteException, InvalidCredentialsException, DataAccessException {
+
+    try {
+      Integer idUtente = sessioni.resolveToken(token, TOKEN_TTL).orElse(null);
+      if (idUtente == null) throw new InvalidCredentialsException("Sessione non valida.");
+
+      Utente u = utenti.findById(idUtente)
+          .orElseThrow(() -> new InvalidCredentialsException("Sessione non valida."));
+
+      return new UtenteSessione(u.getId_utente(), u.getNome(), u.getCognome(), u.getEmail(), u.getUserId());
+
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore di database.", e);
+    }
+  }
+
+  @Override
+  public void logout(String token) throws RemoteException, DataAccessException {
+    try {
+      sessioni.deleteToken(token);
+    } catch (SQLException e) {
+      throw new DataAccessException("Errore di database.", e);
+    }
+  }
 
   // ping
   public String ping()

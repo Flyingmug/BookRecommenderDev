@@ -68,7 +68,7 @@ public class UserReviewSectionController {
     }
 
     try {
-      int userId = AuthContext.getUser().getId_utente();
+      int userId = AuthContext.getUser().idUtente();
       Valutazione v = context.server().getValutazione(idLibro, userId);
 
       if (v != null) showExistingReview(v);
@@ -105,7 +105,7 @@ public class UserReviewSectionController {
     try {
       if (context == null || !AuthContext.isAuthenticated()) return;
 
-      context.server().deleteValutazione(idLibro, AuthContext.getUser().getId_utente());
+      context.server().deleteValutazione(idLibro, AuthContext.getUser().idUtente());
       refresh();
 
     } catch (NotFoundException e) {

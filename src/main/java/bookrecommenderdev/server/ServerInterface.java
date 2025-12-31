@@ -2,11 +2,7 @@ package bookrecommenderdev.server;
 
 import bookrecommenderdev.model.*;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.model.exceptions.AlreadyExistsException;
-import bookrecommenderdev.model.exceptions.DataAccessException;
-import bookrecommenderdev.model.exceptions.LimitExceededException;
-import bookrecommenderdev.model.exceptions.NotFoundException;
-import bookrecommenderdev.routing.auth.RegisterStatus;
+import bookrecommenderdev.model.exceptions.*;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.server.dto.*;
 
@@ -38,20 +34,22 @@ public interface ServerInterface extends Remote {
   // valutazioni
   Valutazione getValutazione(int idLibro, int userId) throws RemoteException, DataAccessException;
   PaginaValutazioni cercaValutazioni(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
-  boolean inserisciValutazione(Valutazione valutazione) throws RemoteException, NotFoundException, AlreadyExistsException, LimitExceededException, DataAccessException;
+  void inserisciValutazione(Valutazione valutazione) throws RemoteException, DataAccessException;
   void deleteValutazione(int idLibro, int id_utente) throws RemoteException, NotFoundException, DataAccessException;
 
   // consigli
   List<Libro> getConsigliUtente(int idUtente, int idLibro) throws RemoteException;
   PaginaConsigliRisultati cercaConsigli(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
-  void inserisciConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, AlreadyExistsException, DataAccessException;
+  void inserisciConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, AlreadyExistsException, LimitExceededException, DataAccessException;
   void deleteConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, DataAccessException;
 
   // autenticazione e accesso
-  AuthResult login(String userId, String password) throws RemoteException;
-  RegisterStatus registrazione(Utente u) throws RemoteException, InsertDBException;
+  UtenteSessione login(String userId, String password) throws RemoteException, InvalidCredentialsException, DataAccessException;
+  UtenteSessione registrazione(Utente u) throws RemoteException, AlreadyExistsException, DataAccessException;
 
-  // ping
-  String ping() throws RemoteException;
+  // sessione
+  TokenSessione loginWithToken(String userId, String password) throws RemoteException, InvalidCredentialsException, DataAccessException;
+  UtenteSessione resumeSessione(String token) throws RemoteException, InvalidCredentialsException, DataAccessException;
+  void logout(String token) throws RemoteException, DataAccessException;
 
 }

@@ -50,7 +50,7 @@ public class LibrariesController implements Routable {
   private void resolve(int pageIndex) {
 
     if (!AuthContext.isAuthenticated()) return;
-    int userId = AuthContext.getUser().getId_utente();
+    int userId = AuthContext.getUser().idUtente();
 
     try {
       PaginaLibrerieRisultati page = context.server().getListLibrerie(userId, pageIndex);

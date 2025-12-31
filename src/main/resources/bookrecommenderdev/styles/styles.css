@@ -854,6 +854,8 @@
     -fx-padding: 100;
 }
 .login-feedback-label {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 18;
     -fx-text-fill: #f22828;
 }
 .login-field {

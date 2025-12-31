@@ -56,7 +56,7 @@ public class RecommendationSelectorController implements Routable {
       Router.go("/login", TransitionAnimation.LEFT_SLIDE);
       return;
     }
-    idUtente = AuthContext.getUser().getId_utente();
+    idUtente = AuthContext.getUser().idUtente();
 
     // Gate: base book must be in user's libraries
     try {

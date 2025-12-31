@@ -1,18 +1,19 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.model.exceptions.AlreadyExistsException;
+import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.auth.AuthStorage;
-import bookrecommenderdev.routing.auth.RegisterStatus;
 import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.route.Routable;
 import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.server.dto.TokenSessione;
+import bookrecommenderdev.server.dto.UtenteSessione;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class RegistrationController implements Routable {
     preventMultipleSpacesAndLimit(registerSurname, MAX_NAME_LENGTH);
     preventMultipleSpacesAndLimit(registerUserId, MAX_NAME_LENGTH);
     preventMultipleSpacesAndLimit(registerEmail, MAX_EMAIL_LENGTH);
-    preventMultipleSpacesAndLimit(registerPassword, MAX_PASSWORD_LENGTH);
+    ensureLimit(registerPassword, MAX_PASSWORD_LENGTH);
     restrictLooseFiscalCodeInput(registerCodiceFiscale);
   }
 
@@ -59,6 +60,8 @@ public class RegistrationController implements Routable {
    * */
   @FXML
   protected void onRegister() {
+    if (context == null) return;
+
     String name = registerName.getText();
     String surname = registerSurname.getText();
     String userId = registerUserId.getText();
@@ -66,49 +69,43 @@ public class RegistrationController implements Routable {
     String password = registerPassword.getText();
     String codiceFiscale = registerCodiceFiscale.getText();
 
-    // validazione + feedback
-    if (!validateRegistrationInput(name, surname, userId, email, password, codiceFiscale))
+    if (!validateRegistrationInput(name, surname, userId, email, password, codiceFiscale)) {
       return;
+    }
 
     try {
       Utente u = new Utente(
-          name,
-          surname,
-          email,
-          codiceFiscale,
+          name.trim(),
+          surname.trim(),
+          email.trim(),
+          codiceFiscale.trim(),
           password,
-          userId
+          userId.trim()
       );
-      RegisterStatus res = context.server().registrazione(u);
-      handleRegistrationResult(res, u);
 
-    } catch(RemoteException e) {
+      context.server().registrazione(u);
+
+      TokenSessione token = context.server().loginWithToken(userId, password);
+      AuthContext.login(token.user());
+
+      if (saveCredentialsCheck.isSelected()) AuthStorage.save(token.token());
+      else AuthStorage.clear();
+
+      setRegistrationFeedback("Registrazione avvenuta con successo");
+      Router.go("/");
+
+    } catch (AlreadyExistsException e) {
+      setRegistrationFeedback(e.getMessage() != null ? e.getMessage() : "Utente già registrato.");
+
+    } catch (DataAccessException e) {
+      setRegistrationFeedback(e.getMessage() != null ? e.getMessage() : "Errore nel reperimento dei dati");
+
+    } catch (RemoteException e) {
       setRegistrationFeedback("Errore nella connessione al server");
     }
   }
 
-  /**
-   * Gestisce il comportamento dell'applicazione a seconda dell'esito della
-   * richiesta di registrazione.
-   * @param res Risposta dal server.
-   * @param u Utente creato.
-   */
-  private void handleRegistrationResult(RegisterStatus res, Utente u) {
-    switch(res) {
-      case SUCCESS -> {
-        AuthContext.login(u);
 
-        setRegistrationFeedback("Registrazione avvenuta con successo");
-
-        if (saveCredentialsCheck.isSelected())
-          AuthStorage.save(u.getEmail(), u.getPassword());
-
-        Router.go("/");
-      }
-      case FISCAL_CODE_ALREADY_USED -> setRegistrationFeedback("L'utente specificato esiste");
-      case DB_ERROR -> setRegistrationFeedback("Errore nel reperimento dei dati");
-    }
-  }
 
   /**
    * Valuta il rispetto delle condizioni poste sui campi di login. Inoltre
@@ -122,28 +119,27 @@ public class RegistrationController implements Routable {
    */
   private boolean validateRegistrationInput(String name, String surname, String userId, String email, String password, String codiceFiscale) {
     if (!verifyName(name)) {
-      setRegistrationFeedback("Nome deve essere tra 1 e 64 caratteri");
+      setRegistrationFeedback("Nome deve essere tra 1 e " + MAX_NAME_LENGTH + " caratteri");
       return false;
     }
 
     if (!verifyName(surname)) {
-      setRegistrationFeedback("Cognome deve essere tra 1 e 64 caratteri");
+      setRegistrationFeedback("Cognome deve essere tra 1 e " + MAX_NAME_LENGTH + " caratteri");
       return false;
     }
 
-    if (!verifyPassword(userId)) {
-      setRegistrationFeedback("UserId deve essere tra 8 e 64 caratteri");
+    if (!verifyUserId(userId)) {
+      setRegistrationFeedback("UserId deve essere tra " + MIN_USERID_LENGTH + " e " + MAX_USERID_LENGTH + " caratteri");
       return false;
     }
-
 
     if (!verifyEmail(email)) {
-      setRegistrationFeedback("Password deve essere tra 1 e 255 caratteri");
+      setRegistrationFeedback("Email deve essere tra 1 e " + MAX_EMAIL_LENGTH + " caratteri");
       return false;
     }
 
     if (!verifyPassword(password)) {
-      setRegistrationFeedback("Password deve essere tra 8 e 64 caratteri");
+      setRegistrationFeedback("Password deve essere tra " + MIN_PASSWORD_LENGTH + " e " + MAX_PASSWORD_LENGTH + " caratteri");
       return false;
     }
 

@@ -77,10 +77,11 @@ public class ValutazioneDao {
   }
 
   /**
-  * todo doc
-  * aggiunge o aggiorna se presente ...
-  * */
-  public boolean save(Valutazione valutazione) throws SQLException {
+   * todo doc
+   * aggiunge o aggiorna se presente ...
+   *
+   */
+  public void save(Valutazione valutazione) throws SQLException {
     final String q = "INSERT INTO valutazionilibri (" +
       " id_utente, id_libro, stile, contenuto, gradevolezza, originalita, edizione," +
       " recensione_stile, recensione_contenuto, recensione_gradevolezza, recensione_originalita, recensione_edizione, recensione_generale)" +
@@ -118,7 +119,7 @@ public class ValutazioneDao {
       ps.setString(12, valutazione.getRecensioneEdizione());
       ps.setString(13, valutazione.getRecensioneGenerale());
 
-      return ps.executeUpdate() > 0;
+      ps.executeUpdate();
     }
   }
 

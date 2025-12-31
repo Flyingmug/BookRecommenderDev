@@ -3,8 +3,7 @@ package bookrecommenderdev.utils;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 
-import static bookrecommenderdev.Constants.MAX_EMAIL_LENGTH;
-import static bookrecommenderdev.Constants.MAX_NAME_LENGTH;
+import static bookrecommenderdev.Constants.*;
 
 public class InputVerifiers {
   private static final String FISCAL_REGEX = "^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]";
@@ -34,6 +33,12 @@ public class InputVerifiers {
     return password != null && password.length() >= 8 && password.length() <= MAX_NAME_LENGTH;
   }
 
+  /**
+   * todo documentation
+   * */
+  public static boolean verifyUserId(String password) {
+    return password != null && password.length() >= 8 && password.length() <= MAX_USERID_LENGTH;
+  }
 
   /**
    * todo documentation
@@ -57,6 +62,16 @@ public class InputVerifiers {
 
       // no double spaces anywhere
       if (text.contains("  ")) return null;
+
+      return change;
+    }));
+  }
+  public static void ensureLimit(TextInputControl input, int maxLength) {
+    input.setTextFormatter(new TextFormatter<String>(change -> {
+      String text = change.getControlNewText();
+
+      // length limit (reject rather than truncate)
+      if (text.length() > maxLength) return null;
 
       return change;
     }));

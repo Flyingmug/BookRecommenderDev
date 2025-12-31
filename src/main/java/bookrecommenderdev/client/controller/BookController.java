@@ -100,7 +100,7 @@ public class BookController implements Routable {
       setTextValue(categorie, l.getCategorie());
 
       if (AuthContext.isAuthenticated()) {
-        int userId = AuthContext.getUser().getId_utente();
+        int userId = AuthContext.getUser().idUtente();
         canShowUserReview = context.server().isLibroInLibrerieUtente(userId, idLibro);
       }
 

@@ -1,15 +1,16 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.model.exceptions.InvalidCredentialsException;
 import bookrecommenderdev.routing.auth.AccessPolicy;
 import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.auth.AuthStatus;
 import bookrecommenderdev.routing.auth.AuthStorage;
 import bookrecommenderdev.routing.*;
 import bookrecommenderdev.routing.layout.LayoutRegistry;
 import bookrecommenderdev.routing.layout.LayoutType;
 import bookrecommenderdev.routing.route.Route;
 import bookrecommenderdev.server.ServerInterface;
-import bookrecommenderdev.server.dto.AuthResult;
+import bookrecommenderdev.server.dto.UtenteSessione;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -34,47 +35,19 @@ public class RootController {
 
   @FXML
   public void initialize() {
-    List<Route> routes = new LinkedList<>();
-    LayoutRegistry layouts = new LayoutRegistry()
-        .register(LayoutType.DEFAULT, "default-layout.fxml")
-        .register(LayoutType.INTEGRATED, "integrated-layout.fxml")
-        .register(LayoutType.EMPTY, "empty-layout.fxml");
-
-
-    // Registrazione delle pagine
-//    routes.put("/loading", new Route("loading-view.fxml"));
-    routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
-    routes.add(new Route("/search", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
-
-    routes.add(new Route("/book/:id", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
-    routes.add(new Route("/book/:id/review", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
-    routes.add(new Route("/book/:id/recommendations/add", "recommendation-selector-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
-
-    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
-    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
-
-    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
-    routes.add(new Route("/libraries/search", "search-libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
-    routes.add(new Route("/libraries/create", "library-creator-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
-
-    routes.add(new Route("/libraries/:id", "library-page-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
-
-    routes.add(new Route("/not-found", "errors/not-found-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
+    LayoutRegistry layouts = buildLayouts();
+    List<Route> routes = buildRoutes();
 
     initRegistry();
-    if (bookRecommender != null) {
-      context = new AppContext(bookRecommender);
-      Router.init(content, context, routes, layouts);
 
-      attemptAutoLogin();
+    if (bookRecommender == null) return;
 
-      // fixme TEST
-      //Router.go("/");
-      Router.go("/book/1");
-      //Router.go("/book/1/recommendations/add");
+    context = new AppContext(bookRecommender);
+    Router.init(content, context, routes, layouts);
 
-    }
+    attemptAutoLogin();
 
+    Router.go("/"); // real start
   }
 
   /**
@@ -90,25 +63,47 @@ public class RootController {
       notifyServerError(e.getMessage(), "Server not found!\n");
     }
   }
+  private LayoutRegistry buildLayouts() {
+    return new LayoutRegistry()
+        .register(LayoutType.DEFAULT, "default-layout.fxml")
+        .register(LayoutType.INTEGRATED, "integrated-layout.fxml")
+        .register(LayoutType.EMPTY, "empty-layout.fxml");
+  }
 
+  private List<Route> buildRoutes() {
+    List<Route> routes = new LinkedList<>();
+    routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
+    routes.add(new Route("/search", "search-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+
+    routes.add(new Route("/book/:id", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
+    routes.add(new Route("/book/:id/review", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/book/:id/recommendations/add", "recommendation-selector-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+
+    routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
+    routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
+
+    routes.add(new Route("/libraries", "libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/libraries/search", "search-libraries-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/libraries/create", "library-creator-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/libraries/:id", "library-page-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+
+    routes.add(new Route("/not-found", "errors/not-found-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
+    return routes;
+  }
   /**
    * DDD
    */
   private void attemptAutoLogin() {
-
-    AuthStorage.load().ifPresent(credentials -> {
+    AuthStorage.load().ifPresent(token -> {
       try {
+        UtenteSessione session = context.server().resumeSessione(token);
+        AuthContext.login(session);
 
-        AuthResult result = context.server().login(
-            credentials.userId(), credentials.password()
-        );
+      } catch (InvalidCredentialsException e) {
+        AuthStorage.clear();
 
-        if (result.authStatus() == AuthStatus.SUCCESS) {
-          AuthContext.login(result.user());
-        }
-
-      } catch(RemoteException e) {
-        e.printStackTrace();  // fixme perhaps leave nothing? does it influence anything relevant?
+      } catch (DataAccessException | RemoteException e) {
+        // ignora server o db non raggiungibili
       }
     });
   }

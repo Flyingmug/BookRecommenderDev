@@ -123,7 +123,7 @@ public class ReviewFormController implements Routable {
       return null;
     }
 
-    int userId = AuthContext.getUser().getId_utente();
+    int userId = AuthContext.getUser().idUtente();
 
     return new Valutazione(
         libro.getIdLibro(),

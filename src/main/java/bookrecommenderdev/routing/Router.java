@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static bookrecommenderdev.routing.animation.Animations.*;
-import static bookrecommenderdev.routing.auth.AccessPolicy.*;
 
 /**
  * todo Serve una descrizione approfondita del funzionamento.
@@ -48,6 +47,7 @@ public class Router {
 
   public static ReadOnlyBooleanProperty canBack() { return ReadOnlyBooleanProperty.readOnlyBooleanProperty(canBack); }
   public static ReadOnlyBooleanProperty canForward() { return ReadOnlyBooleanProperty.readOnlyBooleanProperty(canForward); }
+  public static AppContext context() { return appContext; }
 
   /**
    * <p>Metodo di inizializzazione per il router con il riferimento.

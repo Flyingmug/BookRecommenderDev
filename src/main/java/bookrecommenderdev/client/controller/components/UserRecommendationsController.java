@@ -43,7 +43,7 @@ public class UserRecommendationsController {
     setVisible(false);
 
     if (!AuthContext.isAuthenticated()) return;
-    idUtente = AuthContext.getUser().getId_utente();
+    idUtente = AuthContext.getUser().idUtente();
 
     try {
       boolean allowed = context.server().isLibroInLibrerieUtente(idUtente, idLibroBase);

@@ -1,14 +1,16 @@
 package bookrecommenderdev.client.controller.components.controls;
 
-import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.model.exceptions.DataAccessException;
+import bookrecommenderdev.routing.AppContext;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
 import bookrecommenderdev.routing.auth.AuthStorage;
-import javafx.application.Platform;
+import bookrecommenderdev.server.dto.UtenteSessione;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+
+import java.rmi.RemoteException;
 
 public class ProfileControlController {
 
@@ -16,6 +18,8 @@ public class ProfileControlController {
   @FXML private Button menuToggleButton;
   @FXML private ContextMenu profileMenu;
   @FXML private Button logoutButton;
+
+  AppContext context;
 
   @FXML
   private void initialize() {
@@ -30,12 +34,6 @@ public class ProfileControlController {
 
     profileMenu = new ContextMenu();
 
-//    MenuItem profile = new MenuItem("Profilo");
-//    profile.setOnAction(e -> Router.go("/profile"));
-//
-//    MenuItem settings = new MenuItem("Impostazioni");
-//    settings.setOnAction(e -> Router.go("/settings"));
-
     MenuItem logout = new MenuItem("Logout");
     logout.setOnAction(_ -> handleLogout());
 
@@ -43,8 +41,17 @@ public class ProfileControlController {
   }
 
   private void handleLogout() {
-    AuthContext.logout();
+    AppContext context = Router.context();
+    if (context == null) return;
+    System.out.println("yo");
+
+    try {
+      context.server().logout(AuthStorage.load().orElse(""));
+    } catch (RemoteException | DataAccessException _) {}
+
+    // elimina token e utente locali
     AuthStorage.clear();
+    AuthContext.logout();
     Router.go("/");
   }
 
@@ -57,11 +64,11 @@ public class ProfileControlController {
     }
   }
 
-  private String getInitials(Utente user) {
-    String first = (user.getNome() != null && !user.getNome().isEmpty())
-        ? user.getNome().substring(0, 1) : "";
-    String last = (user.getCognome() != null && !user.getCognome().isEmpty())
-        ? user.getCognome().substring(0, 1) : "";
+  private String getInitials(UtenteSessione user) {
+    String first = (user.nome() != null && !user.nome().isEmpty())
+        ? user.nome().substring(0, 1) : "";
+    String last = (user.cognome() != null && !user.cognome().isEmpty())
+        ? user.cognome().substring(0, 1) : "";
     return (first + last).toUpperCase();
   }
 }

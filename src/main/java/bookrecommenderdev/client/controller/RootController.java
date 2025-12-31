@@ -1,5 +1,6 @@
 package bookrecommenderdev.client.controller;
 
+import bookrecommenderdev.client.controller.errors.components.ConnectionErrorController;
 import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.exceptions.InvalidCredentialsException;
 import bookrecommenderdev.client.auth.AccessPolicy;
@@ -25,22 +26,28 @@ import java.util.List;
 
 public class RootController {
 
-  @FXML public StackPane content;
-  @FXML private VBox serverConnErrorWrapper;
-  @FXML private Label serverErrorTitle;
-  @FXML private Label serverErrorLabel;
+  @FXML private StackPane content;
+  @FXML private ConnectionErrorController connErrorController;
 
   ServerInterface bookRecommender;
   AppContext context;
 
   @FXML
   public void initialize() {
+    connErrorController.setRetryAction(this::init);
+
+    init();
+  }
+
+  private void init() {
     LayoutRegistry layouts = buildLayouts();
     List<Route> routes = buildRoutes();
 
     initRegistry();
 
     if (bookRecommender == null) return;
+
+    connErrorController.hideError();
 
     context = new AppContext(bookRecommender);
     Router.init(content, context, routes, layouts);
@@ -54,15 +61,19 @@ public class RootController {
    * Inizializza l'oggetto remoto RMI server dal repository.
    */
   private void initRegistry() {
+    bookRecommender = null;
     try {
       Registry reg = LocateRegistry.getRegistry("localhost", 1099);
       bookRecommender = (ServerInterface) reg.lookup("serverBR");
+
     } catch(RemoteException e) {
-      notifyServerError(e.getMessage(), "Server connection failed!\n (Server might not be online or address is wrong)");
+      notifyServerError("Connessione al server fallita!", "Il server potrebbe non essere attivo...");
+
     } catch(NotBoundException e) {
-      notifyServerError(e.getMessage(), "Server not found!\n");
+      notifyServerError("Server non trovato!\n", "");
     }
   }
+
   private LayoutRegistry buildLayouts() {
     return new LayoutRegistry()
         .register(LayoutType.DEFAULT, "default-layout.fxml")
@@ -90,14 +101,17 @@ public class RootController {
     routes.add(new Route("/not-found", "errors/not-found-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
     return routes;
   }
+
   /**
-   * DDD
+   * todo doc
    */
   private void attemptAutoLogin() {
+    if (context == null) return;
+
     AuthStorage.load().ifPresent(token -> {
       try {
-        UtenteSessione session = context.server().resumeSessione(token);
-        AuthContext.login(session);
+        UtenteSessione sessione = context.server().resumeSessione(token);
+        AuthContext.login(sessione);
 
       } catch (InvalidCredentialsException e) {
         AuthStorage.clear();
@@ -108,10 +122,8 @@ public class RootController {
     });
   }
 
-  private void notifyServerError(String originalMessage, String titleMessage) {
-    serverErrorTitle.setText(titleMessage);
-    serverErrorLabel.setText(originalMessage);
-    serverConnErrorWrapper.setManaged(true);
+  private void notifyServerError(String titleMessage, String subtitleMessage) {
+    connErrorController.showError(titleMessage, subtitleMessage);
   }
 
 }

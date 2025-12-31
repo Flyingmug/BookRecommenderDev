@@ -49,6 +49,8 @@ public class Router {
   public static ReadOnlyBooleanProperty canForward() { return ReadOnlyBooleanProperty.readOnlyBooleanProperty(canForward); }
   public static AppContext context() { return appContext; }
 
+  private static boolean initialized = false;
+
   /**
    * <p>Metodo di inizializzazione per il router con il riferimento.
    * La lista di percorsi è un hashmap contenente coppie del tipo ("/nome-percorso", r: Route);
@@ -65,9 +67,7 @@ public class Router {
     appContext = ctx;
     routes = routeList;
     layouts = layoutRegistry;
-    // todo error routes?
-
-    // todo loading screen linked to server loadings?
+    initialized = true;
   }
 
 
@@ -170,8 +170,7 @@ public class Router {
       }
     } catch (IOException ex) {
       navigationLocked.set(false);
-      throw new RuntimeException(ex);
-      // todo pagina d'errore nel percorso richiesto
+//      throw new RuntimeException(ex);
     }
   }
 

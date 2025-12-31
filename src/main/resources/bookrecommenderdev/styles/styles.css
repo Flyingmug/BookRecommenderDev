@@ -26,6 +26,10 @@
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 23;
 }
+.regular-25 {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 25;
+}
 .regular-30 {
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 30;
@@ -85,6 +89,14 @@
 .medium-20 {
     -fx-font-family: "Montserrat Medium";
     -fx-font-size: 20;
+}
+.medium-27 {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 27;
+}
+.medium-30 {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 30;
 }
 /* BOLD */
 .bold-20 {
@@ -1121,22 +1133,25 @@
     -fx-background-color: #ef8888;
 }
 
-/* Temporary */
+
+
+
+/* Connection Error Component */
 
 .error-label {
-    -fx-text-fill: #f22828;
-    -fx-text-alignment: center;
+    -fx-text-fill: #cd2727;
 }
-
-.connection-error-label {
-    -fx-font: bold 16px "Arial";
+.conn-err-retry-icon {
+    -fx-icon-size: 60;
+    -fx-icon-color: #636363;
 }
-
-.connection-error-title {
-    -fx-font: bold 32px "Arial";
+.conn-err-retry-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
 }
-
-.footer {
-    -fx-background-color: aquamarine;
-    -fx-pref-height: 300;
+.conn-err-retry-button:hover .ikonli-font-icon {
+    -fx-icon-color: #818181;
+}
+.conn-err-retry-button:pressed .ikonli-font-icon {
+    -fx-icon-color: #949494;
 }

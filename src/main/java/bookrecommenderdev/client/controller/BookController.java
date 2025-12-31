@@ -1,6 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.controller.components.RecommendationsController;
+import bookrecommenderdev.client.controller.components.UserRecommendationsController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.controller.components.ReviewsSectionController;
 import bookrecommenderdev.client.controller.components.UserReviewSectionController;
@@ -44,6 +45,8 @@ public class BookController implements Routable {
   @FXML private TilePane scoresContainer;
   @FXML private VBox myReviewSection;
 
+  @FXML private UserRecommendationsController userRecommendationsController;
+
   @FXML private VBox reviewsSection;
   @FXML private ReviewsSectionController reviewsSectionController;  // assegnazione automatica tramite fx:include
 
@@ -65,6 +68,7 @@ public class BookController implements Routable {
     idLibro = (Integer.parseInt(params.get("id")));
 
     userReviewSectionController.setContext(context, idLibro);
+    userRecommendationsController.setContext(context, idLibro);
     recommendationsController.setContext(context, idLibro);
 
     loadBookPage(idLibro);

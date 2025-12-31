@@ -1,6 +1,5 @@
 package bookrecommenderdev.client.factory;
 
-import bookrecommenderdev.client.controller.components.BookResultItemController;
 import bookrecommenderdev.client.controller.components.BookResultMinimalController;
 import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.utils.LabelCustomizer;
@@ -15,7 +14,7 @@ import java.util.function.Consumer;
 
 public class BookResultMinimalFactory {
 
-  public static Parent createBookResultMinimal(
+  public static Parent create(
       Libro l,
       String actionIconLiteral,
       Consumer<Integer> onAction

@@ -64,8 +64,6 @@ public class ReviewsSectionController {
         showNoResults();
         // riabilitazione comandi
         setResultsControlsDisabled(false);
-        showDisabled(previousReviewsButton, false);
-        showDisabled(nextReviewsButton, false);
         return;
       }
 
@@ -117,8 +115,6 @@ public class ReviewsSectionController {
     setPrevControlVisibility(currentPageIndex > 0);
     setNextControlVisibility((currentPageIndex + 1) * REVIEWS_PAGE_SIZE < totalResultCount);
     setResultsControlsDisabled(false);
-    showDisabled(previousReviewsButton, false);
-    showDisabled(nextReviewsButton, false);
   }
 
 
@@ -127,8 +123,6 @@ public class ReviewsSectionController {
   @FXML
   private void onPrev() {
     if (totalResultCount <= 0 || currentPageIndex <= 0) return;
-
-    showDisabled(previousReviewsButton, true);
 
     goToPage(currentPageIndex - 1);
   }
@@ -140,8 +134,6 @@ public class ReviewsSectionController {
     if (totalResultCount <= 0 ||
         (currentPageIndex + 1) * REVIEWS_PAGE_SIZE > totalResultCount)
       return;
-
-    showDisabled(nextReviewsButton, true);
 
     goToPage(currentPageIndex + 1);
 
@@ -185,14 +177,6 @@ public class ReviewsSectionController {
     reviewsSectionContainer.setManaged(false);
   }
 
-  /** Mostra la selezione del pulsante sulla grafica, aggiungendovi la classe rispettiva. */
-  private void showDisabled(Button controlButton, boolean b) {
-    if (b) {
-      controlButton.getStyleClass().add("control-button-customdisabled");
-    } else {
-      controlButton.getStyleClass().remove("control-button-customdisabled");
-    }
-  }
 
   private void showErrorState(String message, Runnable retry) {
     // Keep section visible OR hide it — your choice.
@@ -202,8 +186,6 @@ public class ReviewsSectionController {
 
     // Re-enable buttons so user isn't stuck
     setResultsControlsDisabled(false);
-    showDisabled(previousReviewsButton, false);
-    showDisabled(nextReviewsButton, false);
 
     // If you have an ErrorBanner in this section:
     errorBannerController.show(message, retry, null);

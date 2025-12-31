@@ -35,10 +35,10 @@ public class SearchbarController {
   @FXML private Label modeLabel;
 
   private SearchType tipo = SearchType.TITOLO;
-  private Consumer<SearchRequest> onSearch;
+  private Consumer<SearchRequest> onSearch = _ -> {};
 
-  public void setOnSearch(java.util.function.Consumer<SearchRequest> onSearch) {
-    this.onSearch = (onSearch == null) ? (req -> {}) : onSearch;
+  public void setOnSearch(Consumer<SearchRequest> onSearch) {
+    this.onSearch = (onSearch == null) ? (_ -> {}) : onSearch;
   }
 
   @FXML
@@ -74,7 +74,6 @@ public class SearchbarController {
   }
 
   @FXML void swapCriteria() {
-
     tipo = tipo.next();
     updateSearchBar();
   }

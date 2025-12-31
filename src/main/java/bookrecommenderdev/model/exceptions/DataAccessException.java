@@ -10,4 +10,8 @@ public class DataAccessException extends RuntimeException implements Serializabl
   public DataAccessException(String message, SQLException e) {
     super(message);
   }
+
+  public SQLException getSQLException() {
+    return new SQLException();
+  }
 }

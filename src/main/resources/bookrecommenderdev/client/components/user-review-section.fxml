@@ -37,14 +37,7 @@
       </VBox>
 
       <HBox alignment="CENTER_LEFT">
-         <Button fx:id="deleteButton"
-                 text="Rimuovi recensione"
-                 visible="false"
-                 managed="false"
-                 onAction="#onDeleteReview"
-                 styleClass="confirm-dialog-control, confirm-dialog-initial"/>
-
-         <fx:include source="controls/confirm-dialog.fxml" fx:id="deleteConfirm"
+         <fx:include source="controls/confirm-action-dialog.fxml" fx:id="deleteControl"
                      visible="false" managed="false" />
       </HBox>
 

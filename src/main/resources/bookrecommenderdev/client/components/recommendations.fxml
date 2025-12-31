@@ -13,6 +13,8 @@
 
    <VBox fx:id="content" styleClass="recommendations-container">
 
+      <Label text="Raccomandati dalla comunità" styleClass="regular-23" />
+
       <fx:include source="search-results.fxml" fx:id="results"/>
 
    </VBox >

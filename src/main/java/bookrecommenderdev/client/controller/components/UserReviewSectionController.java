@@ -1,6 +1,6 @@
 package bookrecommenderdev.client.controller.components;
 
-import bookrecommenderdev.client.controller.components.controls.ConfirmDialogController;
+import bookrecommenderdev.client.controller.components.controls.ConfirmActionDialogController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.ReviewItemFactory;
 import bookrecommenderdev.model.exceptions.DataAccessException;
@@ -11,7 +11,6 @@ import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.auth.AuthContext;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
@@ -20,9 +19,8 @@ public class UserReviewSectionController {
 
   @FXML private VBox content;
   @FXML private VBox mainArea;
-  @FXML private Button deleteButton;
-  @FXML private Parent deleteConfirm;
-  @FXML private ConfirmDialogController deleteConfirmController;
+  @FXML private Parent deleteControl;
+  @FXML private ConfirmActionDialogController deleteControlController;
   @FXML private VBox createReviewSection;
 
   @FXML private ErrorBannerController errorBannerController;
@@ -44,9 +42,9 @@ public class UserReviewSectionController {
   private void initialize() {
 
     // Configurazione del dialog di conferma
-    if (deleteConfirmController != null) {
-      deleteConfirmController.setOnConfirm(this::deleteLibraryConfirmed);
-      deleteConfirmController.setOnCancel(this::hideDeleteConfirm);
+    if (deleteControlController != null) {
+      deleteControlController.setOnConfirm(this::deleteReviewConfirmed);
+      deleteControlController.setOnCancel(() -> {});
     }
   }
 
@@ -54,11 +52,6 @@ public class UserReviewSectionController {
   @FXML
   private void onReview() {
     Router.go("/book/" + idLibro + "/review");
-  }
-
-  @FXML
-  private void onDeleteReview() {
-    showDeleteConfirm();
   }
 
   /**<p>Gestisce l'aggiornamento dello stato della pagina.
@@ -71,7 +64,6 @@ public class UserReviewSectionController {
 
     if (context == null || !AuthContext.isAuthenticated()) {
       hideSection();
-      hideDeleteConfirm();
       return;
     }
 
@@ -107,21 +99,24 @@ public class UserReviewSectionController {
   /**
    * todo doc
    */
-  private void deleteLibraryConfirmed() {
+  private void deleteReviewConfirmed() {
+    if (deleteControlController != null) deleteControlController.setDisabled(false);
+
     try {
       if (context == null || !AuthContext.isAuthenticated()) return;
 
       context.server().deleteValutazione(idLibro, AuthContext.getUser().getId_utente());
-      deleteConfirmController.setOnCancel(() -> {}); // rimozione del controllo dell'input
       refresh();
 
     } catch (NotFoundException e) {
+      if (deleteControlController != null) deleteControlController.setDisabled(false);
       showError(
           "Errore nell'identificare la valutazione.",
           this::refresh, null
       );
 
     } catch (DataAccessException | RemoteException e) {
+      if (deleteControlController != null) deleteControlController.setDisabled(false);
       showError(
           "Errore nel reperimento della valutazione (DB).",
           this::refresh,null
@@ -135,16 +130,14 @@ public class UserReviewSectionController {
     mainArea.getChildren().setAll(
         ReviewItemFactory.create(v)
     );
-
-    deleteButton.setVisible(true);
-    deleteButton.setManaged(true);
+    deleteControl.setVisible(true);
+    deleteControl.setManaged(true);
   }
 
   private void showCreateReview() {
     showIntro();
-    hideDeleteConfirm();
-    deleteButton.setVisible(false);
-    deleteButton.setManaged(false);
+    deleteControl.setVisible(false);
+    deleteControl.setManaged(false);
 
     notifyLayoutChange();
   }
@@ -169,26 +162,6 @@ public class UserReviewSectionController {
     if (onLayoutChange != null) {
       onLayoutChange.run();
     }
-  }
-
-  /** Mostra il dialogo di conferma e vi imposta il focus. */
-  private void showDeleteConfirm() {
-    deleteButton.setVisible(false);
-    deleteButton.setManaged(false);
-
-    deleteConfirm.setVisible(true);
-    deleteConfirm.setManaged(true);
-
-    deleteConfirmController.requestInitialFocus();
-  }
-
-  /** Nasconde il dialogo di conferma. */
-  private void hideDeleteConfirm() {
-    deleteButton.setVisible(true);
-    deleteButton.setManaged(true);
-
-    deleteConfirm.setVisible(false);
-    deleteConfirm.setManaged(false);
   }
 
   /** Mostra il banner d'errore.

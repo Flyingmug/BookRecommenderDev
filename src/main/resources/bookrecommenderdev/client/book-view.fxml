@@ -42,6 +42,11 @@
                <Label styleClass="gabriola-50" text="Libri consigliati" />
             </HBox>
 
+            <VBox>
+               <fx:include source="components/user-recommendations.fxml" fx:id="userRecommendations" />
+               <Separator styleClass="review-section-separator" />
+            </VBox>
+
             <VBox fx:id="consigliSection">
                <fx:include source="components/recommendations.fxml" fx:id="recommendations" />
                <Separator styleClass="review-section-separator" />

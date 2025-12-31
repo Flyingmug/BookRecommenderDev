@@ -116,7 +116,7 @@ public class ConsiglioLibroDao {
 
   public List<Libro> getConsigliUtente(int idUtente, int idLibroBase) throws SQLException {
     final String q = """
-      SELECT v.id_libro, v.titolo, v.anno_pubblicazione, v.autore
+      SELECT v.id_libro, v.titolo, v.anno_pubblicazione, v.autori
       FROM ConsigliLibri c
       JOIN vw_libri_ricerca v ON v.id_libro = c.id_libro_cons
       WHERE c.id_utente = ? AND c.id_libro_base = ?

@@ -13,14 +13,14 @@
    <VBox styleClass="results-page" VBox.vgrow="ALWAYS">
 
       <HBox fx:id="resultTitleContainer" styleClass="result-title-container">
-         <VBox fx:id="noResultsSection" managed="false" visible="false"
+         <StackPane fx:id="noResultsSection" managed="false" visible="false"
                styleClass="results-empty-wrapper">
             <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="65" styleClass="results-empty-icon" />
             <Label fx:id="noResultsText"
                    text="Nessun risultato..."
                    wrapText="true"
                    styleClass="gabriola-50, results-empty-label"/>
-         </VBox>
+         </StackPane>
          <HBox.margin>
             <Insets bottom="10.0" top="10.0" />
          </HBox.margin>
@@ -44,13 +44,13 @@
                    styleClass="results-index-counter"/>
          </HBox>
 
-         <Separator styleClass="results-books-separator" />
+         <Separator fx:id="topSeparator" styleClass="results-books-separator" />
 
          <VBox fx:id="resultsContainer" styleClass="results-books-container" VBox.vgrow="ALWAYS">
 
          </VBox>
 
-         <Separator styleClass="results-books-separator" />
+         <Separator fx:id="bottomSeparator" styleClass="results-books-separator" />
 
          <BorderPane styleClass="results-books-controls-container">
             <left>

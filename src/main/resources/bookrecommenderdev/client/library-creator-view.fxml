@@ -32,7 +32,7 @@
 
          <VBox GridPane.columnIndex="0"
              VBox.vgrow="ALWAYS"
-             styleClass="library-creator-searchbar-container">
+             styleClass="library-creator-search-container">
             <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
 
             <ScrollPane fitToWidth="true"

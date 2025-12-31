@@ -24,13 +24,14 @@
          </VBox>
 
          <HBox alignment="CENTER_RIGHT">
-            <Button fx:id="deleteButton"
-                    onAction="#onDeleteLibrary"
-                    text="Elimina"
-                    styleClass="confirm-dialog-control, confirm-dialog-initial" />
+<!--            <Button fx:id="deleteButton"-->
+<!--                    onAction="#onDeleteLibrary"-->
+<!--                    text="Elimina"-->
+<!--                    styleClass="confirm-dialog-control, confirm-dialog-initial" />-->
 
-            <fx:include source="components/controls/confirm-dialog.fxml" fx:id="deleteConfirm"
-               managed="false" visible="false" />
+<!--            <fx:include source="components/controls/confirm-dialog.fxml" fx:id="deleteConfirm"-->
+<!--               managed="false" visible="false" />-->
+            <fx:include fx:id="deleteControl" source="components/controls/confirm-action-dialog.fxml"/>
          </HBox>
 
          <fx:include source="components/search-results.fxml" fx:id="results" />

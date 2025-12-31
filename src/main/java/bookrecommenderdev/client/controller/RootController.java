@@ -48,6 +48,7 @@ public class RootController {
 
     routes.add(new Route("/book/:id", "book-view.fxml", LayoutType.INTEGRATED, AccessPolicy.PUBLIC));
     routes.add(new Route("/book/:id/review", "review-form-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
+    routes.add(new Route("/book/:id/recommendations/add", "recommendation-selector-view.fxml", LayoutType.DEFAULT, AccessPolicy.AUTH_ONLY));
 
     routes.add(new Route("/login", "login-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
     routes.add(new Route("/registration", "registration-view.fxml", LayoutType.EMPTY, AccessPolicy.GUEST_ONLY));
@@ -70,6 +71,7 @@ public class RootController {
       // fixme TEST
       //Router.go("/");
       Router.go("/book/1");
+      //Router.go("/book/1/recommendations/add");
 
     }
 

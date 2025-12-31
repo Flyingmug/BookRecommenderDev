@@ -35,9 +35,9 @@ public class BookResultItemFactory {
   public static Parent create(
       Libro l,
       Consumer<Integer> onOpen,
+      Consumer<Integer> onAction,
       String actionText,
-      String actionIconLiteral,
-      Consumer<Integer> onAction
+      String actionIconLiteral
   ) {
     try {
       FXMLLoader loader = new FXMLLoader(

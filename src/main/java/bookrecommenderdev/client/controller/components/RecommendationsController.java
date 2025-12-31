@@ -30,6 +30,7 @@ public class RecommendationsController {
         page -> context.server().cercaConsigli(idLibroBase, page);
 
     resultsController.hidePlaceholder();
+    resultsController.setSeparatorVisible(false);
 
     resultsController.setItemRenderer(this::renderSuggestionItem);
 

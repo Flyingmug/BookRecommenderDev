@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.controller.components.SearchResultsController;
-import bookrecommenderdev.client.controller.components.controls.ConfirmDialogController;
+import bookrecommenderdev.client.controller.components.controls.ConfirmActionDialogController;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.model.*;
@@ -16,7 +16,6 @@ import bookrecommenderdev.routing.route.Routable;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.rmi.RemoteException;
@@ -26,9 +25,8 @@ import static bookrecommenderdev.Constants.PAGE_SIZE;
 
 public class LibraryPageController implements Routable {
 
-  @FXML private Button deleteButton;
-  @FXML private Parent deleteConfirm;
-  @FXML private ConfirmDialogController deleteConfirmController;
+  @FXML private ConfirmActionDialogController deleteControlController;
+
   @FXML private Label libraryTitle;
   @FXML private Parent resultsSection;
   @FXML private SearchResultsController<Libro> resultsController;
@@ -67,43 +65,11 @@ public class LibraryPageController implements Routable {
    * todo doc
    */
   @FXML
-  private void onDeleteLibrary() {
-    showDeleteConfirm();
-  }
-
-  /**
-   * todo doc
-   */
-  @FXML
   private void initialize() {
-    if (deleteConfirmController != null) {
-      deleteConfirmController.setOnConfirm(this::deleteLibraryConfirmed);
-      deleteConfirmController.setOnCancel(this::hideDeleteConfirm);
+    if (deleteControlController != null) {
+      deleteControlController.setOnConfirm(this::deleteLibraryConfirmed);
+      deleteControlController.setOnCancel(() -> {});
     }
-  }
-
-  /**
-   * todo doc
-   */
-  private void showDeleteConfirm() {
-    deleteButton.setVisible(false);
-    deleteButton.setManaged(false);
-
-    deleteConfirm.setVisible(true);
-    deleteConfirm.setManaged(true);
-
-    deleteConfirmController.requestInitialFocus();
-  }
-
-  /**
-   * todo doc
-   */
-  private void hideDeleteConfirm() {
-    deleteButton.setVisible(true);
-    deleteButton.setManaged(true);
-
-    deleteConfirm.setVisible(false);
-    deleteConfirm.setManaged(false);
   }
 
   /**
@@ -120,7 +86,8 @@ public class LibraryPageController implements Routable {
 
     int idUtente = AuthContext.getUser().getId_utente();
 
-    if (deleteButton != null) deleteButton.setDisable(true);
+//    if (deleteButton != null) deleteButton.setDisable(true);
+    if (deleteControlController != null) deleteControlController.setDisabled(true);
 
     try {
       context.server().deleteLibreria(idUtente, idLibreria);
@@ -130,11 +97,11 @@ public class LibraryPageController implements Routable {
       Router.go("/not-found", TransitionAnimation.LEFT_SLIDE);
 
     } catch (DataAccessException e) {
-      if (deleteButton != null) deleteButton.setDisable(false);
+      if (deleteControlController != null) deleteControlController.setDisabled(false);
       showError(e.getMessage(), null, null);
 
     } catch (RemoteException e) {
-      if (deleteButton != null) deleteButton.setDisable(false);
+      if (deleteControlController != null) deleteControlController.setDisabled(false);
       showError("Errore di comunicazione con il server.", null, null);
 
     }

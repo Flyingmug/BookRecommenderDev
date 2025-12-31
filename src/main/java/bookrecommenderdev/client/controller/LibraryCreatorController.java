@@ -47,7 +47,6 @@ public class LibraryCreatorController implements Routable {
   private AppContext context;
   private final Set<Integer> selectedIds = new HashSet<>();
   private final ObservableList<Libro> selectedBooks =  FXCollections.observableArrayList();
-  private SearchRequest lastSearchRequest;
 
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
@@ -75,8 +74,6 @@ public class LibraryCreatorController implements Routable {
   private void performSearch(SearchRequest req) {
     if (req == null || !req.isValid()) return;
 
-    lastSearchRequest = req;
-
     PageFetcher<Libro> source = indicePagina -> context.server().cercaLibro(req, indicePagina);
     resultsController.setSource(source, PAGE_SIZE);
 
@@ -92,9 +89,9 @@ public class LibraryCreatorController implements Routable {
     return BookResultItemFactory.create(
         libro,
         null,
+        _ -> toggleSelection(libro),
         text,
-        icon,
-        _ -> toggleSelection(libro)
+        icon
     );
   }
 
@@ -148,7 +145,7 @@ public class LibraryCreatorController implements Routable {
     selectedContainer.getChildren().clear();
 
     for (Libro l : selectedBooks) {
-      Parent minimal = BookResultMinimalFactory.createBookResultMinimal(
+      Parent minimal = BookResultMinimalFactory.create(
           l,
           "mdi2m-minus",
           _ -> toggleSelection(l)

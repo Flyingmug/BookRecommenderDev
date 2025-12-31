@@ -115,7 +115,7 @@
 
 /* Control button standard class */
 .control-button {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-background-radius: 9999;
     -fx-background-insets: 0;
     -fx-border-color: transparent;
@@ -139,9 +139,6 @@
     -fx-border-width: 2;
     -fx-border-color: #668bc1;
 }
-.control-button-customdisabled {
-
-}
 
 /* Control button specializations */
 .control-button-border {
@@ -151,7 +148,7 @@
 
 /* Control button round specialization */
 .control-button-round {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-background-radius: 9999;
     -fx-background-insets: 0;
     -fx-border-color: transparent;
@@ -188,7 +185,7 @@
     -fx-background-color: black;
     -fx-background-radius: 50;
     -fx-alignment: center;
-    -fx-text-fill: #fefefe;
+    -fx-text-fill: #FEFEFE;
     -fx-font-family: "Montserrat Medium";
     -fx-font-size: 20;
     -fx-cursor: hand;
@@ -200,7 +197,7 @@
     -fx-background-color: #2f2f2f;
 }
 .control-button-black:disabled {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-text-fill: black;
     -fx-border-color: black;
     -fx-border-width: 1;
@@ -330,7 +327,7 @@
 }
 
 .context-menu {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-border-color: #b5b5b5;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
@@ -360,7 +357,7 @@
     -fx-padding: 0;
 }
 .searchbar-section {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
 }
 .searchbar-left {
     -fx-alignment: center-left;
@@ -428,17 +425,21 @@
     -fx-border-color: lightgrey;
     -fx-pref-width: 640;
 }
-.library-creator-searchbar-container .searchbar {
+.library-creator-search-container .searchbar {
     -fx-border-width: 1;
     -fx-border-color: lightgrey;
     -fx-pref-width: 640;
 }
 .libraries-searchbar-container .searchbar {
-        -fx-border-width: 1;
-        -fx-border-color: lightgrey;
-        -fx-pref-width: 640;
+    -fx-border-width: 1;
+    -fx-border-color: lightgrey;
+    -fx-pref-width: 640;
 }
-
+.recommendation-select-page .searchbar {
+    -fx-border-width: 1;
+    -fx-border-color: lightgrey;
+    -fx-pref-width: 640;
+}
 
 
 
@@ -460,9 +461,10 @@
 .results-empty-wrapper {
     -fx-alignment: center;
     -fx-spacing: 5;
+    -fx-padding: 20;
 }
 .results-empty-icon {
-    -fx-icon-color: #848484;
+    -fx-icon-color: #CCCCCC;
     -fx-icon-size: 65;
 }
 .results-empty-label {
@@ -470,7 +472,7 @@
 }
 .results-books-container {
     -fx-spacing: 10;
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-padding: 10 10 0 10;
 }
 .results-books-separator .line {
@@ -532,8 +534,8 @@
     -fx-background-radius: 5;
     -fx-background-color: transparent;
     -fx-border-width: 0;
-    -fx-font-family: "Montserrat Medium";
-    -fx-font-size: 15;
+    -fx-font-family: "Montserrat Light";
+    -fx-font-size: 16;
     -fx-cursor: hand;
 }
 .book-item-action-button:hover {
@@ -554,7 +556,7 @@
 .book-minimal {
     -fx-alignment: center;
     -fx-min-width: 275;
-    -fx-background-color: #fafafa;
+    -fx-background-color: #FAFAFA;
 }
 .book-minimal-title {
     -fx-font-family: "Montserrat Regular";
@@ -596,7 +598,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .search-page {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-spacing: 20;
     -fx-max-width: 1000;
     -fx-min-width: 800;
@@ -614,7 +616,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .book-page {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-max-width: 1000;
     -fx-pref-width: 1000;
     -fx-padding: 20 40 100 40;
@@ -739,12 +741,40 @@
     -fx-padding: 0 0 30 0;
 }
 
+/* User Recommendations Subpage */
+.user-recommended-add-button {
+   -fx-background-color: #f3faff;
+   -fx-background-radius: 6;
+   -fx-font-family: "Montserrat Regular";
+   -fx-font-size: 14;
+   -fx-cursor: hand;
+}
+.user-recommended-add-button:hover {
+   -fx-background-color: rgba(176, 222, 255, 0.5);
+}
+.user-recommended-row {
+    -fx-alignment: center;
+}
+
 /* Recommendations Subpage */
+
 .recommendations-container {
     -fx-padding: 0 10 5 10;
 }
 
 
+/* Recommendation Select Page */
+
+.recommendation-select-page-container {
+    -fx-alignment: top-center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+.recommendation-select-page {
+    -fx-background-color: #FEFEFE;
+    -fx-max-width: 1000;
+    -fx-pref-width: 1000;
+    -fx-padding: 20 40 100 40;
+}
 
 
 /* Review Form Page */
@@ -755,7 +785,7 @@
 }
 .review-page {
         -fx-alignment: top-left;
-        -fx-background-color: #fefefe;
+        -fx-background-color: #FEFEFE;
         -fx-max-width: 1000;
         -fx-pref-width: 1000;
         -fx-spacing: 20;
@@ -878,7 +908,7 @@
     -fx-spacing: 20;
     -fx-max-width: 1100;
     -fx-min-width: 500;
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-padding: 40;
 }
 
@@ -925,12 +955,12 @@
     -fx-max-width: 280;
     -fx-background-insets: 0, 1;
     -fx-background-radius: 4, 3;
-    -fx-background-color: lightgrey, #fefefe;
+    -fx-background-color: lightgrey, #FEFEFE;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 5, 0, 0, 3);
     -fx-cursor: hand;
 }
 .library-item-button:hover {
-    -fx-background-color: #79e6fd, #fefefe;
+    -fx-background-color: #79e6fd, #FEFEFE;
     -fx-background-insets: 0, 3;
 }
 .library-item {
@@ -957,7 +987,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 .library-page {
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-spacing: 20;
     -fx-max-width: 1100;
     -fx-min-width: 500;
@@ -976,7 +1006,7 @@
     -fx-alignment: center;
     -fx-spacing: 20;
     -fx-min-width: 1100;
-    -fx-background-color: #fefefe;
+    -fx-background-color: #FEFEFE;
     -fx-padding: 20;
 }
 .library-creator-name-field {
@@ -995,6 +1025,7 @@
 }
 .library-creator-search-container {
     -fx-alignment: center;
+    -fx-spacing: 5;
 }
 .library-creator-main {
     -fx-hgap: 10;
@@ -1043,7 +1074,7 @@
 }
 .confirm-dialog-initial:hover {
     -fx-background-color: #c43232;
-    -fx-text-fill: #fefefe;
+    -fx-text-fill: #FEFEFE;
     -fx-underline: false;
 }
 

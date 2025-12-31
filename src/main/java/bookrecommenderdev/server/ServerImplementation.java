@@ -276,7 +276,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return consigli.getConsigliUtente(idUtente, idLibro);
 
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new DataAccessException("Errore nell'ottenimento delle consigli.", e);
     }
   }
@@ -288,7 +287,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return consigli.searchConsigli(idLibroBase, indicePagina);
 
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new DataAccessException("Errore di database", e);
     }
   }
@@ -300,7 +298,6 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       consigli.inserisciConsiglio(idUtente, idLibroBase, idLibroCons);
 
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new DataAccessException("Errore di database", e);
     }
   }

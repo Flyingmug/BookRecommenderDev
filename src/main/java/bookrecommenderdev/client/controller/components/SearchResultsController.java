@@ -5,8 +5,6 @@ import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.model.data.PageResult;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.client.factory.BookResultItemFactory;
-import bookrecommenderdev.model.Libro;
 import bookrecommenderdev.routing.Router;
 import bookrecommenderdev.routing.animation.TransitionAnimation;
 import javafx.fxml.FXML;
@@ -27,7 +25,7 @@ import static bookrecommenderdev.Constants.PAGE_SIZE;
 public class SearchResultsController<T> {
 
   @FXML private StackPane initialPlaceholder;
-  @FXML private VBox noResultsSection;
+  @FXML private StackPane noResultsSection;
   @FXML private Label noResultsText;
   @FXML private VBox resultSection;
   @FXML private VBox resultsContainer;
@@ -35,6 +33,8 @@ public class SearchResultsController<T> {
   @FXML private Button previousPageButton;
   @FXML private Button nextPageButton;
   @FXML private VBox noRendererBox;
+  @FXML private Separator topSeparator;
+  @FXML private Separator bottomSeparator;
 
   @FXML private ErrorBannerController errorBannerController;
 
@@ -106,6 +106,13 @@ public class SearchResultsController<T> {
       initialPlaceholder.setVisible(false);
       initialPlaceholder.setManaged(false);
     }
+  }
+
+  public void setSeparatorVisible(boolean visible) {
+    topSeparator.setVisible(visible);
+    topSeparator.setManaged(visible);
+    bottomSeparator.setVisible(visible);
+    bottomSeparator.setManaged(visible);
   }
 
   /** <p>Gestisce la richiesta al server utilizzando la chiave data {@code query}.

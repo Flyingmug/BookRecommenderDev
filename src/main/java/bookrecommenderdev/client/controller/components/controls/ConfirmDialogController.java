@@ -24,6 +24,14 @@ public class ConfirmDialogController {
 
   @FXML
   private void initialize() {
+
+    // Focus automatico
+    root.visibleProperty().addListener((obs, oldV, newV) -> {
+      if (newV) {
+        javafx.application.Platform.runLater(this::requestInitialFocus);
+      }
+    });
+
     // Annulla in automatico alla perdita di focus
     root.focusWithinProperty().addListener((obs, wasFocused, isFocused) -> {
       if (wasFocused && !isFocused) {

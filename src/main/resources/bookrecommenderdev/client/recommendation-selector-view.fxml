@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane fx:id="root"
+            fitToWidth="true"
+            fitToHeight="true"
+            hbarPolicy="NEVER"
+            styleClass="scrollable-pane" VBox.vgrow="ALWAYS"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="bookrecommenderdev.client.controller.RecommendationSelectorController">
+
+   <VBox fx:id="content" styleClass="recommendation-select-page-container">
+      <VBox styleClass="recommendation-select-page" VBox.vgrow="ALWAYS">
+
+         <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner"/>
+
+         <fx:include source="components/controls/searchbar.fxml" fx:id="searchbar" />
+
+         <fx:include source="components/search-results.fxml" fx:id="results" />
+
+      </VBox>
+   </VBox>
+</ScrollPane>
+
+

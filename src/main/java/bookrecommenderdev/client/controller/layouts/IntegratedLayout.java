@@ -1,7 +1,7 @@
 package bookrecommenderdev.client.controller.layouts;
 
 import bookrecommenderdev.client.controller.components.NavbarController;
-import bookrecommenderdev.routing.layout.LayoutController;
+import bookrecommenderdev.client.routing.layout.LayoutController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -36,7 +36,7 @@ public class IntegratedLayout implements LayoutController {
    */
   private void setCenterBackground() {
     // background
-    URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/library-background2.jpg");
+    URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/library-background.jpg");
     if (imageUrl != null) {
       Image image = new Image(imageUrl.toExternalForm());
 

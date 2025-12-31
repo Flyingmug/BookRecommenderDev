@@ -2,10 +2,10 @@ package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.factory.RecommendedItemFactory;
 import bookrecommenderdev.model.data.PageFetcher;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.animation.TransitionAnimation;
-import bookrecommenderdev.server.dto.LibroConsigliato;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.routing.Router;
+import bookrecommenderdev.client.routing.animation.TransitionAnimation;
+import bookrecommenderdev.model.dto.LibroConsigliato;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;

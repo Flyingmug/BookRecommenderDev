@@ -1,5 +1,6 @@
 package bookrecommenderdev.server;
 
+import bookrecommenderdev.server.rmi.ServerImplementation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

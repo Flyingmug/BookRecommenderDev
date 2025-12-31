@@ -1,7 +1,7 @@
 package bookrecommenderdev.server.dao;
 
-import bookrecommenderdev.model.Valutazione;
-import bookrecommenderdev.server.dto.PaginaValutazioni;
+import bookrecommenderdev.model.base.Valutazione;
+import bookrecommenderdev.model.dto.PaginaValutazioni;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

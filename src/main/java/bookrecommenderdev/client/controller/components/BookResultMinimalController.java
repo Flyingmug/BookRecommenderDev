@@ -1,6 +1,6 @@
 package bookrecommenderdev.client.controller.components;
 
-import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.base.Libro;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

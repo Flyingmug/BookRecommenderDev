@@ -1,12 +1,11 @@
 package bookrecommenderdev.server.dao;
 
-import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.base.Libro;
 import bookrecommenderdev.model.exceptions.AlreadyExistsException;
 import bookrecommenderdev.model.exceptions.LimitExceededException;
 import bookrecommenderdev.model.exceptions.NotFoundException;
-import bookrecommenderdev.server.dto.LibroConsigliato;
-import bookrecommenderdev.server.dto.PaginaConsigliRisultati;
-import bookrecommenderdev.server.dto.PaginaLibriRisultati;
+import bookrecommenderdev.model.dto.LibroConsigliato;
+import bookrecommenderdev.model.dto.PaginaConsigliRisultati;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

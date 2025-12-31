@@ -1,13 +1,13 @@
 package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.factory.StarIconFactory;
-import bookrecommenderdev.model.CampoValutazione;
-import bookrecommenderdev.model.Valutazione;
+import bookrecommenderdev.model.base.CampoValutazione;
+import bookrecommenderdev.model.base.Valutazione;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
-import static bookrecommenderdev.utils.InputVerifiers.notNull;
+import static bookrecommenderdev.model.utils.InputVerifiers.notNull;
 
 public class ReviewItemController {
 

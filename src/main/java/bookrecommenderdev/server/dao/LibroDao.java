@@ -1,8 +1,8 @@
 package bookrecommenderdev.server.dao;
 
-import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.base.Libro;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.server.dto.PaginaLibriRisultati;
+import bookrecommenderdev.model.dto.PaginaLibriRisultati;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
-import static bookrecommenderdev.utils.InputVerifiers.notNull;
+import static bookrecommenderdev.model.utils.InputVerifiers.notNull;
 
 public class LibroDao {
   private final DataSource datasource;

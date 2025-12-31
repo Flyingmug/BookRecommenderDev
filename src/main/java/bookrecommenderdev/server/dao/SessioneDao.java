@@ -1,6 +1,6 @@
 package bookrecommenderdev.server.dao;
 
-import bookrecommenderdev.server.Tokenizer;
+import bookrecommenderdev.server.auth.Tokenizer;
 
 import javax.sql.DataSource;
 import java.sql.*;

@@ -1,6 +1,6 @@
 package bookrecommenderdev.client.controller.layouts;
 
-import bookrecommenderdev.routing.layout.LayoutController;
+import bookrecommenderdev.client.routing.layout.LayoutController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -33,7 +33,7 @@ public class EmptyLayout implements LayoutController {
    */
   private void setCenterBackground() {
     // background
-    URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/library-background3.jpg");
+    URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/library-background-clear.jpg");
     if (imageUrl != null) {
       Image image = new Image(imageUrl.toExternalForm());
 

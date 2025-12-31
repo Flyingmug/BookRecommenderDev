@@ -7,13 +7,13 @@ import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.client.factory.BookResultMinimalFactory;
 import bookrecommenderdev.model.exceptions.AlreadyExistsException;
 import bookrecommenderdev.model.exceptions.DataAccessException;
-import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.base.Libro;
 import bookrecommenderdev.model.data.PageFetcher;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.route.Routable;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.routing.Router;
+import bookrecommenderdev.client.auth.AuthContext;
+import bookrecommenderdev.client.routing.route.Routable;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +32,7 @@ import java.util.Set;
 
 import static bookrecommenderdev.Constants.MAX_LIBRARY_NAME_LENGTH;
 import static bookrecommenderdev.Constants.PAGE_SIZE;
-import static bookrecommenderdev.utils.InputVerifiers.*;
+import static bookrecommenderdev.model.utils.InputVerifiers.*;
 
 public class LibraryCreatorController implements Routable {
 

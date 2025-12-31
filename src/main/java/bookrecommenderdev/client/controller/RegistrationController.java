@@ -2,14 +2,13 @@ package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.model.exceptions.AlreadyExistsException;
 import bookrecommenderdev.model.exceptions.DataAccessException;
-import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.auth.AuthStorage;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.route.Routable;
-import bookrecommenderdev.model.Utente;
-import bookrecommenderdev.server.dto.TokenSessione;
-import bookrecommenderdev.server.dto.UtenteSessione;
+import bookrecommenderdev.client.auth.AuthContext;
+import bookrecommenderdev.client.auth.AuthStorage;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.routing.Router;
+import bookrecommenderdev.client.routing.route.Routable;
+import bookrecommenderdev.model.base.Utente;
+import bookrecommenderdev.model.dto.TokenSessione;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -19,11 +18,11 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 import static bookrecommenderdev.Constants.*;
-import static bookrecommenderdev.utils.InputVerifiers.*;
-import static bookrecommenderdev.utils.InputVerifiers.verCodiceFiscale;
-import static bookrecommenderdev.utils.InputVerifiers.verifyEmail;
-import static bookrecommenderdev.utils.InputVerifiers.verifyName;
-import static bookrecommenderdev.utils.InputVerifiers.verifyPassword;
+import static bookrecommenderdev.model.utils.InputVerifiers.*;
+import static bookrecommenderdev.model.utils.InputVerifiers.verCodiceFiscale;
+import static bookrecommenderdev.model.utils.InputVerifiers.verifyEmail;
+import static bookrecommenderdev.model.utils.InputVerifiers.verifyName;
+import static bookrecommenderdev.model.utils.InputVerifiers.verifyPassword;
 
 public class RegistrationController implements Routable {
 

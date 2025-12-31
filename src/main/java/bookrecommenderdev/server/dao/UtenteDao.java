@@ -1,6 +1,6 @@
 package bookrecommenderdev.server.dao;
 
-import bookrecommenderdev.model.Utente;
+import bookrecommenderdev.model.base.Utente;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

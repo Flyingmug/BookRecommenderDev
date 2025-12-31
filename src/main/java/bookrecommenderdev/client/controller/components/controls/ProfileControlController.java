@@ -1,11 +1,11 @@
 package bookrecommenderdev.client.controller.components.controls;
 
 import bookrecommenderdev.model.exceptions.DataAccessException;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.auth.AuthStorage;
-import bookrecommenderdev.server.dto.UtenteSessione;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.routing.Router;
+import bookrecommenderdev.client.auth.AuthContext;
+import bookrecommenderdev.client.auth.AuthStorage;
+import bookrecommenderdev.model.dto.UtenteSessione;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;

@@ -1,7 +1,6 @@
 package bookrecommenderdev.client.controller.components.controls;
 
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,7 +10,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static bookrecommenderdev.Constants.MAX_SEARCH_LENGTH;
-import static bookrecommenderdev.utils.InputVerifiers.*;
+import static bookrecommenderdev.model.utils.InputVerifiers.*;
 
 public class SearchbarController {
 

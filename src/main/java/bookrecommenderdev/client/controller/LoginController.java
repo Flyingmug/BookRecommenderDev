@@ -2,12 +2,12 @@ package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.exceptions.InvalidCredentialsException;
-import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.auth.AuthStorage;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.route.Routable;
-import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.server.dto.TokenSessione;
+import bookrecommenderdev.client.auth.AuthContext;
+import bookrecommenderdev.client.auth.AuthStorage;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.routing.route.Routable;
+import bookrecommenderdev.client.routing.Router;
+import bookrecommenderdev.model.dto.TokenSessione;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 import static bookrecommenderdev.Constants.*;
-import static bookrecommenderdev.utils.InputVerifiers.*;
+import static bookrecommenderdev.model.utils.InputVerifiers.*;
 
 public class LoginController implements Routable {
 

@@ -1,8 +1,8 @@
 package bookrecommenderdev.client.controller.components;
 
 import bookrecommenderdev.client.controller.components.controls.SearchbarController;
-import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.Router;
+import bookrecommenderdev.client.auth.AuthContext;
+import bookrecommenderdev.client.routing.Router;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;

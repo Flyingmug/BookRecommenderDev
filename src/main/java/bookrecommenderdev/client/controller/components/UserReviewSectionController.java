@@ -5,10 +5,10 @@ import bookrecommenderdev.client.controller.errors.components.ErrorBannerControl
 import bookrecommenderdev.client.factory.ReviewItemFactory;
 import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.exceptions.NotFoundException;
-import bookrecommenderdev.model.Valutazione;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.Router;
-import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.model.base.Valutazione;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.routing.Router;
+import bookrecommenderdev.client.auth.AuthContext;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;

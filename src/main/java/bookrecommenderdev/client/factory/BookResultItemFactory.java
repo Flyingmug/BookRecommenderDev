@@ -1,9 +1,9 @@
 package bookrecommenderdev.client.factory;
 
 import bookrecommenderdev.client.controller.components.BookResultItemController;
-import bookrecommenderdev.model.Libro;
-import bookrecommenderdev.utils.LabelCustomizer;
-import bookrecommenderdev.utils.Size;
+import bookrecommenderdev.model.base.Libro;
+import bookrecommenderdev.model.utils.LabelCustomizer;
+import bookrecommenderdev.model.utils.Size;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;

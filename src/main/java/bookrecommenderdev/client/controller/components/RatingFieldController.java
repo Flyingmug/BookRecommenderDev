@@ -8,7 +8,7 @@ import javafx.scene.control.TextArea;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import static bookrecommenderdev.Constants.MAX_REVIEW_LENGTH;
-import static bookrecommenderdev.utils.InputVerifiers.preventMultipleSpacesAndLimit;
+import static bookrecommenderdev.model.utils.InputVerifiers.preventMultipleSpacesAndLimit;
 
 public class RatingFieldController {
 

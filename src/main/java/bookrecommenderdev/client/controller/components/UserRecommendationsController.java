@@ -3,11 +3,11 @@ package bookrecommenderdev.client.controller.components;
 import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.BookResultItemFactory;
 import bookrecommenderdev.client.factory.ConfirmActionDialogFactory;
-import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.base.Libro;
 import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.exceptions.NotFoundException;
-import bookrecommenderdev.routing.AppContext;
-import bookrecommenderdev.routing.auth.AuthContext;
+import bookrecommenderdev.client.routing.AppContext;
+import bookrecommenderdev.client.auth.AuthContext;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -97,7 +97,7 @@ public class UserRecommendationsController {
 
   private Parent buildRow(Libro l) {
     Parent item = BookResultItemFactory.create(
-        l, id -> bookrecommenderdev.routing.Router.go("/book/" + id)
+        l, id -> bookrecommenderdev.client.routing.Router.go("/book/" + id)
     );
     HBox.setHgrow(item, Priority.ALWAYS);
 
@@ -118,9 +118,9 @@ public class UserRecommendationsController {
   @FXML
   private void onAdd() {
     if (context == null || idUtente == null) return;
-    bookrecommenderdev.routing.Router.go(
+    bookrecommenderdev.client.routing.Router.go(
         "/book/" + idLibroBase + "/recommendations/add",
-        bookrecommenderdev.routing.animation.TransitionAnimation.LEFT_SLIDE
+        bookrecommenderdev.client.routing.animation.TransitionAnimation.LEFT_SLIDE
     );
   }
 

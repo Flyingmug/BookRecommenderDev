@@ -1,6 +1,6 @@
 package bookrecommenderdev.client.controller.components.controls;
 
-import bookrecommenderdev.routing.Router;
+import bookrecommenderdev.client.routing.Router;
 import javafx.fxml.FXML;
 
 public class HomeLinkController {

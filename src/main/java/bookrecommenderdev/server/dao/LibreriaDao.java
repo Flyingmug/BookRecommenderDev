@@ -1,11 +1,11 @@
 package bookrecommenderdev.server.dao;
 
-import bookrecommenderdev.model.Libreria;
-import bookrecommenderdev.model.Libro;
+import bookrecommenderdev.model.base.Libreria;
+import bookrecommenderdev.model.base.Libro;
 import bookrecommenderdev.model.data.SearchRequest;
-import bookrecommenderdev.server.dto.PaginaLibreria;
-import bookrecommenderdev.server.dto.PaginaLibrerieRisultati;
-import bookrecommenderdev.server.dto.PaginaLibriRisultati;
+import bookrecommenderdev.model.dto.PaginaLibreria;
+import bookrecommenderdev.model.dto.PaginaLibrerieRisultati;
+import bookrecommenderdev.model.dto.PaginaLibriRisultati;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import static bookrecommenderdev.Constants.LIBRARIES_PAGE_SIZE;
 import static bookrecommenderdev.Constants.PAGE_SIZE;
-import static bookrecommenderdev.utils.InputVerifiers.notNull;
+import static bookrecommenderdev.model.utils.InputVerifiers.notNull;
 
 public class LibreriaDao {
   private final DataSource datasource;

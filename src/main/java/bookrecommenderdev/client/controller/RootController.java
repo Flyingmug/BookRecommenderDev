@@ -2,15 +2,15 @@ package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.model.exceptions.DataAccessException;
 import bookrecommenderdev.model.exceptions.InvalidCredentialsException;
-import bookrecommenderdev.routing.auth.AccessPolicy;
-import bookrecommenderdev.routing.auth.AuthContext;
-import bookrecommenderdev.routing.auth.AuthStorage;
-import bookrecommenderdev.routing.*;
-import bookrecommenderdev.routing.layout.LayoutRegistry;
-import bookrecommenderdev.routing.layout.LayoutType;
-import bookrecommenderdev.routing.route.Route;
-import bookrecommenderdev.server.ServerInterface;
-import bookrecommenderdev.server.dto.UtenteSessione;
+import bookrecommenderdev.client.auth.AccessPolicy;
+import bookrecommenderdev.client.auth.AuthContext;
+import bookrecommenderdev.client.auth.AuthStorage;
+import bookrecommenderdev.client.routing.*;
+import bookrecommenderdev.client.routing.layout.LayoutRegistry;
+import bookrecommenderdev.client.routing.layout.LayoutType;
+import bookrecommenderdev.client.routing.route.Route;
+import bookrecommenderdev.model.ServerInterface;
+import bookrecommenderdev.model.dto.UtenteSessione;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -47,7 +47,7 @@ public class RootController {
 
     attemptAutoLogin();
 
-    Router.go("/"); // real start
+    Router.go("/");
   }
 
   /**

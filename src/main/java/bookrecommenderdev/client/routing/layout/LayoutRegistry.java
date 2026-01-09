@@ -4,22 +4,15 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Registry responsible for associating {@link LayoutType} values with their
- * corresponding JavaFX FXML layout definitions.
+ * Registry responsabile di associare valori {@link LayoutType} con la loro
+ * definizione corrispondente JavaFX FXML.
  *
- * <p>The registry acts as a central configuration component used by the routing
- * system to resolve which layout should be instantiated when navigating between
- * pages.</p>
+ * <p>I layout devono essere registrati esplicitamente durante l'inizializzazione
+ * dell' applicazione prima che avvenga qualunque navigazione.</p>
  *
- * <p>Layouts must be explicitly registered during application startup before
- * any navigation occurs.</p>
  *
- * <h2>Design guarantees</h2>
- * <ul>
- *   <li>Each {@link LayoutType} can be associated with at most one FXML file</li>
- *   <li>Layout resolution fails fast if a layout is missing</li>
- *   <li>A DEFAULT layout can be required and validated at startup</li>
- * </ul>
+ * <p>Note: Un elemento {@link LayoutType} può essere associato al massimo a una
+ * definizione fxml.</p>
  */
 public final class LayoutRegistry {
 
@@ -32,7 +25,7 @@ public final class LayoutRegistry {
    *
    * @param type Tipo di layout
    * @param fxml path FXML relativo al classpath
-   * @return Un riferimento all'istanza del registry
+   * @return Riferimento all'istanza del registry
    */
   public LayoutRegistry register(LayoutType type, String fxml) {
     if (!layouts.containsKey(type)) {

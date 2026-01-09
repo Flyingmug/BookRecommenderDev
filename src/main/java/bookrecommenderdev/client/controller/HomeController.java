@@ -14,16 +14,17 @@ import java.net.URL;
 public class HomeController {
 
   @FXML private StackPane welcomePane;
+  @FXML private Pane logoPane;
   @FXML private SearchbarController searchbarController;
 
   @FXML
   private void initialize() {
     setTitleBackground();
+    setLogo();
     searchbarController.setOnSearch(req -> Router.go("/search", req));
   }
 
   private void setTitleBackground() {
-    // background
     URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/book-recommender-title.png");
     if (imageUrl != null) {
       Image originalImage = new Image(imageUrl.toExternalForm());
@@ -50,4 +51,34 @@ public class HomeController {
       }
     }
   }
+
+  private void setLogo() {
+    URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/small-insubriae-logo.png");
+    if (imageUrl != null) {
+      Image originalImage = new Image(imageUrl.toExternalForm());
+
+      ImageView tempView = new ImageView(originalImage);
+      tempView.setOpacity(0.4);
+
+      SnapshotParameters params = new SnapshotParameters();
+      params.setFill(Color.TRANSPARENT);
+      Image transparentImage = tempView.snapshot(params, null);
+
+      BackgroundImage backgroundImage = new BackgroundImage(
+          transparentImage,
+          BackgroundRepeat.NO_REPEAT,
+          BackgroundRepeat.NO_REPEAT,
+          BackgroundPosition.CENTER,
+          new BackgroundSize(200, 200,
+              false, false, true, false
+          )
+      );
+
+      if (logoPane != null) {
+        logoPane.setBackground(new Background(backgroundImage));
+      }
+    }
+  }
 }
+
+

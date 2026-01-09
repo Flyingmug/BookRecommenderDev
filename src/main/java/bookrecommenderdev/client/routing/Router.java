@@ -23,6 +23,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 import static bookrecommenderdev.client.routing.animation.Animations.*;
@@ -97,6 +98,9 @@ public class Router {
    *
    * <p>Il nomi dei percorsi saranno utilizzati dal metodo {@link #resolve resolve()} durante la ricerca della
    * presenza del percorso richiesto.
+   *
+   * <p>Nota: i layout devono essere definiti in {@code /layouts} nelle risorse
+   *
    * @param container Root container JavaFX dove il layout verrà inserito
    * @param ctx Contesto dell'applicazione
    * @param routeList Lista di percorsi registrati
@@ -121,12 +125,15 @@ public class Router {
                     "Layout " + r.layout() + " utilizzato da /not-found non è registrato"
                 );
               }
+
+              // Verifica che layout e not-found siano utilizzabili
+              requireFxmlLoads("layouts/" + layoutRegistry.fxml(r.layout()));
+              requireFxmlLoads(r.fxml());
             },
             () -> {
               throw new IllegalStateException("Percorso prerequisito mancante: /not-found");
             }
         );
-
     initialized = true;
   }
 
@@ -458,4 +465,25 @@ public class Router {
     }
   }
 
+
+  /**
+   * Verifica che il nodo al percorso specificato esista e sia utilizzabile.
+   *
+   * @param fxmlPath Percorso nel classpath
+   * @throws IllegalStateException Se il nodo non è caricabile
+   */
+  private static void requireFxmlLoads(String fxmlPath)
+    throws IllegalStateException{
+    URL url = Router.class.getResource("/bookrecommenderdev/client/" + fxmlPath);
+    if (url == null) {
+      throw new IllegalStateException("Risorsa non trovata: " + fxmlPath);
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(url);
+      loader.load();
+    } catch (IOException ex) {
+      throw new IllegalStateException("FXML non caricabile: " + fxmlPath, ex);
+    }
+  }
 }

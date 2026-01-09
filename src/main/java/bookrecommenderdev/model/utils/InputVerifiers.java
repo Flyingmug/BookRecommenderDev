@@ -97,14 +97,46 @@ public class InputVerifiers {
   }
   public static void restrictLooseFiscalCodeInput(TextInputControl field) {
     field.setTextFormatter(new TextFormatter<>(change -> {
-      String newText = change.getControlNewText().toUpperCase(); // force uppercase
-      // allow partial match so user can type gradually
-      if (newText.matches("^[A-Z0-9]*$")) {
-        change.setText(change.getText().toUpperCase()); // enforce uppercase while typing
+      String newText = change.getControlNewText().toUpperCase();
+      if (isPartialFiscalCode(newText)) {
+        change.setText(change.getText().toUpperCase());
         return change;
       }
-      return null; // reject change
+      return null;
     }));
+  }
+
+  private static boolean isPartialFiscalCode(String s) {
+    int len = s.length();
+
+    if (len > 16) return false;
+
+    return switch (len) {
+      case 0 -> true;
+
+      case 1, 2, 3, 4, 5, 6 ->
+          s.matches("[A-Z]{0," + len + "}");
+
+      case 7, 8 ->
+          s.matches("[A-Z]{6}[0-9]{0," + (len - 6) + "}");
+
+      case 9 ->
+          s.matches("[A-Z]{6}[0-9]{2}[ABCDEHLMPRST]");
+
+      case 10, 11 ->
+          s.matches("[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{0," + (len - 9) + "}");
+
+      case 12 ->
+          s.matches("[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z]");
+
+      case 13, 14, 15 ->
+          s.matches("[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{0," + (len - 12) + "}");
+
+      case 16 ->
+          s.matches("[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]");
+
+      default -> false;
+    };
   }
 
   public static String notNull(String s) {

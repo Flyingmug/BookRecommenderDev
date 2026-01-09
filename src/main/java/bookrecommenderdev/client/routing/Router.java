@@ -111,13 +111,21 @@ public class Router {
     routes = routeList;
     layouts = layoutRegistry;
 
-    boolean notFoundDefined = routes.stream()
+    routes.stream()
         .filter(r -> r.pathPattern().equals("/not-found"))
-        .anyMatch(r -> layoutRegistry.contains(r.layout()));
-
-    if (!notFoundDefined) {
-      throw new IllegalStateException("Deve essere definito un percorso '/not-found' con relativo layout");
-    }
+        .findFirst()
+        .ifPresentOrElse(
+            r -> {
+              if (!layoutRegistry.contains(r.layout())) {
+                throw new IllegalStateException(
+                    "Layout " + r.layout() + " utilizzato da /not-found non è registrato"
+                );
+              }
+            },
+            () -> {
+              throw new IllegalStateException("Percorso prerequisito mancante: /not-found");
+            }
+        );
 
     initialized = true;
   }

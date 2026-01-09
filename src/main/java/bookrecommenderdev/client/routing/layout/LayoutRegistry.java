@@ -22,4 +22,14 @@ public final class LayoutRegistry {
     }
     return fxml;
   }
+
+  /**
+   * Determina se un determinato tipo di layout è definito.
+   *
+   * @param type tipo
+   * @return {@code true} se almeno un layout esiste, altrimenti {@code false}
+   */
+  public boolean contains(LayoutType type) {
+    return layouts.containsKey(type);
+  }
 }

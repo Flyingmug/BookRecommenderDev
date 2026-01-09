@@ -13,9 +13,7 @@ import bookrecommenderdev.client.routing.route.Route;
 import bookrecommenderdev.model.ServerInterface;
 import bookrecommenderdev.model.dto.UtenteSessione;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -50,11 +48,17 @@ public class RootController {
     connErrorController.hideError();
 
     context = new AppContext(bookRecommender);
-    Router.init(content, context, routes, layouts);
 
-    attemptAutoLogin();
+    try {
+      Router.init(content, context, routes, layouts);
 
-    Router.go("/");
+      attemptAutoLogin();
+
+      Router.go("/");
+
+    } catch (IllegalStateException e) {
+      notifySystemError("Errore nel Router", e.getMessage());
+    }
   }
 
   /**
@@ -67,10 +71,10 @@ public class RootController {
       bookRecommender = (ServerInterface) reg.lookup("serverBR");
 
     } catch(RemoteException e) {
-      notifyServerError("Connessione al server fallita!", "Il server potrebbe non essere attivo...");
+      notifySystemError("Connessione al server fallita!", "Il server potrebbe non essere attivo...");
 
     } catch(NotBoundException e) {
-      notifyServerError("Server non trovato!\n", "");
+      notifySystemError("Server non trovato!\n", "");
     }
   }
 
@@ -117,12 +121,12 @@ public class RootController {
         AuthStorage.clear();
 
       } catch (DataAccessException | RemoteException e) {
-        // ignora server o db non raggiungibili
+        // ignora -> server o db non raggiungibili
       }
     });
   }
 
-  private void notifyServerError(String titleMessage, String subtitleMessage) {
+  private void notifySystemError(String titleMessage, String subtitleMessage) {
     connErrorController.showError(titleMessage, subtitleMessage);
   }
 

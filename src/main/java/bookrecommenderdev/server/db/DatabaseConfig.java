@@ -18,14 +18,9 @@ public class DatabaseConfig {
     cfg.setMinimumIdle(2);
     cfg.setIdleTimeout(30_000);
     cfg.setConnectionTimeout(3_000);
-// Optional health query: cfg.setConnectionTestQuery("SELECT 1");
     DS = new HikariDataSource(cfg);
   }
 
-  /**
-   * Consente il modo per ottenere una connessione al database.
-   * @return Datasource per l'ottenimento delle connessioni
-   */
   public static DataSource getDataSource() {
     return DS;
   }

@@ -10,6 +10,8 @@
     fx:controller="bookrecommenderdev.client.controller.errors.NotFoundController"
    alignment="CENTER">
 
-   <Label text="The page you requested is not available..." styleClass="regular-30" />
+   <Label fx:id="title"
+          text="La pagina richiesta non è stata trovata..."
+          styleClass="regular-30" />
 
 </VBox>

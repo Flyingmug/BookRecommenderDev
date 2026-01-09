@@ -527,7 +527,7 @@
     -fx-font-family: "Montserrat Regular";
     -fx-font-size: 16;
 }
-.book-item-link:hover {
+.book-item-link-text:hover {
     -fx-text-fill: #1b679c;
     -fx-underline: true;
 }

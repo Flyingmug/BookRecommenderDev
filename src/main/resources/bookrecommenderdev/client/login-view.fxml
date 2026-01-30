@@ -22,7 +22,7 @@
          <Region prefWidth="75.0" />
          <Button fx:id="confirmLoginButton" styleClass="control-button, control-button-border, login-control-button, regular-17"
                  onAction="#onLogin" text="Accedi"/>
-         <CheckBox fx:id="loginRicordaCredenziali" text="Ricorda" styleClass="regular-14" />
+         <CheckBox fx:id="loginRicordaCredenziali" text="Ricorda" styleClass="regular-14, checkbox-localsave" />
       </HBox>
    </VBox>
 

@@ -26,9 +26,9 @@
       <TextField fx:id="registerCodiceFiscale" styleClass="login-field, regular-17" promptText="Codice fiscale" />
       <HBox styleClass="login-controls-container">
          <Region prefWidth="75.0" />
-         <Button fx:id="registerButton" styleClass="control-button, control-button-border, login-control-button, regular-17"
+         <Button styleClass="control-button, control-button-border, login-control-button, regular-17"
                  onAction="#onRegister" text="Registrati" />
-         <CheckBox fx:id="saveCredentialsCheck" prefWidth="75.0" text="Ricorda" />
+         <CheckBox fx:id="saveCredentialsCheck" prefWidth="75.0" text="Ricorda" styleClass="regular-14, checkbox-localsave" />
       </HBox>
    </VBox>
 

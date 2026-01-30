@@ -216,6 +216,18 @@
     -fx-border-radius: 50;
 }
 
+.checkbox-localsave > .box {
+    -fx-background-color: white;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 2;
+    -fx-cursor: hand;
+}
+.checkbox-localsave:hover > .box {
+    -fx-border-color: #49beff;
+}
+
+
 /* ScrollPane standard class */
 .scrollable-pane {
     -fx-background-color: transparent;

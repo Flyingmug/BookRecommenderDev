@@ -13,6 +13,9 @@ public enum CampoValutazione {
 
   private final String label;
 
+  /**
+   * Costruttore di un'istanza rappresentante il nome dl campo di una valutazione.
+   */
   CampoValutazione(String label) {
     this.label = label;
   }

@@ -40,87 +40,307 @@ import java.util.List;
  */
 public interface ServerInterface extends Remote {
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
   // Ricerca
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
 
   /**
-   * Esegue una ricerca di libri secondo i criteri specificati.
+   * Esegue una ricerca paginata di libri secondo i criteri specificati.
    *
-   * @param richiesta definizione di chiave e criterio di ricerca
-   * @param indicePagina indice della pagina di risultati richiesta
-   * @return risultati paginati contenenti {@link Libro libri} che soddisfano i criteri di ricerca
-   * @throws RemoteException in caso di errore di comunicazione RMI
-   * @throws DataAccessException in caso di errore durante l'accesso ai dati
+   * <p>
+   * Se la richiesta è {@code null} o non valida, il risultato è una pagina vuota.
+   * </p>
+   *
+   * @param richiesta    definizione dei criteri di ricerca
+   * @param indicePagina indice della pagina richiesta (0-based)
+   * @return pagina di risultati contenente libri corrispondenti
+   * @throws RemoteException     in caso di errore di comunicazione RMI
+   * @throws DataAccessException in caso di errore di accesso ai dati
    */
-  PageResult<Libro> cercaLibro(SearchRequest richiesta, int indicePagina) throws RemoteException, DataAccessException;
+  PageResult<Libro> cercaLibro(SearchRequest richiesta, int indicePagina)
+      throws RemoteException, DataAccessException;
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
   // Libri
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
 
   /**
-   * Restituisce le informazioni di un libro a partire dal suo identificativo.
+   * Restituisce le informazioni di base di un libro.
    *
    * @param idLibro identificativo univoco del libro
-   * @return libro corrispondente all'id richiesto
-   * @throws RemoteException in caso di errore di comunicazione RMI
-   * @throws NotFoundException se il libro richiesto non esiste
-   * @throws DataAccessException in caso di errore durante l'accesso ai dati
+   * @return libro corrispondente all’id richiesto
+   * @throws NotFoundException   se il libro non esiste
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
    */
-  Libro getLibro(int idLibro) throws RemoteException, NotFoundException, DataAccessException;
+  Libro getLibro(int idLibro)
+      throws RemoteException, NotFoundException, DataAccessException;
 
   /**
-   * Restituisce una "pagina" informativa completa relativa a un libro.
+   * Restituisce la pagina completa di dettaglio di un libro.
    *
-   * <p>Il DTO {@link PaginaLibro} può includere informazioni arricchite rispetto a {@link #getLibro(int)},
-   * ad esempio dettagli estesi, statistiche, valutazioni aggregate o elementi correlati
-   * (in base al modello adottato).</p>
+   * <p>
+   * Include le informazioni del libro e le valutazioni aggregate.
+   * Le medie delle valutazioni possono essere {@code null} se il libro
+   * non ha ancora ricevuto valutazioni.
+   * </p>
    *
-   * @param idLibro identificativo univoco del libro
-   * @return DTO contenente i dati della pagina libro
-   * @throws RemoteException in caso di errore di comunicazione RMI
-   * @throws DataAccessException in caso di errore durante l'accesso ai dati
+   * @param idLibro identificativo del libro
+   * @return pagina di dettaglio del libro
+   * @throws NotFoundException   se il libro non esiste
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
    */
-  PaginaLibro getLibroCompleto(int idLibro) throws RemoteException, DataAccessException;
+  PaginaLibro getLibroCompleto(int idLibro)
+      throws RemoteException, NotFoundException, DataAccessException;
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
   // Librerie
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
 
-  PaginaLibrerieRisultati getListLibrerie(int idUtente, int indicePagina) throws RemoteException, DataAccessException;
-  PaginaLibriRisultati searchAllLibrerie(int idUtente, SearchRequest richiesta,  int indicePagina) throws RemoteException, DataAccessException;
-  PaginaLibriRisultati searchInLibreria(int idUtente, int idLibreria, int indicePagina) throws RemoteException, DataAccessException;
-  Libreria getLibreriaById(int idUtente, int idLibreria) throws RemoteException, NotFoundException, DataAccessException;
-  void registraLibreria(int idUtente, String nomeLibreria, List<Integer> idList) throws RemoteException, AlreadyExistsException, DataAccessException;
-  void deleteLibreria(int idUtente, int idLibreria) throws RemoteException, NotFoundException, DataAccessException;
-  boolean isLibroInLibrerieUtente(int idUtente, int idLibro) throws RemoteException, NotFoundException, DataAccessException;
+  /**
+   * Restituisce la lista paginata delle librerie di un utente.
+   *
+   * @param idUtente     id dell’utente
+   * @param indicePagina indice pagina (0-based)
+   * @return pagina di librerie dell’utente
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  PaginaLibrerieRisultati getListLibrerie(int idUtente, int indicePagina)
+      throws RemoteException, DataAccessException;
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /**
+   * Cerca libri in tutte le librerie dell’utente.
+   *
+   * @param idUtente     id utente
+   * @param richiesta    criteri di ricerca
+   * @param indicePagina indice pagina (0-based)
+   * @return pagina di libri trovati
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  PaginaLibriRisultati searchAllLibrerie(int idUtente, SearchRequest richiesta, int indicePagina)
+      throws RemoteException, DataAccessException;
+
+  /**
+   * Restituisce i libri contenuti in una specifica libreria dell’utente.
+   *
+   * @param idUtente     id utente
+   * @param idLibreria   id libreria
+   * @param indicePagina indice pagina (0-based)
+   * @return pagina di libri contenuti nella libreria
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  PaginaLibriRisultati searchInLibreria(int idUtente, int idLibreria, int indicePagina)
+      throws RemoteException, DataAccessException;
+
+  /**
+   * Recupera una libreria verificando che appartenga all’utente.
+   *
+   * @param idUtente   id utente
+   * @param idLibreria id libreria
+   * @return libreria richiesta
+   * @throws NotFoundException   se la libreria non esiste o non appartiene all’utente
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  Libreria getLibreriaById(int idUtente, int idLibreria)
+      throws RemoteException, NotFoundException, DataAccessException;
+
+  /**
+   * Crea una nuova libreria per l’utente.
+   *
+   * @param idUtente     id utente
+   * @param nomeLibreria nome della libreria
+   * @param idList       lista di id libri iniziali (può essere vuota)
+   * @throws AlreadyExistsException se esiste già una libreria con lo stesso nome
+   * @throws DataAccessException    in caso di errore DB
+   * @throws RemoteException        in caso di errore RMI
+   */
+  void registraLibreria(int idUtente, String nomeLibreria, List<Integer> idList)
+      throws RemoteException, AlreadyExistsException, DataAccessException;
+
+  /**
+   * Elimina una libreria dell’utente.
+   *
+   * @param idUtente   id utente
+   * @param idLibreria id libreria
+   * @throws NotFoundException   se la libreria non esiste
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  void deleteLibreria(int idUtente, int idLibreria)
+      throws RemoteException, NotFoundException, DataAccessException;
+
+  /**
+   * Verifica se un libro è presente in almeno una libreria dell’utente.
+   *
+   * @param idUtente id utente
+   * @param idLibro  id libro
+   * @return {@code true} se il libro è presente; {@code false} altrimenti
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  boolean isLibroInLibrerieUtente(int idUtente, int idLibro)
+      throws RemoteException, DataAccessException;
+
+  // =====================================================
   // Valutazioni
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // =====================================================
 
-  Valutazione getValutazione(int idLibro, int userId) throws RemoteException, DataAccessException;
-  PaginaValutazioni cercaValutazioni(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
-  void inserisciValutazioneLibro(Valutazione valutazione) throws RemoteException, DataAccessException;
-  void deleteValutazione(int idLibro, int id_utente) throws RemoteException, NotFoundException, DataAccessException;
+  /**
+   * Restituisce la valutazione dell’utente per un libro.
+   *
+   * @param idLibro  id libro
+   * @param idUtente id utente
+   * @return valutazione oppure {@code null} se non esiste
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  Valutazione getValutazione(int idLibro, int idUtente)
+      throws RemoteException, DataAccessException;
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Consigli di lettura
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /**
+   * Restituisce una pagina di valutazioni associate a un libro.
+   *
+   * @param idLibro      id libro
+   * @param indicePagina indice pagina (0-based)
+   * @return pagina di valutazioni
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  PaginaValutazioni cercaValutazioni(int idLibro, int indicePagina)
+      throws RemoteException, DataAccessException;
 
-  List<Libro> getSuggerimentiUtente(int idUtente, int idLibro) throws RemoteException;
-  PaginaConsigliRisultati cercaSuggerimentiLibro(int idLibro, int indicePagina) throws RemoteException, DataAccessException;
-  void inserisciSuggerimentoLibro(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, AlreadyExistsException, LimitExceededException, DataAccessException;
-  void deleteSuggerimentoLibro(int idUtente, int idLibroBase, int idLibroCons) throws RemoteException, NotFoundException, DataAccessException;
+  /**
+   * Inserisce o aggiorna la valutazione di un libro.
+   *
+   * @param valutazione valutazione da salvare
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  void inserisciValutazioneLibro(Valutazione valutazione)
+      throws RemoteException, DataAccessException;
 
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Autenticazione
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /**
+   * Elimina la valutazione dell’utente per un libro.
+   *
+   * @param idLibro  id libro
+   * @param idUtente id utente
+   * @throws NotFoundException   se la valutazione non esiste
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  void deleteValutazione(int idLibro, int idUtente)
+      throws RemoteException, NotFoundException, DataAccessException;
 
-  UtenteSessione registrazione(Utente u) throws RemoteException, AlreadyExistsException, DataAccessException;
-  TokenSessione loginWithToken(String userId, String password) throws RemoteException, InvalidCredentialsException, DataAccessException;
-  UtenteSessione resumeSessione(String token) throws RemoteException, InvalidCredentialsException, DataAccessException;
-  void logout(String token) throws RemoteException, DataAccessException;
+  // =====================================================
+  // Consigli
+  // =====================================================
 
+  /**
+   * Restituisce i libri consigliati dall’utente per un libro base.
+   *
+   * @param idUtente id utente
+   * @param idLibro  id libro base
+   * @return lista di libri consigliati (può essere vuota)
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  List<Libro> getSuggerimentiUtente(int idUtente, int idLibro)
+      throws RemoteException, DataAccessException;
+
+  /**
+   * Restituisce una pagina di suggerimenti per un libro base.
+   *
+   * @param idLibro      id libro base
+   * @param indicePagina indice pagina (0-based)
+   * @return pagina di suggerimenti
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  PaginaConsigliRisultati cercaSuggerimentiLibro(int idLibro, int indicePagina)
+      throws RemoteException, DataAccessException;
+
+  /**
+   * Inserisce un nuovo suggerimento di lettura.
+   *
+   * @param idUtente    id utente
+   * @param idLibroBase id libro base
+   * @param idLibroCons id libro consigliato
+   * @throws NotFoundException      se uno dei libri non esiste
+   * @throws AlreadyExistsException se il suggerimento è già presente
+   * @throws LimitExceededException se è stato superato il limite consentito
+   * @throws DataAccessException    in caso di errore DB
+   * @throws RemoteException        in caso di errore RMI
+   */
+  void inserisciSuggerimentoLibro(int idUtente, int idLibroBase, int idLibroCons)
+      throws RemoteException, NotFoundException, AlreadyExistsException,
+      LimitExceededException, DataAccessException;
+
+  /**
+   * Elimina un suggerimento precedentemente inserito.
+   *
+   * @param idUtente    id utente
+   * @param idLibroBase id libro base
+   * @param idLibroCons id libro consigliato
+   * @throws NotFoundException   se il suggerimento non esiste
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  void deleteSuggerimentoLibro(int idUtente, int idLibroBase, int idLibroCons)
+      throws RemoteException, NotFoundException, DataAccessException;
+
+  // =====================================================
+  // Autenticazione / Sessioni
+  // =====================================================
+
+  /**
+   * Registra un nuovo utente.
+   *
+   * @param u utente da registrare
+   * @return dati essenziali dell’utente per la sessione
+   * @throws AlreadyExistsException se email, userId o codice fiscale sono già presenti
+   * @throws DataAccessException    in caso di errore DB
+   * @throws RemoteException        in caso di errore RMI
+   */
+  UtenteSessione registrazione(Utente u)
+      throws RemoteException, AlreadyExistsException, DataAccessException;
+
+  /**
+   * Esegue il login e crea una nuova sessione.
+   *
+   * @param userId   identificatore utente
+   * @param password password dell’utente
+   * @return token di sessione e dati utente
+   * @throws InvalidCredentialsException se le credenziali non sono valide
+   * @throws DataAccessException          in caso di errore DB
+   * @throws RemoteException              in caso di errore RMI
+   */
+  TokenSessione loginWithToken(String userId, String password)
+      throws RemoteException, InvalidCredentialsException, DataAccessException;
+
+  /**
+   * Ripristina una sessione a partire da un token.
+   *
+   * @param token token di sessione
+   * @return dati utente associati alla sessione
+   * @throws InvalidCredentialsException se il token non è valido o scaduto
+   * @throws DataAccessException          in caso di errore DB
+   * @throws RemoteException              in caso di errore RMI
+   */
+  UtenteSessione resumeSessione(String token)
+      throws RemoteException, InvalidCredentialsException, DataAccessException;
+
+  /**
+   * Invalida una sessione (logout).
+   *
+   * @param token token da invalidare
+   * @throws DataAccessException in caso di errore DB
+   * @throws RemoteException     in caso di errore RMI
+   */
+  void logout(String token)
+      throws RemoteException, DataAccessException;
 }

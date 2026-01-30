@@ -25,7 +25,7 @@ public class clientBR extends Application {
     Scene scene = new Scene(fxmlLoader.load(), 1100, 680);
     stage.setTitle("BookRecommender");
 
-    URL stylesurl = getClass().getResource("/bookrecommenderdev/styles/styles.css");
+    URL stylesurl = getClass().getResource("/bookrecommenderdev/styles/client-styles.css");
     if (stylesurl != null)
       scene.getStylesheets().add(stylesurl.toExternalForm());
 

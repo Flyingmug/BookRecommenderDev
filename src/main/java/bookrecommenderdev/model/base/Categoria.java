@@ -4,6 +4,7 @@ public class Categoria {
   int id_categoria;
   String nome_categoria;
 
+  /** Costruttore di un'istanza rappresentante un editore. */
   public Categoria(int id_categoria, String  nome_categoria){
     this.id_categoria=id_categoria;
     this.nome_categoria=nome_categoria;

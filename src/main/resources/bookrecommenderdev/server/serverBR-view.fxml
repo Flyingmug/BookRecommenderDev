@@ -3,17 +3,21 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <VBox alignment="CENTER" prefHeight="480.0" prefWidth="720.0" spacing="20.0" style="-fx-background-color: #26282a;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookrecommenderdev.server.controller.ServerBRController">
   <padding>
     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
   </padding>
 
-  <Label fx:id="welcomeText" />
-  <Label fx:id="welcomeText2" text="Server" textFill="WHITE">
-      <font>
-         <Font size="36.0" />
-      </font></Label>
-  <Button onAction="#onHelloButtonClick" text="Hello!" />
+   <Label text="BR Manager" styleClass="server-welcome-label" />
+
+   <Label fx:id="statusLabel" />
+
+   <VBox styleClass="server-fields-container">
+      <TextField fx:id="hostField" promptText="hostname" text="localhost:5432" styleClass="server-form-field" />
+      <TextField fx:id="userField" promptText="user" text="postgres" styleClass="server-form-field" />
+      <TextField fx:id="passwordField" promptText="password" text="11111111" styleClass="server-form-field" />
+   </VBox>
+
+  <Button onAction="#onServerStart" text="Start" styleClass="" />
 </VBox>

@@ -17,7 +17,7 @@ public class Libreria implements Serializable {
   String nome;
 
   /**
-   * Restituisce una istanza della classe Libreria, con elenco di libri vuoto.
+   * Costruttore di una istanza della classe Libreria, con elenco di libri vuoto.
    * @param id_libreria id libreria
    * @param nome nome libreria
    */
@@ -27,6 +27,14 @@ public class Libreria implements Serializable {
     this.nome = nome;
   }
 
+  /**
+   * Costruttore di una istanza della classe Libreria, con elenco di libri vuoto.
+   * <p>
+   * Non è associata ad un utente.
+   *
+   * @param id_libreria id libreria
+   * @param nome nome libreria
+   */
   public Libreria(int id_libreria, String nome) {
     this.id_libreria = id_libreria;
     this.nome = nome;

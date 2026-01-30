@@ -1,5 +1,8 @@
 package bookrecommenderdev.model.utils;
 
+/**
+ * Dimensioni standard utilizzabili negli elementi UI creati da codice.
+ */
 public enum Size {
   DXS(12),
   XS(14),

@@ -21,12 +21,12 @@ public class Utente implements Serializable {
   /**
    * Costruttore della classe Utente.
    * I parametri passati vengono utilizzati per creare un'istanza.
-   * @param nome String
-   * @param cognome String
-   * @param codiceFiscale String
-   * @param email String
-   * @param userId String
-   * @param password String
+   * @param nome Nome
+   * @param cognome Cognome
+   * @param codiceFiscale Codice Fiscale italiano
+   * @param email Email
+   * @param userId UserId definito dall'utente
+   * @param password Password
    */
   public Utente(int id_utente, String nome, String cognome, String email, String codiceFiscale, String password, String userId ) {
     this.id_utente = id_utente;
@@ -40,12 +40,12 @@ public class Utente implements Serializable {
   /**
    * Costruttore della classe Utente.
    * I parametri passati vengono utilizzati per creare un'istanza.
-   * @param nome String
-   * @param cognome String
-   * @param codiceFiscale String
-   * @param email String
-   * @param userId String
-   * @param password String
+   * @param nome Nome
+   * @param cognome Cognome
+   * @param codiceFiscale Codice Fiscale italiano
+   * @param email Email
+   * @param userId UserId definito dall'utente
+   * @param password Password
    */
   public Utente(String nome, String cognome, String email, String codiceFiscale, String password, String userId ) {
     this.nome = nome;

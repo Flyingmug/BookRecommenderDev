@@ -1,0 +1,22 @@
+
+
+/* server */
+
+.server-fields-container {
+    -fx-font-size: 18;
+    -fx-max-width: 400;
+    -fx-spacing: 10;
+}
+.server-welcome-label {
+    -fx-font-family: "Gabriola";
+    -fx-font-size: 60;
+    -fx-text-fill: white;
+}
+.server-status-running-label {
+    -fx-font-size: 25;
+    -fx-text-fill: #2cc847;
+}
+.server-status-failed-label {
+    -fx-font-size: 25;
+    -fx-text-fill: #a91e1e;
+}

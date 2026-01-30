@@ -71,6 +71,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
   public ServerImplementation() throws RemoteException {
     super();
     DataSource datasource = DatabaseConfig.getDataSource();
+
     libri = new LibroDao(datasource);
     utenti = new UtenteDao(datasource);
     librerie = new LibreriaDao(datasource);
@@ -95,7 +96,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return libri.search(richiesta, indicePagina);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) durante la ricerca del libro", e);
+      throw new DataAccessException("Errore (DB) durante la ricerca del libro");
     }
   }
 
@@ -107,7 +108,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
           .orElseThrow(() -> new NotFoundException("Libro non trovato: " + idLibro));
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) durante getLibro(" + idLibro + ")", e);
+      throw new DataAccessException("Errore (DB) durante getLibro(" + idLibro + ")");
     }
 
   }
@@ -122,7 +123,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return new PaginaLibro(l, v);
 
     } catch(SQLException e) {
-      throw new DataAccessException("Errore (DB) durante getLibroCompleto(" + idLibro + ")", e);
+      throw new DataAccessException("Errore (DB) durante getLibroCompleto(" + idLibro + ")");
     }
   }
 
@@ -137,7 +138,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return librerie.getPageListLibrerie(idUtente, indicePagina);
 
     } catch(SQLException e) {
-      throw new DataAccessException("Errore (DB) durante la ricerca di librerie", e);
+      throw new DataAccessException("Errore (DB) durante la ricerca di librerie");
     }
   }
 
@@ -148,7 +149,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return librerie.searchAll(idUtente, richiesta, indicePagina);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) durante la ricerca nelle librerie", e);
+      throw new DataAccessException("Errore (DB) durante la ricerca nelle librerie");
     }
   }
 
@@ -159,7 +160,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return librerie.searchIn(idUtente, idLibreria, indicePagina);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella ricerca in una libreria", e);
+      throw new DataAccessException("Errore (DB) nella ricerca in una libreria");
     }
   }
 
@@ -171,7 +172,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
           .orElseThrow(() -> new NotFoundException("Libreria non trovata"));
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nell'ottenimento della libreria", e);
+      throw new DataAccessException("Errore (DB) nell'ottenimento della libreria");
     }
   }
 
@@ -185,7 +186,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       if ("23505".equals(e.getSQLState())) {
         throw new AlreadyExistsException("Esiste già una libreria con questo nome");
       }
-      throw new DataAccessException("Errore (DB) nella creazione della libreria", e);
+      throw new DataAccessException("Errore (DB) nella creazione della libreria");
     }
   }
 
@@ -198,7 +199,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       }
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nel reperimento datì della libreria", e);
+      throw new DataAccessException("Errore (DB) nel reperimento datì della libreria");
     }
   }
 
@@ -207,7 +208,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     try {
       return librerie.verificaLibroInLibrerieUtente(idUtente, idLibro);
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella verifica del libro", e);
+      throw new DataAccessException("Errore (DB) nella verifica del libro");
     }
   }
 
@@ -222,7 +223,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return valutazioni.get(idLibro, idUtente).orElse(null);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nell'ottenimento della valutazione", e);
+      throw new DataAccessException("Errore (DB) nell'ottenimento della valutazione");
     }
   }
 
@@ -233,7 +234,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return valutazioni.getPage(indicePagina, idLibro);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella ricerca delle valutazioni", e);
+      throw new DataAccessException("Errore (DB) nella ricerca delle valutazioni");
     }
   }
 
@@ -247,7 +248,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       valutazioni.save(valutazione);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nell'inserimento della valutazione", e);
+      throw new DataAccessException("Errore (DB) nell'inserimento della valutazione");
     }
   }
 
@@ -260,7 +261,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       }
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella cancellazione della valutazione", e);
+      throw new DataAccessException("Errore (DB) nella cancellazione della valutazione");
     }
   }
 
@@ -275,7 +276,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return consigli.getConsigliUtente(idUtente, idLibro);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nell'ottenimento dei consigli dell'utente", e);
+      throw new DataAccessException("Errore (DB) nell'ottenimento dei consigli dell'utente");
     }
   }
 
@@ -286,7 +287,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return consigli.searchConsigli(idLibroBase, indicePagina);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella ricerca dei consigli", e);
+      throw new DataAccessException("Errore (DB) nella ricerca dei consigli");
     }
   }
 
@@ -297,7 +298,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       consigli.inserisciConsiglio(idUtente, idLibroBase, idLibroCons);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nell'inserimento del consiglio", e);
+      throw new DataAccessException("Errore (DB) nell'inserimento del consiglio");
     }
   }
 
@@ -309,7 +310,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
          throw new NotFoundException("Consiglio non trovato.");
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella ricerca del consiglio", e);
+      throw new DataAccessException("Errore (DB) nella ricerca del consiglio");
     }
   }
 
@@ -335,7 +336,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       if ("23505".equals(e.getSQLState())) {
         throw new AlreadyExistsException("Email, UserId o Codice Fiscale già utilizzati.");
       }
-      throw new DataAccessException("Errore (DB) nella creazione dell'utente", e);
+      throw new DataAccessException("Errore (DB) nella creazione dell'utente");
     }
   }
 
@@ -358,7 +359,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return new TokenSessione(token, session);
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nella ricerca dell'utente", e);
+      throw new DataAccessException("Errore (DB) nella ricerca dell'utente");
     }
   }
 
@@ -376,7 +377,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       return new UtenteSessione(u.getId_utente(), u.getNome(), u.getCognome(), u.getEmail(), u.getUserId());
 
     } catch (SQLException e) {
-      throw new DataAccessException("Errore di database.", e);
+      throw new DataAccessException("Errore di database.");
     }
   }
 
@@ -385,7 +386,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     try {
       sessioni.deleteToken(token);
     } catch (SQLException e) {
-      throw new DataAccessException("Errore (DB) nell'eliminazione del token", e);
+      throw new DataAccessException("Errore (DB) nell'eliminazione del token");
     }
   }
 

@@ -133,7 +133,7 @@ public class BookController implements Routable {
 
       setContentVisible(true);
 
-      Libro l = pagina.getLibro();
+      Libro l = pagina.libro();
 
       setTextValue(titolo, l.getTitolo());
       setTextValue(autori, l.getAutori());
@@ -149,8 +149,8 @@ public class BookController implements Routable {
       myReviewSection.setVisible(userReviewVisible);
       myReviewSection.setManaged(userReviewVisible);
 
-      double[] scores = pagina.getValutazioniAggregate();
-      if (scoresPresent(pagina.getValutazioniAggregate())) {
+      double[] scores = pagina.valutazioniAggregate();
+      if (scoresPresent(pagina.valutazioniAggregate())) {
         showReviews();  // mostra la sezione delle recensioni
         showScores(scores); // mostra le medie delle valutazioni
       } else {

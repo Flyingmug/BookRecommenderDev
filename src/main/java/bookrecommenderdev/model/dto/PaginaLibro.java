@@ -6,27 +6,47 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Classe contenente i dati completi di un libro.
+ * DTO che rappresenta la pagina di dettaglio di un libro.
+ * <p>
+ * Combina le informazioni del {@link Libro} con le medie aggregate
+ * delle valutazioni ricevute.
  */
-public class PaginaLibro implements Serializable {
+public record PaginaLibro(Libro libro, double[] valutazioniAggregate) implements Serializable {
   @Serial
   private final static long serialVersionUID = 1L;
-  private final Libro libro;
-  private final double[] valutazioniAggregate;
-//  private List<Integer> gruppoConsigli;
 
   /**
-   * Costruttore della classe.
-   * @param libro libro riferito
-   * @param medie medie dei punteggi dalle valutazioni
+   * Crea una pagina di dettaglio per un libro.
+   *
+   * @param libro                libro di riferimento
+   * @param valutazioniAggregate array delle medie dei punteggi di valutazione.
+   * L’array contiene 5 valori, in quest’ordine:
+   * <ol>
+   *   <li>stile</li>
+   *   <li>contenuto</li>
+   *   <li>gradevolezza</li>
+   *   <li>originalità</li>
+   *   <li>edizione</li>
+   * </ol>
+   * Può essere {@code null} se il libro non ha valutazioni.
    */
-  public PaginaLibro(Libro libro, double[] medie) {
-    this.libro = libro;
-    this.valutazioniAggregate = medie;
-//    this.gruppoConsigli = consigli;
+  public PaginaLibro {
   }
 
-  public Libro getLibro() { return libro; }
-  public double[] getValutazioniAggregate() { return valutazioniAggregate; }
-//  public List<Integer> getGruppoConsigli() { return gruppoConsigli; }
+  /**
+   * @return libro associato alla pagina
+   */
+  @Override
+  public Libro libro() {
+    return libro;
+  }
+
+  /**
+   * @return array delle medie aggregate dei punteggi, oppure {@code null}
+   * se non sono presenti valutazioni
+   */
+  @Override
+  public double[] valutazioniAggregate() {
+    return valutazioniAggregate;
+  }
 }

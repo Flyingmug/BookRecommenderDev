@@ -38,20 +38,21 @@ public class Valutazione implements Serializable {
   public Valutazione() { }
 
   /**
-   * Costruttore.
-   * I parametri passati vengono utilizzati per creare un'istanza.
-   * @param id_libro id libro riferito
-   * @param id_utente id utente riferito
-   * @param stile punteggio
-   * @param contenuto punteggio
-   * @param gradevolezza punteggio
-   * @param originalita punteggio
-   * @param edizione punteggio
-   * @param recStile recensione testuale
-   * @param recContenuto recensione testuale
-   * @param recGradevolezza recensione testuale
-   * @param recOriginalita recensione testuale
-   * @param recEdizione recensione testuale
+   * Costruttore di un'istanza di valutazione.
+   *
+   * @param id_libro id del libro riferito
+   * @param id_utente id dell'utente relativo
+   * @param stile punteggio stile
+   * @param contenuto punteggio contenuto
+   * @param gradevolezza punteggio gradevolezza
+   * @param originalita punteggio originalita
+   * @param edizione punteggio edizione
+   * @param recStile punteggio stile
+   * @param recContenuto recensione contenuto
+   * @param recGradevolezza recensione gradevolezza
+   * @param recOriginalita recensione originalita
+   * @param recEdizione recensione edizione
+   * @param recGenerale recensione generale
    */
   public Valutazione(int id_libro, int id_utente, int stile, int contenuto, int gradevolezza, int originalita,
                      int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,
@@ -72,6 +73,21 @@ public class Valutazione implements Serializable {
     setRecensione(GENERALE, recGenerale);
   }
 
+  /**
+   * Costruttore di un'istanza di valutazione.
+   *
+   * @param stile punteggio stile
+   * @param contenuto punteggio contenuto
+   * @param gradevolezza punteggio gradevolezza
+   * @param originalita punteggio originalita
+   * @param edizione punteggio edizione
+   * @param recStile punteggio stile
+   * @param recContenuto recensione contenuto
+   * @param recGradevolezza recensione gradevolezza
+   * @param recOriginalita recensione originalita
+   * @param recEdizione recensione edizione
+   * @param recGenerale recensione generale
+   */
   public Valutazione(int stile, int contenuto, int gradevolezza, int originalita,
                      int edizione, String recStile, String recContenuto, String recGradevolezza, String recOriginalita,
                      String recEdizione, String recGenerale) {
@@ -163,24 +179,14 @@ public class Valutazione implements Serializable {
       case ORIGINALITA -> recensione_originalita = testo;
       case EDIZIONE -> recensione_edizione = testo;
       case GENERALE -> recensione_generale = testo;
-      default -> throw new IllegalStateException("Unexpected value: " + nomeCampo); // todo handle
+      default -> throw new IllegalStateException("Unexpected value: " + nomeCampo);
     }
   }
-  public void setPunteggio(CampoValutazione nomeCampo, int punteggio) {
-    if (punteggio < 0) { punteggio = 0; }
-    else if (punteggio > 5) { punteggio = 5; }
 
-    switch (nomeCampo) {
-      case STILE -> stile = punteggio;
-      case CONTENUTO ->  contenuto = punteggio;
-      case GRADEVOLEZZA -> gradevolezza = punteggio;
-      case ORIGINALITA -> originalita = punteggio;
-      case EDIZIONE -> edizione = punteggio;
-    }
-  }
   /**
    * Metodo per settare il campo: idLibro.
-   * @param idLibro int*/
+   * @param idLibro id del libro
+   */
   public void setIdLibro(int idLibro) { this.id_libro = idLibro; }
   /**
    * Metodo per settare il campo: idUtente.

@@ -1,6 +1,7 @@
 package bookrecommenderdev.client.controller;
 
 import bookrecommenderdev.client.controller.components.controls.SearchbarController;
+import bookrecommenderdev.client.controller.errors.components.ErrorBannerController;
 import bookrecommenderdev.client.factory.LibraryItemFactory;
 import bookrecommenderdev.client.auth.AuthContext;
 import bookrecommenderdev.client.routing.AppContext;
@@ -28,12 +29,14 @@ import static bookrecommenderdev.Constants.LIBRARIES_PAGE_SIZE;
  */
 public class LibrariesController implements Routable {
 
+  @FXML private VBox mainContent;
   @FXML private FlowPane librariesContainer;
   @FXML private Button prevPageButton;
   @FXML private Button nextPageButton;
   @FXML private VBox prevPageControl;
   @FXML private VBox nextPageControl;
   @FXML private SearchbarController searchbarController;
+  @FXML private ErrorBannerController errorBannerController;
 
   private AppContext context;
   private int currentPageIndex = 0;
@@ -94,8 +97,8 @@ public class LibrariesController implements Routable {
 
     } catch (RemoteException e) {
       System.out.println("SEARCHERR Error while fetching data");
-      e.printStackTrace();
-      // TODO show banner
+      setContentVisible(false);
+      showError("Errore nel reperimento dei risultati");
     }
   }
 
@@ -208,6 +211,20 @@ public class LibrariesController implements Routable {
   private void showResults(boolean resultsPresent) {
     librariesContainer.setVisible(resultsPresent);
     librariesContainer.setManaged(resultsPresent);
+  }
+
+  /**
+   * Controlla la visibilità del contenuto principale della pagina.
+   *
+   * @param visible visibilità
+   */
+  private void setContentVisible(boolean visible) {
+   mainContent.setVisible(visible);
+   mainContent.setManaged(visible);
+  }
+
+  private void showError(String message) {
+    errorBannerController.show(message, null, null);
   }
 
 }

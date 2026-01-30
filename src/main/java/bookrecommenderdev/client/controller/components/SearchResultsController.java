@@ -67,8 +67,7 @@ public class SearchResultsController<T> {
    */
   public void setSource(PageFetcher<T> pageFetcher, int pageSize) {
     this.source = pageFetcher;
-    if (pageSize <= 0) throw new IllegalArgumentException("pageSize must be > 0");
-    this.pageSize = pageSize;
+    this.pageSize = Math.max(pageSize, 0);
     lastResults = null;
 
     refreshFromStart();

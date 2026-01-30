@@ -5,14 +5,16 @@
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<ScrollPane fx:id="librariesPage"
-            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="bookrecommenderdev.client.controller.LibrariesController"
             fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER"
             styleClass="scrollable-pane">
 
    <VBox styleClass="libraries-page-container">
-      <VBox styleClass="libraries-page" VBox.vgrow="ALWAYS">
+
+      <fx:include source="errors/components/error-banner.fxml" fx:id="errorBanner" />
+
+      <VBox fx:id="mainContent" styleClass="libraries-page" VBox.vgrow="ALWAYS">
 
          <Label text="Librerie" styleClass="italic-40" />
 

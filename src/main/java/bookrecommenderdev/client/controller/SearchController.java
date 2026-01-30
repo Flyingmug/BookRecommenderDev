@@ -18,24 +18,35 @@ import java.util.Map;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 
+/**
+ * Controller JavaFX della pagina risultati di ricerca.
+ * <p>
+ * Riceve una {@link SearchRequest} nello stato di navigazione, imposta il titolo della pagina
+ * e configura un {@link SearchResultsController} per recuperare i risultati dal server.
+ */
 public class SearchController implements Routable {
 
   @FXML private Label searchedTitle;
-  @FXML private Parent resultsSection;
   @FXML private SearchResultsController<Libro> resultsController;
 
   @FXML private ErrorBannerController errorBannerController;
 
+  /**
+   * Invocato dal routing all’ingresso nella pagina.
+   * <p>
+   * Recupera la {@link SearchRequest} dallo stato, valida la richiesta e inizializza
+   * la sorgente paginata per i risultati.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     SearchRequest req = (state instanceof SearchRequest sr) ? sr : null;
     if (req == null) {
-      showError("Inserisci una richiesta", null, null);
+      showError("Inserisci una richiesta");
       return;
     }
 
     if (!req.isValid()) {
-      showError("Richiesta di ricerca non valida", null, null);
+      showError("Richiesta di ricerca non valida");
       return;
     }
 
@@ -48,12 +59,24 @@ public class SearchController implements Routable {
     resultsController.setSource(source, PAGE_SIZE);
   }
 
+  /**
+   * Renderizza un libro come elemento cliccabile che apre la pagina dettaglio del libro.
+   *
+   * @param l libro da renderizzare
+   * @return nodo UI del risultato
+   */
   private Parent renderBookItem(Libro l) {
     return BookResultItemFactory.create(
         l, id -> Router.go("/book/" + id, TransitionAnimation.LEFT_SLIDE)
     );
   }
 
+  /**
+   * Costruisce il testo del titolo della pagina in base al tipo di ricerca.
+   *
+   * @param req richiesta di ricerca valida
+   * @return stringa descrittiva (es. "Titolo: ...", "Autore: ...")
+   */
   private String buildTitle(SearchRequest req) {
     return switch (req.getTipo()) {
       case TITOLO -> "Titolo: " + req.getTitolo();
@@ -62,7 +85,12 @@ public class SearchController implements Routable {
     };
   }
 
-  private void showError(String message, Runnable onRetry, Runnable onBack) {
-    errorBannerController.show(message, onRetry, onBack);
+  /**
+   * Mostra un errore tramite {@link ErrorBannerController}.
+   *
+   * @param message testo dell’errore
+   */
+  private void showError(String message) {
+    errorBannerController.show(message, null, null);
   }
 }

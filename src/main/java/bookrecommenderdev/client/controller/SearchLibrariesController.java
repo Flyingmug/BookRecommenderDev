@@ -20,21 +20,38 @@ import java.util.Map;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 
+/**
+ * Controller JavaFX della ricerca libri “nelle librerie” dell’utente autenticato.
+ * <p>
+ * Riceve una {@link SearchRequest} nello stato di navigazione e configura un
+ * {@link SearchResultsController} per mostrare i risultati ottenuti dal server.
+ */
 public class SearchLibrariesController implements Routable {
 
   @FXML private Label searchedTitle;
-  @FXML private Parent resultsSection;
   @FXML private SearchResultsController<Libro> resultsController;
   @FXML private SearchbarController searchbarController;
 
   @FXML private ErrorBannerController errorBannerController;
 
+  /**
+   * Collega la searchbar alla rotta corrente e avvia la ricerca in base allo stato ricevuto.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     searchbarController.setOnSearch(req -> Router.go("/libraries/search", req));
     runSearch(context, state);
   }
 
+  /**
+   * Esegue la ricerca in base all’oggetto {@code request} ricevuto dallo stato di navigazione.
+   * <p>
+   * Richiede autenticazione (controllo secondario) e valida la {@link SearchRequest} prima
+   * di configurare la sorgente paginata dei risultati.
+   *
+   * @param context contesto applicativo client
+   * @param request oggetto stato (atteso: {@link SearchRequest})
+   */
   private void runSearch(AppContext context, Object request) {
     SearchRequest req = (request instanceof SearchRequest sr) ? sr : null;
 
@@ -45,12 +62,12 @@ public class SearchLibrariesController implements Routable {
     }
 
     if (req == null) {
-      showError("Inserisci una richiesta", null, null);
+      showError("Inserisci una richiesta");
       return;
     }
 
     if (!req.isValid()) {
-      showError("Richiesta di ricerca non valida", null, null);
+      showError("Richiesta di ricerca non valida");
       return;
     }
 
@@ -65,12 +82,24 @@ public class SearchLibrariesController implements Routable {
     resultsController.setSource(source, PAGE_SIZE);
   }
 
+  /**
+   * Renderizza un libro come elemento cliccabile che apre la pagina dettaglio del libro.
+   *
+   * @param l libro da renderizzare
+   * @return nodo UI del risultato
+   */
   private Parent renderBookItem(Libro l) {
     return BookResultItemFactory.create(
         l, id -> Router.go("/book/" + id, TransitionAnimation.LEFT_SLIDE)
     );
   }
 
+  /**
+   * Costruisce il titolo della pagina in base al tipo di ricerca.
+   *
+   * @param req richiesta di ricerca valida
+   * @return stringa descrittiva (es. "Titolo: ...", "Autore: ...")
+   */
   private String buildTitle(SearchRequest req) {
     return switch (req.getTipo()) {
       case TITOLO -> "Titolo: " + req.getTitolo();
@@ -79,7 +108,12 @@ public class SearchLibrariesController implements Routable {
     };
   }
 
-  private void showError(String message, Runnable onRetry, Runnable onBack) {
-    errorBannerController.show(message, onRetry, onBack);
+  /**
+   * Mostra un errore tramite {@link ErrorBannerController}.
+   *
+   * @param message testo dell’errore
+   */
+  private void showError(String message) {
+    errorBannerController.show(message, null, null);
   }
 }

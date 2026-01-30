@@ -34,6 +34,16 @@ import static bookrecommenderdev.Constants.MAX_LIBRARY_NAME_LENGTH;
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 import static bookrecommenderdev.model.utils.InputVerifiers.*;
 
+/**
+ * Controller JavaFX per la creazione di una nuova libreria utente.
+ *
+ * <p>Permette di:
+ * <ul>
+ *   <li>Inserire il nome della libreria (con validazioni di input);</li>
+ *   <li>Cercare libri e selezionarli per includerli nella libreria;</li>
+ *   <li>Inviare al server la richiesta di creazione con l’elenco degli ID selezionati.</li>
+ * </ul>
+ */
 public class LibraryCreatorController implements Routable {
 
   @FXML private SearchbarController searchbarController;
@@ -48,11 +58,22 @@ public class LibraryCreatorController implements Routable {
   private final Set<Integer> selectedIds = new HashSet<>();
   private final ObservableList<Libro> selectedBooks =  FXCollections.observableArrayList();
 
+  /**
+   * Metodo invocato dal sistema di routing quando la pagina viene raggiunta.
+   *
+   * @param params  parametri di percorso (non utilizzati)
+   * @param context contesto applicativo client
+   * @param state   stato di navigazione (non utilizzato)
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
   }
 
+  /**
+   * Configura validazioni e binding UI, imposta l’azione di ricerca e prepara il rendering
+   * selezionabile dei risultati.
+   */
   @FXML
   private void initialize() {
     preventMultipleSpacesAndLimit(nameField, MAX_LIBRARY_NAME_LENGTH);
@@ -71,6 +92,14 @@ public class LibraryCreatorController implements Routable {
     resultsController.setItemRenderer(this::renderSelectableResultItem);
   }
 
+  /**
+   * Esegue una ricerca di libri usando la richiesta proveniente dalla searchbar.
+   * <p>
+   * La sorgente dati viene impostata sul {@link SearchResultsController} tramite un {@link PageFetcher}
+   * che recupera la pagina richiesta dal server (RMI).
+   *
+   * @param req richiesta di ricerca (se non valida viene ignorata)
+   */
   private void performSearch(SearchRequest req) {
     if (req == null || !req.isValid()) return;
 
@@ -80,6 +109,14 @@ public class LibraryCreatorController implements Routable {
     resultsController.refresh(); // loads first page or re-renders
   }
 
+  /**
+   * Visualizza un singolo risultato di ricerca come elemento selezionabile.
+   * <p>
+   * Il pulsante di azione cambia testo/icona in base allo stato di selezione del libro.
+   *
+   * @param libro libro da visualizzare
+   * @return nodo UI contenente i dati
+   */
   private Parent renderSelectableResultItem(Libro libro) {
     boolean selected = selectedIds.contains(libro.getIdLibro());
 
@@ -95,6 +132,14 @@ public class LibraryCreatorController implements Routable {
     );
   }
 
+  /**
+   * Alterna lo stato di selezione di un libro.
+   * <p>
+   * Aggiorna la lista dei libri selezionati e forza
+   * l’aggiornamento della vista risultati per riflettere testo/icona del pulsante.
+   *
+   * @param libro libro da aggiungere/rimuovere dalla selezione
+   */
   private void toggleSelection(Libro libro) {
     int id = libro.getIdLibro();
 
@@ -112,6 +157,12 @@ public class LibraryCreatorController implements Routable {
     resultsController.refreshView();
   }
 
+  /**
+   * Handler UI per confermare la creazione della libreria.
+   * <p>
+   * Valida l'input (nome non vuoto e almeno un libro), verifica il login,
+   * poi invoca il server per registrare la nuova libreria.
+   */
   @FXML
   private void onCreate() {
     String name = notNull(nameField.getText());
@@ -125,20 +176,23 @@ public class LibraryCreatorController implements Routable {
     int userId = AuthContext.getUser().idUtente();
 
     try {
-      context.server().createLibreria(userId, name, new ArrayList<>(selectedIds));
+      context.server().registraLibreria(userId, name, new ArrayList<>(selectedIds));
       Router.go("/libraries");
 
     } catch (AlreadyExistsException e) {
-      showError("Una libreria con lo stesso nome è presente.", null, null);
+      showError("Una libreria con lo stesso nome è presente.");
 
     } catch (DataAccessException e) {
-      showError(e.getMessage(), null, null);
+      showError(e.getMessage());
 
     } catch (RemoteException e) {
-      showError("Errore nella comunicazione con il server.", null, null);
+      showError("Errore nella comunicazione con il server.");
     }
   }
 
+  /**
+   * Aggiorna la UI dei libri selezionati, mostrando una lista “minimale” (priva di dettagli) con azione di rimozione.
+   */
   private void refreshSelectedList() {
     if (selectedContainer == null) return;
 
@@ -147,20 +201,29 @@ public class LibraryCreatorController implements Routable {
     for (Libro l : selectedBooks) {
       Parent minimal = BookResultMinimalFactory.create(
           l,
-          "mdi2m-minus",
-          _ -> toggleSelection(l)
+          _ -> toggleSelection(l),
+          "mdi2m-minus"
       );
 
       selectedContainer.getChildren().add(minimal);
     }
   }
 
-  private void showError(String message, Runnable retry, Runnable back) {
+  /**
+   * Mostra un messaggio di errore tramite {@link ErrorBannerController}.
+   *
+   * @param message testo dell’errore
+   */
+  private void showError(String message) {
     errorBannerController.show(
-        message, retry, back
+        message, null, null
     );
   }
 
+  /**
+   * Configura il dimensionamento automatico per il contenitore grafico del nome della libreria,
+   * adattando la larghezza in base al testo inserito (per motivi di stile).
+   */
   private void setupGrowingField() {
     Text text = new Text();
     text.setManaged(false);

@@ -54,11 +54,11 @@ public class UserRecommendationsController {
 
     } catch (RemoteException e) {
       setVisible(true);
-      showError("Server non raggiungibile.", () -> setContext(context, idLibroBase), null);
+      showError("Server non raggiungibile.", () -> setContext(context, idLibroBase));
 
     } catch (DataAccessException e) {
       setVisible(true);
-      showError("Errore di database.", () -> setContext(context, idLibroBase), null);
+      showError("Errore di database.", () -> setContext(context, idLibroBase));
 
     }
   }
@@ -67,13 +67,13 @@ public class UserRecommendationsController {
     if (idUtente == null) return;
 
     try {
-      selectedConsigli = context.server().getConsigliUtente(idUtente, idLibroBase);
+      selectedConsigli = context.server().getSuggerimentiUtente(idUtente, idLibroBase);
       renderConsigli();
 
     } catch (RemoteException e) {
-      showError("Server non raggiungibile.", this::refresh, null);
+      showError("Server non raggiungibile.", this::refresh);
     } catch (DataAccessException e) {
-      showError("Errore di database.", this::refresh, null);
+      showError("Errore di database.", this::refresh);
     }
   }
 
@@ -126,16 +126,16 @@ public class UserRecommendationsController {
 
   private void confirmDelete(int idLibroCons) {
     try {
-      context.server().deleteConsiglio(idUtente, idLibroBase, idLibroCons);
+      context.server().deleteSuggerimentoLibro(idUtente, idLibroBase, idLibroCons);
       refresh();
     } catch (NotFoundException e) {
       refresh();
 
     } catch (RemoteException e) {
-      showError("Server non raggiungibile.", () -> confirmDelete(idLibroCons), null);
+      showError("Server non raggiungibile.", () -> confirmDelete(idLibroCons));
 
     } catch (DataAccessException e) {
-      showError("Errore di database.", () -> confirmDelete(idLibroCons), null);
+      showError("Errore di database.", () -> confirmDelete(idLibroCons));
     }
   }
 
@@ -154,7 +154,7 @@ public class UserRecommendationsController {
     emptyPlaceholder.setManaged(true);
   }
 
-  private void showError(String message, Runnable retry, Runnable back) {
-    errorBannerController.show(message, retry, back);
+  private void showError(String message, Runnable retry) {
+    errorBannerController.show(message, retry, null);
   }
 }

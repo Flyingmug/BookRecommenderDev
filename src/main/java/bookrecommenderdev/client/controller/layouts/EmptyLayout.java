@@ -8,6 +8,13 @@ import javafx.scene.layout.*;
 
 import java.net.URL;
 
+/**
+ * Controller JavaFX per il layout che raggruppa:
+ * <ul>
+ *   <li>Barra di navigazione;</li>
+ *   <li>Nodo <i>contenuto</i>.</li>
+ * </ul>
+ */
 public class EmptyLayout implements LayoutController {
 
   @FXML

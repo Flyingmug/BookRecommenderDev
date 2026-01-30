@@ -24,6 +24,12 @@ import java.util.Map;
 import static bookrecommenderdev.Constants.PAGE_SIZE;
 import static java.lang.Integer.parseInt;
 
+/**
+ * Controller JavaFX per selezionare un libro da consigliare a partire da un "libro base".
+ * <p>
+ * Accesso consentito solo a utenti autenticati e solo se il libro base è presente
+ * nelle librerie dell’utente.
+ */
 public class RecommendationSelectorController implements Routable {
 
   @FXML private SearchbarController searchbarController;
@@ -35,6 +41,10 @@ public class RecommendationSelectorController implements Routable {
   private int idUtente;
   private boolean setup = false;
 
+  /**
+   * Valida l’ID libro, verifica autenticazione e controlla il requisito:
+   * <p><i>il libro base deve appartenere alle librerie dell’utente</i>.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
@@ -76,11 +86,18 @@ public class RecommendationSelectorController implements Routable {
     setup();
   }
 
+  /**
+   * Imposta il renderer dei risultati con pulsante di selezione.
+   */
   @FXML
   private void initialize() {
     resultsController.setItemRenderer(this::renderSelectableBook);
   }
 
+  /**
+   * Registra l’handler della ricerca (una sola volta).
+   * Ogni ricerca imposta una sorgente paginata e ricarica dalla prima pagina.
+   */
   private void setup() {
     if (setup) return;
     setup = true;
@@ -93,6 +110,10 @@ public class RecommendationSelectorController implements Routable {
     });
   }
 
+  /**
+   * Visualizza un risultato come elemento selezionabile.
+   * Il libro base non è selezionabile (non si può consigliare se stesso).
+   */
   private Parent renderSelectableBook(Libro l) {
     int selectedId = l.getIdLibro();
 
@@ -104,17 +125,20 @@ public class RecommendationSelectorController implements Routable {
         invalid ? null : _ -> selectBook(selectedId),
         "Seleziona",
         "mdi2c-check"
-//        invalid ? "Non puoi consigliare lo stesso libro": null
     );
   }
 
+  /**
+   * Invia al server la selezione del libro consigliato.
+   * In caso di successo ritorna alla pagina del libro base.
+   */
   private void selectBook(int idLibroCons) {
     if (idLibroCons == idLibroBase) return;
 
     try {
-      context.server().inserisciConsiglio(idUtente, idLibroBase, idLibroCons);
+      context.server().inserisciSuggerimentoLibro(idUtente, idLibroBase, idLibroCons);
 
-      // success -> go back to book page
+      // success -> torna alla home
       Router.go("/book/" + idLibroBase, TransitionAnimation.RIGHT_SLIDE);
 
     } catch (AlreadyExistsException e) {
@@ -134,6 +158,13 @@ public class RecommendationSelectorController implements Routable {
     }
   }
 
+  /**
+   * Mostra un errore tramite {@link ErrorBannerController}.
+   *
+   * @param message testo dell’errore
+   * @param retry   azione opzionale di riprova
+   * @param back    azione opzionale di ritorno
+   */
   private void showError(String message, Runnable retry, Runnable back) {
     errorBannerController.show(message, retry, back);
   }

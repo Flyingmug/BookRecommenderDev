@@ -3,8 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-
 <ScrollPane fx:id="bookPage"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="bookrecommenderdev.client.controller.BookController"
@@ -47,7 +45,7 @@
                <Separator styleClass="review-section-separator" />
             </VBox>
 
-            <VBox fx:id="consigliSection">
+            <VBox>
                <fx:include source="components/recommendations.fxml" fx:id="recommendations" />
                <Separator styleClass="review-section-separator" />
             </VBox>

@@ -23,13 +23,20 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 import static bookrecommenderdev.Constants.PAGE_SIZE;
+import static bookrecommenderdev.model.utils.InputVerifiers.safeParseInt;
 
+
+/**
+ * Controller della pagina dettaglio di una libreria.
+ * <p>
+ * Visualizza il nome della libreria, i libri contenuti (tramite {@link SearchResultsController})
+ * e permette l’eliminazione della libreria tramite una finestra di conferma.
+ */
 public class LibraryPageController implements Routable {
 
   @FXML private ConfirmActionDialogController deleteControlController;
 
   @FXML private Label libraryTitle;
-  @FXML private Parent resultsSection;
   @FXML private SearchResultsController<Libro> resultsController;
 
   @FXML private ErrorBannerController errorBannerController;
@@ -38,13 +45,19 @@ public class LibraryPageController implements Routable {
   private int idLibreria;
 
   /**
-   * todo doc
+   * Metodo invocato dal sistema di routing quando la pagina viene raggiunta.
+   *
+   * <p>Valida l’ID libreria, verifica l’autenticazione dell’utente ed effettua la richiesta di ricerca del contenuto.
+   *
+   * @param params  parametri di percorso (atteso: {@code "id"})
+   * @param context contesto applicativo client
+   * @param state   stato di navigazione (non utilizzato)
    */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
 
-    Integer parsed = parseInt(params.get("id"));
+    Integer parsed = safeParseInt(params.get("id"));
     if (parsed == null || parsed <= 0) {
       Router.go("/not-found", TransitionAnimation.LEFT_SLIDE);
       return;
@@ -63,7 +76,7 @@ public class LibraryPageController implements Routable {
   }
 
   /**
-   * todo doc
+   * Collega le azioni del dialogo di conferma all’operazione di eliminazione della libreria.
    */
   @FXML
   private void initialize() {
@@ -74,7 +87,10 @@ public class LibraryPageController implements Routable {
   }
 
   /**
-   * todo doc
+   * Esegue l’eliminazione della libreria dopo conferma dell’utente.
+   * <p>
+   * Disabilita temporaneamente il controllo di eliminazione e, in caso di successo,
+   * reindirizza alla pagina di visualizzazione delle librerie.
    */
   private void deleteLibraryConfirmed() {
     if (context == null) return;
@@ -99,17 +115,20 @@ public class LibraryPageController implements Routable {
 
     } catch (DataAccessException e) {
       if (deleteControlController != null) deleteControlController.setDisabled(false);
-      showError(e.getMessage(), null, null);
+      showError(e.getMessage());
 
     } catch (RemoteException e) {
       if (deleteControlController != null) deleteControlController.setDisabled(false);
-      showError("Errore di comunicazione con il server.", null, null);
+      showError("Errore di comunicazione con il server.");
 
     }
   }
 
   /**
-   * todo doc
+   * Ottiene e carica i dati della libreria.
+   * L'ID della libreria è ottenuto dal metodo {@code onRoute}.
+   *
+   * @param idUtente id dell’utente proprietario (usato per autorizzazione e query lato server)
    */
   private void resolve(int idUtente) {
     try {
@@ -126,34 +145,32 @@ public class LibraryPageController implements Routable {
       Platform.runLater(() -> Router.go("/not-found", TransitionAnimation.LEFT_SLIDE));
 
     } catch (DataAccessException e) {
-      showError("Errore nel reperimento della libreria.", null, null);
+      showError("Errore nel reperimento della libreria.");
 
     } catch (RemoteException e) {
-      showError("Errore nella comunicazione con il server.", null, null);
+      showError("Errore nella comunicazione con il server.");
 
     }
   }
 
+  /**
+   * Visualizza un libro della libreria come elemento cliccabile, con navigazione alla pagina del libro.
+   *
+   * @param l libro da visualizzare
+   * @return nodo UI contenente i dati
+   */
   private Parent renderBookItem(Libro l) {
     return BookResultItemFactory.create(
         l, id -> Router.go("/book/" + id, TransitionAnimation.LEFT_SLIDE)
     );
   }
 
-
   /**
-   * todo doc
+   * Mostra un errore tramite {@link ErrorBannerController}.
+   *
+   * @param message testo dell’errore
    */
-  private static Integer parseInt(String s) {
-    if (s == null) return null;
-    try { return Integer.parseInt(s); }
-    catch (NumberFormatException e) { return null; }
-  }
-
-  /**
-   * todo doc
-   */
-  private void showError(String message, Runnable retry, Runnable back) {
-    errorBannerController.show(message, retry, back);
+  private void showError(String message) {
+    errorBannerController.show(message, null, null);
   }
 }

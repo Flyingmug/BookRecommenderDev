@@ -9,11 +9,17 @@ import javafx.scene.layout.*;
 
 import java.net.URL;
 
+/**
+ * Controller JavaFX per il layout che raggruppa:
+ * <ul>
+ *   <li>Barra di navigazione con barra di ricerca integrata;</li>
+ *   <li>Nodo <i>contenuto</i>.</li>
+ * </ul>
+ */
 public class IntegratedLayout implements LayoutController {
 
   @FXML private StackPane content;
   @FXML private NavbarController navbarController;
-  @FXML private Parent navbar;  // needed
 
   @FXML
   void initialize() {

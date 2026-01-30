@@ -81,8 +81,8 @@ public class Router {
 
   /**
    * Restituisce il contesto applicativo attualmente associato al router.
-   *
-   * <p>Il contesto viene impostato in {@link #init(StackPane, AppContext, List, LayoutRegistry)} e fornisce accesso
+   * <p>
+   * Il contesto viene impostato in {@link #init(StackPane, AppContext, List, LayoutRegistry)} e fornisce accesso
    * a servizi condivisi lato client (es. {@link AuthContext}).
    *
    * @return contesto applicativo del client; può essere {@code null} se {@link #init(StackPane, AppContext, List, LayoutRegistry)}
@@ -181,8 +181,8 @@ public class Router {
 
   /**
    * Naviga all' indietro nella storia.
-   *
-   * <p>Se la navigazione è bloccata o se non esiste una pagina precedente, la chiamata è ignorata.</p>
+   * <p>
+   * Se la navigazione è bloccata o se non esiste una pagina precedente, la chiamata è ignorata.
    */
   public static void goBack() {
     if(navigationLocked) return;
@@ -201,9 +201,10 @@ public class Router {
   /**
    * Risolve una richiesta ed esegue la navigazione.
    *
-   * <p>Il metodo si occupa di eseguire route matching, controllo dell' accesso,
+   * <p>
+   * Il metodo si occupa di eseguire route matching, controllo dell' accesso,
    * cambiamento del layout, caricamento delle pagine, gestire le animazioni di transizione
-   * e aggiornare la storia.</p>
+   * e aggiornare la storia.
    *
    * @param path Percorso di navigazione richiesto
    * @param transition transizione da utilizzare
@@ -321,6 +322,7 @@ public class Router {
 
   /**
    * Carica una pagina nel layout corrente. Consente la scelta di una transizione animata.
+   *
    * @param page Pagina
    * @param transition Transizione da utilizzare
    * @param path Percorso
@@ -343,7 +345,8 @@ public class Router {
 
   /**
    * Conclude la navigazione.
-   * <p>Aggiorna lo stato interno.
+   * <p>
+ *   Aggiorna lo stato interno.
    *
    * @param path Percorso richiesto
    * @param transition Transizione da utilizzare

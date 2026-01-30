@@ -22,6 +22,16 @@ import java.rmi.registry.Registry;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Controller JavaFX “root” dell’applicazione client.
+ * <p>
+ * Si occupa di
+ * <ul>
+ *   <li>Inizializzare la connessione RMI;</li>
+ *   <li>Configurare Router (rotte + layout);</li>
+ *   <li>Tentare il ripristino automatico della sessione.</li>
+ * </ul>
+ */
 public class RootController {
 
   @FXML private StackPane content;
@@ -30,6 +40,9 @@ public class RootController {
   ServerInterface bookRecommender;
   AppContext context;
 
+  /**
+   * Configura l’azione di retry in caso di errore e avvia l’inizializzazione dell’app.
+   */
   @FXML
   public void initialize() {
     connErrorController.setRetryAction(this::init);
@@ -37,6 +50,11 @@ public class RootController {
     init();
   }
 
+  /**
+   * Inizializza l’applicazione: layout, rotte, connessione RMI e Router.
+   * <p>
+   * Se la connessione al server fallisce, mostra un errore e interrompe l’avvio.
+   */
   private void init() {
     LayoutRegistry layouts = buildLayouts();
     List<Route> routes = buildRoutes();
@@ -62,7 +80,9 @@ public class RootController {
   }
 
   /**
-   * Inizializza l'oggetto remoto RMI server dal repository.
+   * Inizializza lo stub RMI recuperando l’oggetto remoto dal registry.
+   * <p>
+   * In caso di fallimento mostra la schermata di errore di sistema {@link ConnectionErrorController}.
    */
   private void initRegistry() {
     bookRecommender = null;
@@ -78,6 +98,11 @@ public class RootController {
     }
   }
 
+  /**
+   * Registra i layout disponibili per le viste (default, integrato, vuoto).
+   *
+   * @return registro layout configurato
+   */
   private LayoutRegistry buildLayouts() {
     return new LayoutRegistry()
         .register(LayoutType.DEFAULT, "default-layout.fxml")
@@ -85,6 +110,13 @@ public class RootController {
         .register(LayoutType.EMPTY, "empty-layout.fxml");
   }
 
+  /**
+   * Definisce la tabella di routing dell’applicazione client.
+   * <p>
+   * Ogni rotta include un percorso nominale, vista FXML, tipo di layout e policy di accesso.
+   *
+   * @return lista delle rotte registrate
+   */
   private List<Route> buildRoutes() {
     List<Route> routes = new LinkedList<>();
     routes.add(new Route("/", "home-view.fxml", LayoutType.DEFAULT, AccessPolicy.PUBLIC));
@@ -107,7 +139,10 @@ public class RootController {
   }
 
   /**
-   * todo doc
+   * Tenta il ripristino automatico della sessione verificando la presenza di un token salvato localmente.
+   * <p>
+   * Se il token non è valido viene eliminato; se server/DB non sono raggiungibili
+   * l’auto-login viene semplicemente ignorato.
    */
   private void attemptAutoLogin() {
     if (context == null) return;
@@ -126,6 +161,12 @@ public class RootController {
     });
   }
 
+  /**
+   * Mostra un errore “di sistema” nella schermata root (es. problemi di connessione/avvio).
+   *
+   * @param titleMessage titolo del messaggio
+   * @param subtitleMessage sottotitolo/dettaglio
+   */
   private void notifySystemError(String titleMessage, String subtitleMessage) {
     connErrorController.showError(titleMessage, subtitleMessage);
   }

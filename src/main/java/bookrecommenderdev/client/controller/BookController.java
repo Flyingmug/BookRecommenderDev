@@ -22,7 +22,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -33,6 +32,21 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Map;
 
+import static bookrecommenderdev.model.utils.InputVerifiers.safeParseInt;
+
+/**
+ * Controller JavaFX responsabile della visualizzazione della pagina dei dettagli di un libro.
+ *
+ * <p> Coordina le funzioni di:
+ * <ul>
+ *   <li>Ottenimento e visualizzazione dei dati del libro tramite chiamata remota al server;</li>
+ *   <li>Gestione della sezione recensioni e delle valutazioni aggregate;</li>
+ *   <li>Componenti annidati (recensioni utente, raccomandazioni, banner di errore);</li>
+ *   <li>Gestione di stati UI (contenuto visibile, assenza valutazioni, errori e not-found).</li>
+ * </ul>
+ * <p>
+ * Nota: La gestione degli errori provenienti dal server avviene tramite un banner o reindirizzamento a pagina dedicata.
+ */
 public class BookController implements Routable {
 
   @FXML private ScrollPane bookPage;
@@ -48,9 +62,8 @@ public class BookController implements Routable {
   @FXML private UserRecommendationsController userRecommendationsController;
 
   @FXML private VBox reviewsSection;
-  @FXML private ReviewsSectionController reviewsSectionController;  // assegnazione automatica tramite fx:include
+  @FXML private ReviewsSectionController reviewsSectionController;
 
-  @FXML private Parent userReviewSection;
   @FXML private UserReviewSectionController userReviewSectionController;
 
   @FXML private RecommendationsController recommendationsController;
@@ -58,14 +71,32 @@ public class BookController implements Routable {
   @FXML private ErrorBannerController errorBannerController;
 
   AppContext context;
-  int idLibro;
-  boolean canShowUserReview = false;
+  Integer idLibro;
 
+  /** Flag che abilita la sezione di recensione dell’utente (dipende dallo stato di login e dalla libreria utente). */
+  boolean userReviewVisible = false;
+
+  /**
+   * Metodo invocato dal sistema di routing quando la pagina viene caricata.
+   *
+   * <p>Recupera l'id del libro dai parametri di percorso, inizializza i componenti annidati con {@link AppContext}
+   * e avvia il caricamento dei dati.
+   *
+   * <p>Verifica la correttezza dell'id fornito come parametro, eventualmente reindirizzando alla pagina {@code not-found}.
+   *
+   * @param params  parametri di percorso (atteso: {@code "id"} del libro)
+   * @param context contesto applicativo client
+   * @param state   eventuale stato aggiuntivo della navigazione (non utilizzato)
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
 
-    idLibro = (Integer.parseInt(params.get("id")));
+    idLibro = (safeParseInt(params.get("id")));
+    if (idLibro == null || idLibro <= 0) {
+      Router.go("/not-found", TransitionAnimation.LEFT_SLIDE);
+      return;
+    }
 
     userReviewSectionController.setContext(context, idLibro);
     userRecommendationsController.setContext(context, idLibro);
@@ -74,6 +105,9 @@ public class BookController implements Routable {
     loadBookPage(idLibro);
   }
 
+  /**
+   * Qui vengono configurati handler UI non dipendenti dai parametri di percorso.
+   */
   @FXML
   public void initialize() {
 
@@ -81,13 +115,21 @@ public class BookController implements Routable {
   }
 
   /**
-   * Ottiene i dati relativi a un libro e li inserisce nei relativi campi
-   * della pagina.
+   * Ottiene i dati relativi a un libro tramite chiamata remota e aggiorna la pagina con le informazioni ricevute.
+   *
+   * <p>Gestisce inoltre:
+   * <ul>
+   *   <li>Abilitazione sezione “la mia recensione” (solo se autenticato e libro presente in libreria utente);</li>
+   *   <li>Visualizzazione delle valutazioni aggregate (stelle + media generale + campi specifici);</li>
+   *   <li>Contenuto UI per assenza di valutazioni;</li>
+   *   <li>Routing verso pagina not-found o visualizzazione banner di errore.</li>
+   * </ul>
+   *
    * @param idLibro id del libro selezionato
    */
   protected void loadBookPage(int idLibro) {
     try {
-      PaginaLibro pagina = context.server().getPaginaLibro(idLibro);
+      PaginaLibro pagina = context.server().getLibroCompleto(idLibro);
 
       setContentVisible(true);
 
@@ -101,11 +143,11 @@ public class BookController implements Routable {
 
       if (AuthContext.isAuthenticated()) {
         int userId = AuthContext.getUser().idUtente();
-        canShowUserReview = context.server().isLibroInLibrerieUtente(userId, idLibro);
+        userReviewVisible = context.server().isLibroInLibrerieUtente(userId, idLibro);
       }
 
-      myReviewSection.setVisible(canShowUserReview);
-      myReviewSection.setManaged(canShowUserReview);
+      myReviewSection.setVisible(userReviewVisible);
+      myReviewSection.setManaged(userReviewVisible);
 
       double[] scores = pagina.getValutazioniAggregate();
       if (scoresPresent(pagina.getValutazioniAggregate())) {
@@ -150,14 +192,25 @@ public class BookController implements Routable {
   }
 
   /**
-   * Verifica che il numero dei campi di valutazione nel vettore dato rispetti la dimensione dei campi definiti in {@link CampoValutazione}.
+   * Verifica la presenza e la coerenza delle valutazioni aggregate rispetto ai campi definiti in {@link CampoValutazione}.
+   *
+   * <p>Il vettore delle medie aggregate atteso contiene un valore per ogni campo specifico escluso il campo GENERALE
+   * (che viene calcolato come media dei campi disponibili).
+   *
+   * @param scores vettore delle valutazioni aggregate
+   * @return {@code true} se il vettore è non nullo e ha la dimensione attesa; {@code false} altrimenti
    */
   private boolean scoresPresent(double[] scores) {
     return scores != null && scores.length == CampoValutazione.values().length - 1;
   }
+
   /**
-   * Valuta la media dei punteggi e li inserisce nella grafica.
-   * @param valutazioni Vettore contenente valutazioni del libro
+   * Calcola e visualizza nella UI le valutazioni aggregate del libro.
+   *
+   * <p>Viene calcolata una media “generale” come media dei campi con valore &gt; 0 e viene mostrata insieme alle
+   * valutazioni per ciascun {@link CampoValutazione} specifico, rappresentate tramite stelle.
+   *
+   * @param valutazioni vettore contenente le valutazioni aggregate (un valore per ogni campo specifico)
    */
   private void showScores(double[] valutazioni) {
 
@@ -179,11 +232,16 @@ public class BookController implements Routable {
   }
 
   /**
-   * Organizza le informazioni date e rappresenta il valore {@code score} tramite icone.
+   * Costruisce il blocco UI che rappresenta un singolo punteggio:
+   * <ul>
+   *   <li>Nome del campo in alto;</li>
+   *   <li>Valore numerico formattato;</li>
+   *   <li>Rappresentazione grafica tramite stelle.</li>
+   * </ul>
    *
-   * @param name  Nome del campo
-   * @param score Punteggio
-   * @return {@link VBox} contenente le informazioni organizzate
+   * @param name  nome del campo
+   * @param score punteggio
+   * @return un {@link VBox} contenente la rappresentazione
    */
   private VBox buildScoreItem(String name, double score) {
     HBox header = new HBox(
@@ -201,7 +259,13 @@ public class BookController implements Routable {
     );
   }
 
-  /** Reimposta al valore precedente il {@code vvalue} dello {@link ScrollPane} al cambiamento di layout. */
+  /**
+   * Registra un handler per gestire cambiamenti di layout.
+   *
+   * <p>Alcune operazioni (es. espansioni/collassi o aggiornamenti del layout) possono far “saltare” la posizione di scroll
+   * dello {@link ScrollPane}. Questo handler preserva il valore di {@code vValue} ripristinando
+   * la posizione tramite {@link Platform#runLater(Runnable)}.
+   */
   private void setHandleLayoutChange() {
 
     if (userReviewSectionController != null) {
@@ -216,20 +280,39 @@ public class BookController implements Routable {
     }
   }
 
+  /**
+   * Imposta il testo di una {@link Label}, sostituendo valori nulli o vuoti con un placeholder.
+   *
+   * @param label label interessata
+   * @param text  valore testuale
+   */
   private void setTextValue(Label label, String text) {
     label.setText(text == null || text.isBlank() ? "Sconosciuto" : text);
   }
 
+  /**
+   * Mostra e inizializza la sezione recensioni del libro corrente delegando al {@link ReviewsSectionController}.
+   * <p>
+   * L’effettivo caricamento delle recensioni è gestito dal componente dedicato.
+   */
   private void showReviews() {
     // caricamento delle review
     reviewsSectionController.initializeForBook(idLibro, context);
   }
 
+  /**
+   * Nasconde la sezione recensioni.
+   */
   private void hideReviews() {
     reviewsSection.setVisible(false);
     reviewsSection.setManaged(false);
   }
 
+  /**
+   * Imposta la visibilità della sezione principale della pagina.
+   *
+   * @param b visibilità della pagina
+   */
   private void setContentVisible(boolean b) {
     content.setVisible(b);
     content.setManaged(b);

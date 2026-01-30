@@ -11,12 +11,21 @@ import javafx.scene.paint.Color;
 
 import java.net.URL;
 
+
+/**
+ * Controller JavaFX della pagina Home dell’applicazione.
+ *
+ * <p>Gestisce la barra di ricerca principale e l'organizzazione degli asset utilizzati nella pagina.
+ */
 public class HomeController {
 
   @FXML private StackPane welcomePane;
   @FXML private Pane logoPane;
   @FXML private SearchbarController searchbarController;
 
+  /**
+   * Imposta lo sfondo della pagina, lo sfondo della sezione logo, e imposta l'handler di ricerca.
+   */
   @FXML
   private void initialize() {
     setTitleBackground();
@@ -24,6 +33,9 @@ public class HomeController {
     searchbarController.setOnSearch(req -> Router.go("/search", req));
   }
 
+  /**
+   * Imposta lo sfondo dell’area di benvenuto usando l’immagine del titolo (modificata da vari effetti).
+   */
   private void setTitleBackground() {
     URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/book-recommender-title.png");
     if (imageUrl != null) {
@@ -52,6 +64,9 @@ public class HomeController {
     }
   }
 
+  /**
+   * Imposta lo sfondo del pane del logo usando l'immagine del logo dell'istituto (modificata da vari effetti).
+   */
   private void setLogo() {
     URL imageUrl = getClass().getResource("/bookrecommenderdev/assets/small-insubriae-logo.png");
     if (imageUrl != null) {

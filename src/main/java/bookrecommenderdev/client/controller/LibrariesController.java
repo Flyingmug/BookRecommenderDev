@@ -20,6 +20,12 @@ import java.util.Map;
 
 import static bookrecommenderdev.Constants.LIBRARIES_PAGE_SIZE;
 
+/**
+ * Controller della pagina "Librerie".
+ *
+ * <p>Recupera e mostra l’elenco delle librerie dell’utente autenticato, con paginazione.
+ * La navigazione e le azioni utente (creazione, ricerca, cambio pagina) vengono gestite tramite {@link Router}.
+ */
 public class LibrariesController implements Routable {
 
   @FXML private FlowPane librariesContainer;
@@ -33,12 +39,20 @@ public class LibrariesController implements Routable {
   private int currentPageIndex = 0;
   private int totalResultCount = 0;
 
+
+  /**
+   * <p>Memorizza il contesto ed effettua la richiesta per ottenere le librerie dell'utente.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     this.context = context;
     resolve(0);
   }
 
+  /**
+   * Reimposta lo stato di paginazione e collega la barra di ricerca alla pagina
+   * dedicata alla ricerca nelle librerie.
+   */
   @FXML
   private void initialize() {
     currentPageIndex = 0;
@@ -47,6 +61,14 @@ public class LibrariesController implements Routable {
     searchbarController.setOnSearch(req -> Router.go("/libraries/search", req));
   }
 
+  /**
+   * Recupera una pagina di librerie dal server e aggiorna la UI.
+   * <p>
+   * Se l’utente non è autenticato non esegue alcuna richiesta.
+   * In caso di assenza risultati collassa la lista con relativi controlli di paginazione.
+   *
+   * @param pageIndex indice pagina richiesta
+   */
   private void resolve(int pageIndex) {
 
     if (!AuthContext.isAuthenticated()) return;
@@ -60,13 +82,13 @@ public class LibrariesController implements Routable {
       currentPageIndex = Math.max(0, pageIndex);
 
       if (results == null || results.isEmpty() || totalResultCount == 0) {
-        showNoResults(true);
+        showResults(false);
         load(List.of());
         setControls();
         return;
       }
 
-      showNoResults(false);
+      showResults(true);
       load(results);
       setControls();
 
@@ -77,6 +99,14 @@ public class LibrariesController implements Routable {
     }
   }
 
+
+  /**
+   * Carica la lista grafica delle librerie.
+   * <p>
+   * Ogni elemento viene creato tramite {@link LibraryItemFactory}.
+   *
+   * @param libraries lista di risultati
+   */
   private void load(List<PaginaLibreria> libraries) {
     librariesContainer.getChildren().clear();
 
@@ -91,6 +121,11 @@ public class LibrariesController implements Routable {
     }
   }
 
+  /**
+   * Handler UI per la creazione di una nuova libreria.
+   *
+   * <p>Se l’utente non è autenticato, reindirizza al login; altrimenti apre la pagina di creazione.
+   */
   @FXML
   private void onCreate() {
     if (!AuthContext.isAuthenticated()) {
@@ -101,7 +136,11 @@ public class LibrariesController implements Routable {
     Router.go("/libraries/create");
   }
 
-  /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
+  /**
+   * Aggiorna abilitazione e visibilità dei controlli di paginazione in base allo stato corrente.
+   *
+   * <p>La possibilità di avanzare dipende dal numero totale risultati e dalla dimensione pagina.
+   */
   private void setControls() {
     boolean canPrev = currentPageIndex > 0;
     boolean canNext = (currentPageIndex + 1) * LIBRARIES_PAGE_SIZE < totalResultCount;
@@ -112,16 +151,22 @@ public class LibrariesController implements Routable {
     prevPageButton.setDisable(!canPrev);
     nextPageButton.setDisable(!canNext);
   }
-  /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
-   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+
+  /**
+   * Handler UI per tornare alla pagina precedente dei risultati.
+   * Esegue controlli di validità su indice corrente e numero risultati.
+   */
   @FXML
   private void onPrev() {
     if (totalResultCount <= 0 || currentPageIndex <= 0) return;
 
     goToPage(currentPageIndex - 1);
   }
-  /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
-   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+
+  /**
+   * Handler UI per passare alla pagina successiva dei risultati.
+   * Esegue controlli di validità su indice corrente e disponibilità di ulteriori risultati.
+   */
   @FXML
   private void onNext() {
     if (totalResultCount <= 0 ||
@@ -130,19 +175,21 @@ public class LibrariesController implements Routable {
 
     goToPage(currentPageIndex + 1);
   }
-  /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
+
+  /**
+   * Richiede il caricamento della pagina con indice {@code newIndex}.
+   * Durante la richiesta disabilita temporaneamente i controlli di paginazione.
+   *
+   * @param newIndex nuovo indice pagina (0-based)
+   */
   private void goToPage(int newIndex) {
-    setResultsControlsDisabled(true);
+    prevPageButton.setDisable(true);
+    nextPageButton.setDisable(true);
 
     currentPageIndex = newIndex;
     resolve(newIndex);
   }
 
-  /** Disabilita i comandi di controlli dei risultati. */
-  private void setResultsControlsDisabled(boolean disable) {
-    prevPageButton.setDisable(disable);
-    nextPageButton.setDisable(disable);
-  }
   /** Controlla la visibilità del pulsante di pagina precedente. */
   private void setPrevControlVisibility(boolean visibility) {
     prevPageControl.setVisible(visibility);
@@ -153,10 +200,14 @@ public class LibrariesController implements Routable {
     nextPageControl.setVisible(visibility);
   }
 
-  /** Collassa la pagina e imposta la visibilità a {@code false}. */
-  private void showNoResults(boolean noResults) {
-    librariesContainer.setVisible(!noResults);
-    librariesContainer.setManaged(!noResults);
+  /**
+   * Mostra o collassa l’area dei risultati.
+   *
+   * @param resultsPresent {@code false} se non ci sono risultati da mostrare
+   */
+  private void showResults(boolean resultsPresent) {
+    librariesContainer.setVisible(resultsPresent);
+    librariesContainer.setManaged(resultsPresent);
   }
 
 }

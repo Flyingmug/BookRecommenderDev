@@ -24,6 +24,13 @@ import static bookrecommenderdev.model.utils.InputVerifiers.verifyEmail;
 import static bookrecommenderdev.model.utils.InputVerifiers.verifyName;
 import static bookrecommenderdev.model.utils.InputVerifiers.verifyPassword;
 
+/**
+ * Controller JavaFX della schermata di registrazione utente.
+ *
+ * <p>Valida i campi, invia la richiesta di registrazione al server e,
+ * in caso di successo, effettua automaticamente il login salvando
+ * opzionalmente il token di sessione.
+ */
 public class RegistrationController implements Routable {
 
   @FXML private Label registerFeedback;
@@ -38,10 +45,15 @@ public class RegistrationController implements Routable {
 
   private AppContext context;
 
-
+  /**
+   * Memorizza il contesto dell'applicazione.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) { this.context = context; }
 
+  /**
+   * Applica vincoli di input (lunghezze, spazi multipli e formato codice fiscale).
+   */
   @FXML
   public void initialize() {
     // registration fields
@@ -53,10 +65,20 @@ public class RegistrationController implements Routable {
     restrictLooseFiscalCodeInput(registerCodiceFiscale);
   }
 
-
   /**
-   * todo documentation
-   * */
+   * Gestisce l’azione di registrazione.
+   *
+   * <p>Operazioni:
+   * <ol>
+   *   <li>Valida i campi</li>
+   *   <li>Crea l’istanza {@link Utente} e invia la richiesta al server</li>
+   *   <li>In caso di successo effettua anche un login automatico</li>
+   *   <li>Salva (opzionalmente) il token tramite {@link AuthStorage}</li>
+   *   <li>Reindirizza alla home</li>
+   * </ol>
+   *
+   * <p>In caso di errore aggiorna la label di feedback con un messaggio coerente con l’eccezione.
+   */
   @FXML
   protected void onRegister() {
     if (context == null) return;

@@ -6,6 +6,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+/**
+ * Factory responsabile della creazione di icone grafiche per rappresentare punteggi.
+ *
+ * <p>Questa classe incapsula il caricamento dell'FXML che rappresenta
+ * l'icona della stella e restituisce il nodo grafico creato.</p>
+ */
 public class StarIconFactory {
 
   private final static int STAR_SIZE = 25;
@@ -29,7 +35,17 @@ public class StarIconFactory {
 
     return stars;
   }
-  /** Metodo helper per la costruzione delle icone */
+
+  /**
+   *  Metodo helper per la costruzione delle icone.
+   *
+   *  <p>Costruisce lo slot per una singola stella, scegliendo il contenuto tra:</p>
+   *  <ul>
+   *    <li>stella piena</li>
+   *    <li>mezza stella</li>
+   *    <li>stella vuota</li>
+   *  </ul>
+  */
   private static StackPane buildStarSlot(int index, int fullStars, boolean hasHalf) {
     StackPane slot = new StackPane();
 

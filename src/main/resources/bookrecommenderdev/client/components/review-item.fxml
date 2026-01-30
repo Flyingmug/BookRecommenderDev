@@ -16,7 +16,7 @@
 
    <VBox styleClass="review-header"
          GridPane.columnSpan="2" GridPane.rowIndex="0"
-         GridPane.hgrow="ALWAYS" fillWidth="true">
+         GridPane.hgrow="ALWAYS">
       <HBox fx:id="reviewHeaderScoreContainer" styleClass="review-header-score" />
       <Label fx:id="reviewGenerale" styleClass="review-header-text"
              maxWidth="Infinity" wrapText="true" />

@@ -9,6 +9,10 @@ import javafx.util.Duration;
 
 /**
  * Gestisce tutte le animazioni utilizzate dal {@link Router} nelle transizioni di percorsi.
+ *
+ * <p>Ogni animazione accetta opzionalmente una callback di completamento,
+ *  * utilizzata tipicamente per sbloccare la navigazione al termine
+ *  * della transizione.</p>
  */
 public class Animations {
 

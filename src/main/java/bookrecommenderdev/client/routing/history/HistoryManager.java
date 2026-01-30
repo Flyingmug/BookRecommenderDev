@@ -8,7 +8,18 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-/** Memoria di elementi precedenti e successivi con limite totale di elementi. Sincronizzazione non gestita. */
+/**
+ * Gestore generico della cronologia di navigazione.
+ *
+ * <p>Questa classe mantiene una lista ordinata di elementi di cronologia
+ * e un indice che rappresenta la posizione corrente.</p>
+ *
+ * <p>È progettata per supportare operazioni di navigazione avanti e indietro
+ * (simili a quelle di un browser), con un numero massimo di elementi
+ * configurabile.</p>
+ *
+ * @param <T> tipo degli elementi memorizzati nella cronologia
+ */
 public class HistoryManager<T> {
 
   private final int capacity;
@@ -66,12 +77,6 @@ public class HistoryManager<T> {
     return Optional.of(current.get());
   }
 
-  /** Rimpiazza l'elemento corrente. */
-  public void replace(T newCurrent) {
-    Objects.requireNonNull(newCurrent, "newCurrent");
-    current.set(newCurrent);
-  }
-
   /** Restituisce l'elemento corrente.
    * @return {@link Optional} contenente l'elemento corrente */
   public Optional<T> getCurrent() { return Optional.ofNullable(current.get()); }
@@ -97,8 +102,4 @@ public class HistoryManager<T> {
     current.set(null);
   }
 
-  /** Rimuove gli elementi successivi. */
-  public void clearForward() {
-    forwardStack.clear();
-  }
 }

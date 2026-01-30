@@ -146,4 +146,16 @@ public class InputVerifiers {
   public static boolean isBlank(String s) {
     return s == null || s.trim().isBlank();
   }
+
+  /**
+   * Converte una stringa in intero verificandone la validità.
+   *
+   * @param s stringa da convertire
+   * @return valore intero, oppure {@code null} se la conversione fallisce
+   */
+  public static Integer safeParseInt(String s) {
+    if (s == null) return null;
+    try { return Integer.parseInt(s); }
+    catch (NumberFormatException e) { return null; }
+  }
 }

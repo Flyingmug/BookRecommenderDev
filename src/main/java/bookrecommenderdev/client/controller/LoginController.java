@@ -20,6 +20,12 @@ import java.util.Map;
 import static bookrecommenderdev.Constants.*;
 import static bookrecommenderdev.model.utils.InputVerifiers.*;
 
+/**
+ * Controller JavaFX della schermata di login.
+ *
+ * <p>Valida l’input, invoca l’autenticazione lato server e inizializza la sessione client.
+ * Gestisce inoltre l’opzione “ricorda credenziali” tramite salvataggio del token.
+ */
 public class LoginController implements Routable {
 
   @FXML private Label loginFeedback;
@@ -30,9 +36,15 @@ public class LoginController implements Routable {
 
   private AppContext context;
 
+  /**
+   * Memorizza il contesto dell'applicazione.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) { this.context = context; }
 
+  /**
+   * Applica vincoli di input su user id e password (lunghezza, spazi multipli).
+   */
   @FXML
   public void initialize() {
     // login fields
@@ -42,8 +54,19 @@ public class LoginController implements Routable {
 
 
   /**
-   * todo documentation
-   * */
+   * Gestisce l’azione di login.
+   *
+   * <p>Operazioni svolte:
+   * <ol>
+   *   <li>Esegue una validazione preliminare dei campi</li>
+   *   <li>Invoca {@code loginWithToken} sul server</li>
+   *   <li>In caso di successo, aggiorna {@link AuthContext}</li>
+   *   <li>Salva (opzionalmente) il token tramite {@link AuthStorage}</li>
+   *   <li>Reindirizza alla home in caso di successo</li>
+   * </ol>
+   *
+   * <p>In caso di errore aggiorna la label di feedback con un messaggio coerente con l’eccezione.
+   */
   @FXML
   protected void onLogin() {
 
@@ -81,12 +104,12 @@ public class LoginController implements Routable {
     }
   }
 
-
   /**
    * Valuta il rispetto delle condizioni poste sui campi di login.
-   * Inoltre utilizza la casella di feedback per mostrare sulla UI eventuali violazioni delle condizioni.
-   * @param userId Email dell'utente.
-   * @param password Password dell'utente.
+   *
+   * <p>Utilizza la casella di feedback per mostrare sulla UI eventuali violazioni delle condizioni.
+   * @param userId UserId inserito
+   * @param password Password inserita
    * @return {@code true} se il controllo è superato, {@code false} altrimenti.
    */
   private boolean validateLoginInput(String userId, String password) {
@@ -101,6 +124,11 @@ public class LoginController implements Routable {
     return true;
   }
 
+  /**
+   * Aggiorna il messaggio mostrato all’utente nella schermata di login.
+   *
+   * @param message testo da visualizzare
+   */
   private void setLoginFeedback(String message) {
     loginFeedback.setText(message);
   }

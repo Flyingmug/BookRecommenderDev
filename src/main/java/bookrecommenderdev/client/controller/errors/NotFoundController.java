@@ -7,10 +7,18 @@ import javafx.scene.control.Label;
 
 import java.util.Map;
 
+/**
+ * Controller JavaFX della pagina di errore "Not Found".
+ *
+ * <p>Consente di impostare un messaggio personalizzato, passato tramite stato di navigazione.
+ */
 public class NotFoundController implements Routable {
 
   @FXML Label title;
 
+  /**
+   * Imposta il messaggio visualizzato sulla pagina.
+   */
   @Override
   public void onRoute(Map<String, String> params, AppContext context, Object state) {
     try {

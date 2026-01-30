@@ -27,7 +27,7 @@ public class RecommendationsController {
     setVisible(true);
 
     PageFetcher<LibroConsigliato> source =
-        page -> context.server().cercaConsigli(idLibroBase, page);
+        page -> context.server().cercaSuggerimentiLibro(idLibroBase, page);
 
     resultsController.hidePlaceholder();
     resultsController.setSeparatorVisible(false);

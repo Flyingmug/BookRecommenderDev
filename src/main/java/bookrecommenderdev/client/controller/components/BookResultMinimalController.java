@@ -26,7 +26,7 @@ public class BookResultMinimalController {
     this.onAction = onAction;
 
     if (actionIcon != null) {
-      actionIcon.setIconLiteral(iconLiteral == null ? "" : iconLiteral);
+      actionIcon.setIconLiteral(iconLiteral == null ? "mdi2p-plus-box-outline" : iconLiteral);
       actionIcon.setVisible(iconLiteral != null && !iconLiteral.isBlank());
     }
 

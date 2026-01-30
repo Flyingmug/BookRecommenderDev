@@ -10,6 +10,17 @@ import java.util.Optional;
 
 import static java.sql.Types.TIMESTAMP;
 
+/**
+ * DAO per la gestione delle sessioni utente basate su token.
+ * <p>
+ * Fornisce operazioni per creare, risolvere e invalidare token di sessione
+ * persistiti a database. Supporta sia sessioni a scadenza fissa sia sessioni
+ * con scadenza estesa (“sliding TTL”).
+ * <p>
+ * Il dettaglio delle query SQL e dello schema è descritto nella documentazione
+ * tecnica esterna; qui viene documentata la semantica dei metodi e del ciclo
+ * di vita dei token.
+ */
 public class SessioneDao {
   private final DataSource datasource;
 
@@ -17,6 +28,19 @@ public class SessioneDao {
     this.datasource = ds;
   }
 
+  /**
+   * Crea una nuova sessione per un utente e restituisce il token associato.
+   * <p>
+   * Il token generato è un valore casuale (64 caratteri esadecimali) e viene
+   * immediatamente persistito.
+   * <p>
+   * Se {@code ttl} è {@code null}, la sessione non ha scadenza temporale.
+   *
+   * @param idUtente id dell’utente per cui creare la sessione
+   * @param ttl      durata della sessione; {@code null} per sessione senza scadenza
+   * @return token di sessione appena creato
+   * @throws SQLException per errori di accesso ai dati
+   */
   public String creaSessione(int idUtente, java.time.Duration ttl) throws SQLException {
     String token = Tokenizer.newToken64Hex();
 
@@ -42,7 +66,23 @@ public class SessioneDao {
     return token;
   }
 
-  /** Returns user id if token exists and is not expired. Also updates last_used and optionally extends expiry. */
+  /**
+   * Risolve un token di sessione restituendo l’id dell’utente associato.
+   * <p>
+   * Semantica:
+   * <ul>
+   *   <li>se il token è {@code null}, vuoto o inesistente, ritorna {@link Optional#empty()};</li>
+   *   <li>se il token è scaduto, viene eliminato e ritorna {@link Optional#empty()};</li>
+   *   <li>se valido, ritorna l’id utente associato;</li>
+   *   <li>aggiorna sempre {@code last_used};</li>
+   *   <li>se {@code slidingTtl} è fornito, estende la scadenza della sessione.</li>
+   * </ul>
+   *
+   * @param token      token di sessione da risolvere
+   * @param slidingTtl durata per l’estensione della sessione; {@code null} per non estendere
+   * @return {@link Optional} contenente l’id utente se il token è valido
+   * @throws SQLException per errori di accesso ai dati
+   */
   public Optional<Integer> resolveToken(String token, Duration slidingTtl) throws SQLException {
     if (token == null || token.isBlank()) return Optional.empty();
 
@@ -74,6 +114,19 @@ public class SessioneDao {
     }
   }
 
+  /**
+   * Aggiorna i metadati di un token di sessione.
+   * <p>
+   * Aggiorna sempre il campo {@code last_used}. Se {@code slidingTtl} è {@code null},
+   * la scadenza viene rimossa; altrimenti viene estesa a partire dall’istante corrente.
+   * <p>
+   * Questo metodo è pensato per essere invocato all’interno di {@link #resolveToken}.
+   *
+   * @param c          connessione JDBC già aperta
+   * @param token      token da aggiornare
+   * @param slidingTtl durata per la nuova scadenza; {@code null} per nessuna scadenza
+   * @throws SQLException per errori di accesso ai dati
+   */
   private void updateToken(Connection c, String token, Duration slidingTtl) throws SQLException {
     final String q = """
       UPDATE sessioniUtenti
@@ -96,6 +149,14 @@ public class SessioneDao {
     }
   }
 
+  /**
+   * Elimina esplicitamente un token di sessione.
+   * <p>
+   * L’operazione è idempotente: se il token non esiste, non viene sollevata alcuna eccezione.
+   *
+   * @param token token di sessione da eliminare
+   * @throws SQLException per errori di accesso ai dati
+   */
   public void deleteToken(String token) throws SQLException {
     final String q = "DELETE FROM sessioniUtenti WHERE token = ?";
 

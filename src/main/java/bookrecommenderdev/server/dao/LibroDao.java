@@ -26,8 +26,14 @@ public class LibroDao {
       "FROM vw_libri_ricerca l ";
 
   /**
-   * todo doc
-   * */
+   * Recupera un libro in forma minimale (“basic”) tramite id.
+   * <p>
+   * Se non esiste alcun libro con l’id indicato, restituisce {@link Optional#empty()}.
+   *
+   * @param id_libro id del libro
+   * @return libro minimale se presente; {@link Optional#empty()} altrimenti
+   * @throws SQLException per errori di accesso ai dati
+   */
   public Optional<Libro> getBasic(int id_libro) throws SQLException {
     final String q = "SELECT " +
         "id_libro, " +
@@ -55,8 +61,16 @@ public class LibroDao {
   }
 
   /**
-   * todo doc
-   * */
+   * Recupera un libro in forma completa (“complete”) tramite id.
+   * <p>
+   * Include informazioni addizionali rispetto al metodo {@link #getBasic(int)} (es. autore/editore/categorie),
+   * secondo il modello {@link Libro} usato dall’applicazione.
+   * Se il libro non esiste, restituisce {@link Optional#empty()}.
+   *
+   * @param id_libro id del libro
+   * @return libro completo se presente; {@link Optional#empty()} altrimenti
+   * @throws SQLException per errori di accesso ai dati
+   */
   public Optional<Libro> getComplete(int id_libro) throws SQLException {
     final String q = "SELECT " +
         "l.id_libro, " +
@@ -100,8 +114,21 @@ public class LibroDao {
   }
 
   /**
-   * todo doc
-   * */
+   * Esegue una ricerca paginata di libri in base a una {@link SearchRequest}.
+   * <p>
+   * Semantica:
+   * <ul>
+   *   <li>Se {@code req} è {@code null} o {@code req.getTipo()} è {@code null}, ritorna una pagina vuota.</li>
+   *   <li>Se i campi richiesti dal tipo di ricerca sono vuoti/non validi, ritorna una pagina vuota.</li>
+   *   <li>{@code indicePagina} è 0-based; valori negativi sono trattati come 0.</li>
+   *   <li>La dimensione pagina è {@link bookrecommenderdev.Constants#PAGE_SIZE}.</li>
+   * </ul>
+   *
+   * @param req         richiesta di ricerca (tipo + campi)
+   * @param indicePagina indice pagina (0-based)
+   * @return pagina di risultati con conteggio totale (può essere vuota)
+   * @throws SQLException per errori di accesso ai dati
+   */
   public PaginaLibriRisultati search(SearchRequest req, int indicePagina) throws SQLException {
 
     // controllo validità richiesta
@@ -167,8 +194,16 @@ public class LibroDao {
   }
 
   /**
-   * todo doc
-   * */
+   * Esegue una query di ricerca paginata e costruisce una {@link PaginaLibriRisultati}.
+   * <p>
+   * Il {@code Binder} ricevuto si occupa di impostare i parametri sul {@link PreparedStatement}.
+   * Se la query non produce righe, la pagina risultante avrà lista vuota e totalCount = 0.
+   *
+   * @param sql         query SQL parametrizzata
+   * @param fieldBinder binder dei parametri
+   * @return pagina risultati (anche vuota)
+   * @throws SQLException per errori di accesso ai dati
+   */
   private PaginaLibriRisultati runSearchQuery(String sql, Binder fieldBinder) throws SQLException {
     List<Libro> items = new ArrayList<>();
     int total = 0;

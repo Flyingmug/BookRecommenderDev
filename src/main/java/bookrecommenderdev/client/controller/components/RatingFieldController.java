@@ -10,6 +10,12 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import static bookrecommenderdev.Constants.MAX_REVIEW_LENGTH;
 import static bookrecommenderdev.model.utils.InputVerifiers.preventMultipleSpacesAndLimit;
 
+/**
+ * Controller JavaFX per un campo di valutazione di una recensione.
+ * <p>
+ * Combina un punteggio numerico (1–5) con un commento testuale opzionale,
+ * gestendo validazione, limiti di lunghezza e visibilità del testo.
+ */
 public class RatingFieldController {
 
   @FXML private Label titleLabel;
@@ -30,14 +36,22 @@ public class RatingFieldController {
     setCharCountListener();
   }
 
+  /**
+   * Aggiorna dinamicamente il contatore dei caratteri del commento.
+   */
   private void setCharCountListener() {
-    textReviewArea.textProperty().addListener((observable, oldValue, newValue) -> {
+    textReviewArea.textProperty().addListener((_, _, newValue) -> {
       if (newValue != null) {
         charCountLabel.setText(newValue.length() + " / " + MAX_REVIEW_LENGTH);
       }
     });
   }
 
+  /**
+   * Mostra o nasconde l’area di commento testuale.
+   * <p>
+   * Quando il commento viene nascosto, il contenuto viene azzerato.
+   */
   private void toggleComment() {
     boolean show = !textReviewArea.isVisible();
     textReviewArea.setVisible(show);
@@ -54,23 +68,40 @@ public class RatingFieldController {
 
   /* Metodi esposti */
 
+  /**
+   * Imposta il titolo del criterio di valutazione.
+   *
+   * @param title nome del criterio
+   */
   public void setTitle(String title) {
     titleLabel.setText(title);
   }
 
+  /**
+   * Restituisce il punteggio selezionato.
+   *
+   * @return valore tra 1 e 5, oppure {@code null} se non selezionato
+   */
   public Integer getScore() {
     return scoreBox.getValue();
   }
 
-  /** <p>Restituisce il valore del campo di testo senza spazi agli estremi.
-   *  <p>Restituisce null se la stringa è composta da soli spazi. */
+  /**
+   * Restituisce il commento testuale, senza spazi agli estremi.
+   *
+   * @return testo del commento, oppure {@code null} se vuoto o composto solo da spazi
+   */
   public String getTextReview() {
     if (textReviewArea.getText() == null) return null;
     String t = textReviewArea.getText().trim();
     return t.isBlank() ? null : t;
   }
 
-  /** Imposta la visibilità dell'elemento di scelta del punteggio. */
+  /**
+   * Imposta la visibilità del selettore di punteggio.
+   *
+   * @param visible {@code true} per mostrare il punteggio, {@code false} per nasconderlo
+   */
   public void setScoreBoxVisible(boolean visible) {
     scoreBox.setVisible(visible);
     scoreBox.setManaged(visible);

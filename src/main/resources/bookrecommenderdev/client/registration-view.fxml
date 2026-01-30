@@ -3,10 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.text.Font?>
-<?import javafx.geometry.Insets?>
-
-<VBox fx:id="registerPage" xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bookrecommenderdev.client.controller.RegistrationController"
       alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">

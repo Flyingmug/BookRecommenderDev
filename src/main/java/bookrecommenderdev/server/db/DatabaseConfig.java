@@ -25,10 +25,5 @@ public class DatabaseConfig {
     return DS;
   }
 
-//  public static void shutdown() {
-//    if (DS != null) DS.close();
-//  }
-
-  // Costruttore per il Singleton design pattern
   private DatabaseConfig() {}
 }

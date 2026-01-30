@@ -15,6 +15,16 @@ import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 
+/**
+ * Controller JavaFX della sezione “recensione dell’utente” nella pagina di dettaglio di un libro.
+ * <p>
+ * Se l’utente è autenticato, verifica l’eventuale presenza di una valutazione personale per il libro:
+ * <ul>
+ *   <li>Se presente, la mostra e abilita la rimozione tramite dialog di conferma;</li>
+ *   <li>Se assente, mostra l’invito a creare una nuova recensione.</li>
+ * </ul>
+ * In caso di errore mostra un {@link ErrorBannerController} con opzione di riprova.
+ */
 public class UserReviewSectionController {
 
   @FXML private VBox content;
@@ -29,8 +39,12 @@ public class UserReviewSectionController {
   private AppContext context;
   Runnable onLayoutChange;
 
-  /**Imposta il contesto e l'id del libro riferito.
-   * @param idLibro id libro*/
+  /**
+   * Imposta il contesto e l’id del libro di riferimento, quindi aggiorna lo stato della sezione.
+   *
+   * @param context contesto applicativo client
+   * @param idLibro id del libro
+   */
   public void setContext(AppContext context, int idLibro) {
     this.context = context;
     this.idLibro = idLibro;
@@ -63,7 +77,7 @@ public class UserReviewSectionController {
   private void refresh() {
 
     if (context == null || !AuthContext.isAuthenticated()) {
-      hideSection();
+      hideContent();
       return;
     }
 
@@ -74,30 +88,30 @@ public class UserReviewSectionController {
       if (v != null) showExistingReview(v);
       else showCreateReview();
 
-      showSection();
+      showContent();
       notifyLayoutChange();
 
     } catch (DataAccessException e) {
-      hideSection();
+      hideContent();
       showError(
           "Errore nel reperimento della valutazione (DB).",
-          this::refresh,
-          null
+          this::refresh
       );
 
     } catch (RemoteException e) {
-      hideSection();
+      hideContent();
       showError(
           "Errore di comunicazione con il server.",
-          this::refresh,
-          null
+          this::refresh
       );
 
     }
   }
 
   /**
-   * todo doc
+   * Conferma l’eliminazione della recensione dell’utente e aggiorna la sezione.
+   * <p>
+   * In caso di errore (recensione non trovata, DB o comunicazione) mostra un banner con retry.
    */
   private void deleteReviewConfirmed() {
     if (deleteControlController != null) deleteControlController.setDisabled(false);
@@ -112,19 +126,24 @@ public class UserReviewSectionController {
       if (deleteControlController != null) deleteControlController.setDisabled(false);
       showError(
           "Errore nell'identificare la valutazione.",
-          this::refresh, null
+          this::refresh
       );
 
     } catch (DataAccessException | RemoteException e) {
       if (deleteControlController != null) deleteControlController.setDisabled(false);
       showError(
           "Errore nel reperimento della valutazione (DB).",
-          this::refresh,null
+          this::refresh
       );
 
     }
   }
 
+  /**
+   * Mostra la recensione esistente dell’utente e abilita il controllo di eliminazione.
+   *
+   * @param v valutazione da visualizzare
+   */
   private void showExistingReview(Valutazione v) {
 
     mainArea.getChildren().setAll(
@@ -134,6 +153,9 @@ public class UserReviewSectionController {
     deleteControl.setManaged(true);
   }
 
+  /**
+   * Mostra l’introduzione alla creazione recensione e nasconde il controllo di eliminazione.
+   */
   private void showCreateReview() {
     showIntro();
     deleteControl.setVisible(false);
@@ -142,34 +164,39 @@ public class UserReviewSectionController {
     notifyLayoutChange();
   }
 
+  /** Mostra la sezione introduttiva per la creazione della recensione. */
   private void showIntro() {
     mainArea.getChildren().clear();
     mainArea.getChildren().add(createReviewSection);
   }
 
-  private void showSection() {
+  /** Rende visibile la sezione di contenuto principale nel layout. */
+  private void showContent() {
     content.setVisible(true);
     content.setManaged(true);
   }
 
-  private void hideSection() {
+  /** Nasconde la sezione di contenuto principale dal layout. */
+  private void hideContent() {
     content.setVisible(false);
     content.setManaged(false);
   }
 
-  /** Notifica un cambiamento di layout. */
+  /** Notifica un cambiamento di layout al callback esterno, se presente. */
   private void notifyLayoutChange() {
     if (onLayoutChange != null) {
       onLayoutChange.run();
     }
   }
 
-  /** Mostra il banner d'errore.
-   * @param message Messaggio
-   * @param retry callback
-   * @param back callback*/
-  private void showError(String message, Runnable retry, Runnable back) {
-    errorBannerController.show(message, retry, back);
+  /**
+   * Mostra un banner d’errore.
+   *
+   * @param message messaggio da visualizzare
+   * @param retry   azione di riprova (può essere {@code null})
+   */
+  private void showError(String message, Runnable retry) {
+    errorBannerController.show(message, retry, null);
   }
 
   // Metodi Esposti

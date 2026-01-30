@@ -12,7 +12,7 @@
     styleClass="results-page-container" VBox.vgrow="ALWAYS">
    <VBox styleClass="results-page" VBox.vgrow="ALWAYS">
 
-      <HBox fx:id="resultTitleContainer" styleClass="result-title-container">
+      <HBox styleClass="result-title-container">
          <StackPane fx:id="noResultsSection" managed="false" visible="false"
                styleClass="results-empty-wrapper">
             <FontIcon iconLiteral="mdi2b-book-alert-outline" iconSize="65" styleClass="results-empty-icon" />
@@ -74,7 +74,6 @@
                        onAction="#onNext"
                        visible="false"
                        text="Successivo"
-                       contentDisplay="LEFT"
                        styleClass="control-button">
                   <graphic>
                      <FontIcon iconLiteral="mdi2a-arrow-right" styleClass="result-page-arrow" />

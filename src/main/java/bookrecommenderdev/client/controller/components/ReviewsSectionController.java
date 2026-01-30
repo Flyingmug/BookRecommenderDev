@@ -19,6 +19,13 @@ import java.util.List;
 
 import static bookrecommenderdev.Constants.REVIEWS_PAGE_SIZE;
 
+/**
+ * Controller JavaFX della sezione “recensioni” nella pagina di dettaglio di un libro.
+ * <p>
+ * Carica le valutazioni dal server in modo paginato, renderizza ogni recensione tramite
+ * {@link ReviewItemFactory} e gestisce la navigazione tra pagine (prev/next) e gli stati
+ * di errore/assenza risultati.
+ */
 public class ReviewsSectionController {
 
   @FXML private VBox reviewsSectionContainer;
@@ -36,7 +43,14 @@ public class ReviewsSectionController {
   int currentPageIndex;
   int totalResultCount;
 
-
+  /**
+   * Inizializza la sezione recensioni per un libro specifico.
+   * <p>
+   * Imposta contesto e id, resetta lo stato di paginazione e carica la prima pagina.
+   *
+   * @param idLibro  id del libro
+   * @param context  contesto applicativo client
+   */
   public void initializeForBook(int idLibro, AppContext context) {
     this.idLibro = idLibro;
     this.context = context;
@@ -47,13 +61,16 @@ public class ReviewsSectionController {
     resolveReviews(0);
   }
 
-
-  /** <p>Gestisce una richiesta a una pagina logica di recensioni per un libro.
-   * La richiesta viene fatta utilizzando il campo assegnato nel metodo {@link #initializeForBook(int, AppContext)}.
-   * */
+  /**
+   * Richiede al server una pagina logica di recensioni e aggiorna la UI di conseguenza.
+   * <p>
+   * In assenza di risultati collassa la sezione; in caso di errore mostra un banner con retry.
+   *
+   * @param pageIndex indice della pagina da caricare (0-based)
+   */
   private void resolveReviews(int pageIndex) {
     try {
-      PaginaValutazioni data = context.server().cercaValutazioni(idLibro, pageIndex); // never null now
+      PaginaValutazioni data = context.server().cercaValutazioni(idLibro, pageIndex);
 
       List<Valutazione> reviews = data.results();
       int totalResults = data.totalCount();
@@ -62,12 +79,11 @@ public class ReviewsSectionController {
 
       if (totalResults == 0 || reviews.isEmpty()) {
         showNoResults();
-        // riabilitazione comandi
         setResultsControlsDisabled(false);
         return;
       }
 
-      // mostra sezione (serve in caso di "riprova")
+      // Mostra sezione (utile in caso di retry)
       reviewsSectionContainer.setVisible(true);
       reviewsSectionContainer.setManaged(true);
       errorBannerController.hide();
@@ -77,26 +93,31 @@ public class ReviewsSectionController {
       load(reviews);
 
     } catch (DataAccessException e) {
+      showErrorState(
+          "Errore database durante il caricamento delle recensioni.",
+          () -> resolveReviews(pageIndex)
+      );
 
-      showErrorState("Errore database durante il caricamento delle recensioni.", () -> resolveReviews(pageIndex));
     } catch (RemoteException e) {
-
-      showErrorState("Server non raggiungibile. Impossibile caricare le recensioni.", () -> resolveReviews(pageIndex));
+      showErrorState(
+          "Server non raggiungibile. Impossibile caricare le recensioni.",
+          () -> resolveReviews(pageIndex)
+      );
     }
   }
 
   /**
-   * <p>Costruisce dinamicamente dei nodi per mostrare i dati di ciascuna Valutazione.
-   * <p>Ciascun nodo è separato da un {@link Separator}.
-   * <p>Riabilita l'uso dei pulsanti di controllo dei risultati.
-   * @param results lista di dati risultanti
+   * Renderizza la lista di recensioni nel contenitore, separando gli elementi con un {@link Separator}.
+   * Al termine aggiorna lo stato dei controlli di paginazione.
+   *
+   * @param results lista di valutazioni da visualizzare
    */
   private void load(List<Valutazione> results) {
 
-    // Rimozione di eventuali elementi precedenti
+    // Rimuove eventuali elementi precedenti
     reviewsContainer.getChildren().clear();
 
-    for (Valutazione v: results) {
+    for (Valutazione v : results) {
       Parent row = ReviewItemFactory.create(v);
       reviewsContainer.getChildren().add(row);
 
@@ -110,25 +131,27 @@ public class ReviewsSectionController {
     setControls();
   }
 
-  /** Imposta l'utilizzo dei pulsanti di controllo logicamente rispetto ai valori dei risultati di ricerca. */
+  /**
+   * Aggiorna visibilità e abilitazione dei controlli di paginazione in base allo stato corrente.
+   */
   private void setControls() {
     setPrevControlVisibility(currentPageIndex > 0);
     setNextControlVisibility((currentPageIndex + 1) * REVIEWS_PAGE_SIZE < totalResultCount);
     setResultsControlsDisabled(false);
   }
 
-
-  /** <p>Richiede una nuova ricerca alla pagina logica precedente di risultati.
-   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+  /**
+   * Handler UI: richiede la pagina precedente di recensioni.
+   */
   @FXML
   private void onPrev() {
     if (totalResultCount <= 0 || currentPageIndex <= 0) return;
-
     goToPage(currentPageIndex - 1);
   }
 
-  /** <p>Richiede una nuova ricerca alla pagina logica successiva di risultati.
-   * <p>Effettua un controllo della validità della chiave di ricerca e del nuovo indice. */
+  /**
+   * Handler UI: richiede la pagina successiva di recensioni.
+   */
   @FXML
   private void onNext() {
     if (totalResultCount <= 0 ||
@@ -136,10 +159,13 @@ public class ReviewsSectionController {
       return;
 
     goToPage(currentPageIndex + 1);
-
   }
 
-  /** Effettua una nuova richiesta per i risultati alla pagina logica di indice {@code newIndex}. */
+  /**
+   * Effettua una nuova richiesta alla pagina logica indicata, disabilitando temporaneamente i controlli.
+   *
+   * @param newIndex nuovo indice pagina (0-based)
+   */
   private void goToPage(int newIndex) {
     setResultsControlsDisabled(true);
 
@@ -147,47 +173,63 @@ public class ReviewsSectionController {
     resolveReviews(newIndex);
   }
 
-
-
-  /** Disabilita i comandi di controlli dei risultati. */
+  /**
+   * Disabilita/abilita i comandi di navigazione tra pagine.
+   *
+   * @param disable {@code true} per disabilitare i pulsanti, {@code false} per abilitarli
+   */
   private void setResultsControlsDisabled(boolean disable) {
     previousReviewsButton.setDisable(disable);
     nextReviewsButton.setDisable(disable);
   }
-  /** Controlla la visibilità del pulsante di pagina precedente. */
+
+  /**
+   * Controlla la visibilità della sezione associata al controllo “pagina precedente”.
+   */
   private void setPrevControlVisibility(boolean visibility) {
     reviewsTopSeparator.setVisible(visibility);
     reviewsTopSeparator.setManaged(visibility);
   }
 
-  /** Controlla la visibilità del pulsante di pagina successiva. */
+  /**
+   * Controlla la visibilità della sezione associata al controllo “pagina successiva”.
+   */
   private void setNextControlVisibility(boolean visibility) {
     reviewsBottomSeparator.setVisible(visibility);
     reviewsBottomSeparator.setManaged(visibility);
   }
 
-  /** Genera una stringa di testo per mostrare il numero totale di risultati. */
+  /**
+   * Genera il testo riepilogativo del numero di risultati.
+   *
+   * @return stringa del tipo “N risultati”
+   */
   private String formatIndexCounter() {
     return totalResultCount + " risultati";
   }
 
-  /** Collassa la pagina e imposta la visibilità a {@code false}. */
+  /**
+   * Nasconde la sezione recensioni (nessun risultato disponibile).
+   */
   private void showNoResults() {
     reviewsSectionContainer.setVisible(false);
     reviewsSectionContainer.setManaged(false);
   }
 
-
+  /**
+   * Imposta lo stato di errore della sezione mostrando un banner con azione di riprova.
+   *
+   * @param message messaggio di errore
+   * @param retry   azione di riprova (può essere {@code null})
+   */
   private void showErrorState(String message, Runnable retry) {
-    // Keep section visible OR hide it — your choice.
-    // I recommend keeping it visible so the page doesn't "collapse".
+    // Mantiene la sezione visibile per evitare “salti” nella pagina
     reviewsSectionContainer.setVisible(true);
     reviewsSectionContainer.setManaged(true);
 
-    // Re-enable buttons so user isn't stuck
+    // Riabilita i pulsanti per evitare che l’utente rimanga bloccato
     setResultsControlsDisabled(false);
 
-    // If you have an ErrorBanner in this section:
     errorBannerController.show(message, retry, null);
   }
 }

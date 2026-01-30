@@ -16,7 +16,10 @@ import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.List;
+
+import static bookrecommenderdev.Constants.TOKEN_TTL;
 
 /**
  * Implementazione concreta dell'interfaccia remota del server.
@@ -45,7 +48,7 @@ import java.util.List;
  */
 public class ServerImplementation extends UnicastRemoteObject implements ServerInterface {
 
-  private static final java.time.Duration TOKEN_TTL = java.time.Duration.ofDays(30);
+  private final Duration tokenLifetime = Duration.ofDays(TOKEN_TTL);
   private final LibroDao libri;
   private final UtenteDao utenti;
   private final ValutazioneDao valutazioni;
@@ -350,7 +353,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
       UtenteSessione session = new UtenteSessione(u.getId_utente(), u.getNome(), u.getCognome(), u.getEmail(), u.getUserId());
 
-      String token = sessioni.creaSessione(u.getId_utente(), TOKEN_TTL);
+      String token = sessioni.creaSessione(u.getId_utente(), tokenLifetime);
 
       return new TokenSessione(token, session);
 
@@ -364,7 +367,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
       throws RemoteException, InvalidCredentialsException, DataAccessException {
 
     try {
-      Integer idUtente = sessioni.resolveToken(token, TOKEN_TTL).orElse(null);
+      Integer idUtente = sessioni.resolveToken(token, tokenLifetime).orElse(null);
       if (idUtente == null) throw new InvalidCredentialsException("Sessione non valida.");
 
       Utente u = utenti.findById(idUtente)

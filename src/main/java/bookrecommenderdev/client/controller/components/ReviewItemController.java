@@ -9,12 +9,25 @@ import javafx.scene.layout.*;
 
 import static bookrecommenderdev.model.utils.InputVerifiers.notNull;
 
+/**
+ * Controller JavaFX per la visualizzazione di una recensione completa.
+ * <p>
+ * Mostra il voto finale con rappresentazione a stelle, un commento generale
+ * opzionale e il dettaglio dei singoli campi di valutazione.
+ */
 public class ReviewItemController {
 
   @FXML private GridPane reviewContainer;
   @FXML private HBox reviewHeaderScoreContainer;
   @FXML private Label reviewGenerale;
 
+  /**
+   * Popola il componente con i dati della recensione fornita.
+   * <p>
+   * Se la recensione è {@code null}, il contenuto viene azzerato e nascosto.
+   *
+   * @param review valutazione da visualizzare
+   */
   public void setReview(Valutazione review) {
     if (review == null) {
       reviewHeaderScoreContainer.getChildren().clear();
@@ -22,23 +35,22 @@ public class ReviewItemController {
       return;
     }
 
-    // voto finale
+    // Voto finale (numero + stelle)
     reviewHeaderScoreContainer.getChildren().setAll(
         new Label(String.format("%.1f", review.getVotoFinale())),
         StarIconFactory.buildStars(review.getVotoFinale())
     );
 
-    // aggiunta recensione generale (se presente)
+    // Recensione generale (se presente)
     String generale = notNull(review.getRecensioneGenerale());
-    if(!generale.isEmpty()) {
+    if (!generale.isEmpty()) {
       show(reviewGenerale);
       reviewGenerale.setText(review.getRecensioneGenerale());
     } else {
-      reviewGenerale.setVisible(false);
-      reviewGenerale.setManaged(false);
+      hide(reviewGenerale);
     }
 
-    // aggiunta recensioni dei campi di valutazione
+    // Dettaglio dei campi di valutazione
     int row = 1;
     for (CampoValutazione campo : CampoValutazione.values()) {
       if (campo == CampoValutazione.GENERALE) continue;
@@ -49,9 +61,16 @@ public class ReviewItemController {
       addRow(campo.label(), score, valueText, row);
       row++;
     }
-
   }
 
+  /**
+   * Aggiunge una riga di dettaglio al contenitore della recensione.
+   *
+   * @param fieldText  nome del campo di valutazione
+   * @param reviewScore punteggio assegnato
+   * @param valueText  commento testuale associato
+   * @param row        indice di riga nel {@link GridPane}
+   */
   private void addRow(String fieldText, int reviewScore, String valueText, int row) {
     Label field = new Label(fieldText.toUpperCase());
     Label score = new Label(Integer.toString(reviewScore));
@@ -67,17 +86,23 @@ public class ReviewItemController {
     reviewContainer.add(value, 1, row);
   }
 
+  /**
+   * Restituisce il testo della recensione associato a un campo di valutazione.
+   */
   private String getReviewField(CampoValutazione campo, Valutazione review) {
     return switch (campo) {
       case STILE -> review.getRecensioneStile();
       case CONTENUTO -> review.getRecensioneContenuto();
-      case GRADEVOLEZZA ->  review.getRecensioneGradevolezza();
-      case ORIGINALITA ->  review.getRecensioneOriginalita();
+      case GRADEVOLEZZA -> review.getRecensioneGradevolezza();
+      case ORIGINALITA -> review.getRecensioneOriginalita();
       case EDIZIONE -> review.getRecensioneEdizione();
       case GENERALE -> review.getRecensioneGenerale();
     };
   }
 
+  /**
+   * Restituisce il punteggio numerico associato a un campo di valutazione.
+   */
   private double getReviewScore(CampoValutazione campo, Valutazione review) {
     return switch (campo) {
       case STILE -> review.getStile();
@@ -89,11 +114,13 @@ public class ReviewItemController {
     };
   }
 
+  /** Nasconde un nodo JavaFX ed esclude il nodo dal layout. */
   private static void hide(Region r) {
     r.setVisible(false);
     r.setManaged(false);
   }
 
+  /** Mostra un nodo JavaFX includendolo nel layout. */
   private static void show(Region r) {
     r.setVisible(true);
     r.setManaged(true);

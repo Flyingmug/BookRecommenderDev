@@ -30,4 +30,7 @@ public final class Constants {
   public static final int MIN_USERID_LENGTH = 8;
   /** Dimensione massima nome di libreria */
   public static final int MAX_LIBRARY_NAME_LENGTH = 64;
+
+  /** Durata in giorni dello span di vita di un token */
+  public static final int TOKEN_TTL = 30;
 }

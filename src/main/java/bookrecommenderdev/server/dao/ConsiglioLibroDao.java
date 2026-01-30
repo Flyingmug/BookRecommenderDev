@@ -17,10 +17,41 @@ import java.util.List;
 
 import static bookrecommenderdev.Constants.RECOMMENDATIONS_PAGE_SIZE;
 
+/**
+ * DAO per la gestione dei consigli di libri (raccomandazioni) persistiti a database.
+ * <p>
+ * Incapsula l’accesso JDBC tramite {@link javax.sql.DataSource} e applica alcune regole
+ * di dominio lato persistenza (es. limite massimo di consigli per libro base).
+ * <p>
+ * Il dettaglio delle query SQL è descritto nella documentazione tecnica esterna.
+ */
 public class ConsiglioLibroDao {
   private final DataSource datasource;
   public ConsiglioLibroDao(DataSource ds) { this.datasource = ds; }
 
+  /**
+   * Inserisce un consiglio dell’utente per un libro base.
+   * <p>
+   * L’operazione è atomica: in caso di errore viene eseguito rollback della transazione.
+   * Regole applicate:
+   * <ul>
+   *   <li>il libro base deve esistere;</li>
+   *   <li>il libro base deve appartenere alle librerie dell’utente;</li>
+   *   <li>massimo 3 consigli per (utente, libro base);</li>
+   *   <li>non è possibile consigliare lo stesso libro base;</li>
+   *   <li>non sono ammessi duplicati dello stesso consiglio.</li>
+   * </ul>
+   *
+   * @param idUtente     id dell’utente che inserisce il consiglio
+   * @param idLibroBase  id del libro per cui si sta inserendo il consiglio
+   * @param idLibroCons  id del libro consigliato
+   * @throws IllegalArgumentException se {@code idLibroBase == idLibroCons}
+   * @throws NotFoundException se il libro base non esiste, non è nelle librerie dell’utente,
+   *                           oppure il libro consigliato non esiste
+   * @throws AlreadyExistsException se il consiglio è già presente
+   * @throws LimitExceededException se l’utente ha già raggiunto il limite di consigli per il libro base
+   * @throws SQLException per errori di accesso ai dati
+   */
   public void inserisciConsiglio(int idUtente, int idLibroBase, int idLibroCons)
       throws SQLException, NotFoundException, AlreadyExistsException, LimitExceededException {
 
@@ -113,6 +144,14 @@ public class ConsiglioLibroDao {
     }
   }
 
+  /**
+   * Recupera i libri consigliati dall’utente per un determinato libro base.
+   *
+   * @param idUtente    id dell’utente
+   * @param idLibroBase id del libro base
+   * @return lista dei libri consigliati dall’utente (può essere vuota)
+   * @throws SQLException per errori di accesso ai dati
+   */
   public List<Libro> getConsigliUtente(int idUtente, int idLibroBase) throws SQLException {
     final String q = """
       SELECT v.id_libro, v.titolo, v.anno_pubblicazione, v.autori
@@ -142,7 +181,16 @@ public class ConsiglioLibroDao {
     }
   }
 
-  /*get page libri consigliati per un libro*/
+  /**
+   * Restituisce una pagina di libri consigliati per un libro base, ordinati per numero di consigli.
+   * <p>
+   * {@code indicePagina} è 0-based.
+   *
+   * @param idLibro      id del libro base
+   * @param indicePagina indice pagina (0-based; valori negativi sono trattati come 0)
+   * @return pagina di risultati con conteggio totale
+   * @throws SQLException per errori di accesso ai dati
+   */
   public PaginaConsigliRisultati searchConsigli(int idLibro, int indicePagina) throws SQLException {
     final String q = """
         SELECT
@@ -189,6 +237,15 @@ public class ConsiglioLibroDao {
     return new PaginaConsigliRisultati(list, totalCount);
   }
 
+  /**
+   * Elimina un consiglio precedentemente inserito.
+   *
+   * @param idUtente     id dell’utente
+   * @param idLibroBase  id del libro base
+   * @param idLibroCons  id del libro consigliato da rimuovere
+   * @return {@code true} se una riga è stata rimossa, {@code false} se il consiglio non esisteva
+   * @throws SQLException per errori di accesso ai dati
+   */
   public boolean deleteConsiglio(int idUtente, int idLibroBase, int idLibroCons) throws SQLException {
     final String q = """
       DELETE FROM ConsigliLibri
